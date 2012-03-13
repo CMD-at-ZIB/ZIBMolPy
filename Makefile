@@ -15,7 +15,7 @@ docu:
 	@export PYTHONPATH=./ZIBMolPy_package/:$(PYTHONPATH); epydoc --conf=epydoc.conf
 
 upload-docu:
-	upload_docu.sh	
+	./upload_docu.sh	
 
 install-home:
 	cd ZIBMolPy_package; ./setup.py install --prefix=$(HOME)
