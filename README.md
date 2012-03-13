@@ -15,3 +15,9 @@ Test
 ----
 
 bla
+
+
+Documentation
+-------------
+
+http://cmd-at-zib.github.com/ZIBMolPy/apidocs/
