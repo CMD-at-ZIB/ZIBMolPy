@@ -1,11 +1,11 @@
-#!/bin/sh -e
+#!/bin/bash
 # generates the API docs and uploads them to github pages
 # for help on github pages see: http://pages.github.com/
-# https://github.com/JetBrains/kotlin/blob/master/updatedoc.sh
+# derived from: https://github.com/JetBrains/kotlin/blob/master/updatedoc.sh
 
 set -x 
 
-#make docu || exit 1
+make docu || exit 1
 
 echo "Cloning/pulling latest gh-pages branch"
 
@@ -24,3 +24,5 @@ git commit -m "latest apidocs"
 git push
 
 echo "Updated github pages for apidocs"
+
+#EOF
