@@ -1,0 +1,540 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>ZIBMolPy.pool</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="ZIBMolPy-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://wiki.kobv.de/confluence/display/AGCMD/ZIBMolPy">ZIBMolPy</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="ZIBMolPy-module.html">Package&nbsp;ZIBMolPy</a> ::
+        Module&nbsp;pool
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="ZIBMolPy.pool-pysrc.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="ZIBMolPy.pool-module.html">Module ZIBMolPy.pool</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno">  1</tt>  <tt class="py-line"><tt class="py-comment"># -*- coding: utf-8 -*-</tt> </tt>
+<a name="L2"></a><tt class="py-lineno">  2</tt>  <tt class="py-line"> </tt>
+<a name="L3"></a><tt class="py-lineno">  3</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-0" class="py-name" targets="Package ZIBMolPy=ZIBMolPy-module.html"><a title="ZIBMolPy" class="py-name" href="#" onclick="return doclink('link-0', 'ZIBMolPy', 'link-0');">ZIBMolPy</a></tt><tt class="py-op">.</tt><tt id="link-1" class="py-name" targets="Module ZIBMolPy.internals=ZIBMolPy.internals-module.html,Variable ZIBMolPy.pool.NodeList.internals=ZIBMolPy.pool.NodeList-class.html#internals"><a title="ZIBMolPy.internals
+ZIBMolPy.pool.NodeList.internals" class="py-name" href="#" onclick="return doclink('link-1', 'internals', 'link-1');">internals</a></tt> <tt class="py-keyword">import</tt> <tt id="link-2" class="py-name" targets="Class ZIBMolPy.internals.InternalArray=ZIBMolPy.internals.InternalArray-class.html"><a title="ZIBMolPy.internals.InternalArray" class="py-name" href="#" onclick="return doclink('link-2', 'InternalArray', 'link-2');">InternalArray</a></tt><tt class="py-op">,</tt> <tt id="link-3" class="py-name" targets="Class ZIBMolPy.internals.Converter=ZIBMolPy.internals.Converter-class.html"><a title="ZIBMolPy.internals.Converter" class="py-name" href="#" onclick="return doclink('link-3', 'Converter', 'link-3');">Converter</a></tt> </tt>
+<a name="L4"></a><tt class="py-lineno">  4</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">numpy</tt> <tt class="py-keyword">as</tt> <tt class="py-name">np</tt> </tt>
+<a name="L5"></a><tt class="py-lineno">  5</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">os</tt> <tt class="py-keyword">import</tt> <tt class="py-name">path</tt> </tt>
+<a name="L6"></a><tt class="py-lineno">  6</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">glob</tt> <tt class="py-keyword">import</tt> <tt class="py-name">glob</tt> </tt>
+<a name="L7"></a><tt class="py-lineno">  7</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">traceback</tt> </tt>
+<a name="L8"></a><tt class="py-lineno">  8</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-4" class="py-name"><a title="ZIBMolPy" class="py-name" href="#" onclick="return doclink('link-4', 'ZIBMolPy', 'link-0');">ZIBMolPy</a></tt><tt class="py-op">.</tt><tt id="link-5" class="py-name" targets="Module ZIBMolPy.node=ZIBMolPy.node-module.html"><a title="ZIBMolPy.node" class="py-name" href="#" onclick="return doclink('link-5', 'node', 'link-5');">node</a></tt> <tt class="py-keyword">import</tt> <tt id="link-6" class="py-name" targets="Class ZIBMolPy.node.Node=ZIBMolPy.node.Node-class.html"><a title="ZIBMolPy.node.Node" class="py-name" href="#" onclick="return doclink('link-6', 'Node', 'link-6');">Node</a></tt> </tt>
+<a name="L9"></a><tt class="py-lineno">  9</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-7" class="py-name"><a title="ZIBMolPy" class="py-name" href="#" onclick="return doclink('link-7', 'ZIBMolPy', 'link-0');">ZIBMolPy</a></tt> <tt class="py-keyword">import</tt> <tt id="link-8" class="py-name" targets="Module ZIBMolPy.utils=ZIBMolPy.utils-module.html"><a title="ZIBMolPy.utils" class="py-name" href="#" onclick="return doclink('link-8', 'utils', 'link-8');">utils</a></tt> </tt>
+<a name="L10"></a><tt class="py-lineno"> 10</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">time</tt> </tt>
+<a name="L11"></a><tt class="py-lineno"> 11</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-9" class="py-name"><a title="ZIBMolPy" class="py-name" href="#" onclick="return doclink('link-9', 'ZIBMolPy', 'link-0');">ZIBMolPy</a></tt><tt class="py-op">.</tt><tt id="link-10" class="py-name" targets="Module ZIBMolPy.constants=ZIBMolPy.constants-module.html"><a title="ZIBMolPy.constants" class="py-name" href="#" onclick="return doclink('link-10', 'constants', 'link-10');">constants</a></tt> <tt class="py-keyword">import</tt> <tt id="link-11" class="py-name" targets="Variable ZIBMolPy.constants.BOLTZMANN=ZIBMolPy.constants-module.html#BOLTZMANN"><a title="ZIBMolPy.constants.BOLTZMANN" class="py-name" href="#" onclick="return doclink('link-11', 'BOLTZMANN', 'link-11');">BOLTZMANN</a></tt><tt class="py-op">,</tt> <tt id="link-12" class="py-name" targets="Variable ZIBMolPy.constants.AVOGADRO=ZIBMolPy.constants-module.html#AVOGADRO"><a title="ZIBMolPy.constants.AVOGADRO" class="py-name" href="#" onclick="return doclink('link-12', 'AVOGADRO', 'link-12');">AVOGADRO</a></tt> </tt>
+<a name="L12"></a><tt class="py-lineno"> 12</tt>  <tt class="py-line"> </tt>
+<a name="L13"></a><tt class="py-lineno"> 13</tt>  <tt class="py-line"><tt class="py-comment">#needed to eval pool-desc.txt</tt> </tt>
+<a name="L14"></a><tt class="py-lineno"> 14</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">datetime</tt> <tt class="py-comment">#pylint: disable=W0611</tt> </tt>
+<a name="NodeList"></a><div id="NodeList-def"><a name="L15"></a><tt class="py-lineno"> 15</tt>  <tt class="py-line"> </tt>
+<a name="L16"></a><tt class="py-lineno"> 16</tt>  <tt class="py-line"><tt class="py-comment">#===============================================================================</tt> </tt>
+<a name="L17"></a><tt class="py-lineno"> 17</tt> <a class="py-toggle" href="#" id="NodeList-toggle" onclick="return toggle('NodeList');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="ZIBMolPy.pool.NodeList-class.html">NodeList</a><tt class="py-op">(</tt><tt class="py-base-class">list</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="NodeList-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="NodeList-expanded"><a name="NodeList.__init__"></a><div id="NodeList.__init__-def"><a name="L18"></a><tt class="py-lineno"> 18</tt> <a class="py-toggle" href="#" id="NodeList.__init__-toggle" onclick="return toggle('NodeList.__init__');">-</a><tt class="py-line">        <tt class="py-keyword">def</tt> <a class="py-def-name" href="ZIBMolPy.pool.NodeList-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">nodes</tt><tt class="py-op">=</tt><tt class="py-name">None</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="NodeList.__init__-collapsed" style="display:none;" pad="+++" indent="++++++++++++"></div><div id="NodeList.__init__-expanded"><a name="L19"></a><tt class="py-lineno"> 19</tt>  <tt class="py-line">                <tt class="py-name">list</tt><tt class="py-op">.</tt><tt id="link-13" class="py-name" targets="Method ZIBMolPy.internals.DihedralCoordinate.__init__()=ZIBMolPy.internals.DihedralCoordinate-class.html#__init__,Method ZIBMolPy.internals.InternalArray.__init__()=ZIBMolPy.internals.InternalArray-class.html#__init__,Method ZIBMolPy.internals.InternalCoordinate.__init__()=ZIBMolPy.internals.InternalCoordinate-class.html#__init__,Method ZIBMolPy.internals.LinearCoordinate.__init__()=ZIBMolPy.internals.LinearCoordinate-class.html#__init__,Method ZIBMolPy.internals.PbcResolver.__init__()=ZIBMolPy.internals.PbcResolver-class.html#__init__,Method ZIBMolPy.io.PDBTools.Atom.__init__()=ZIBMolPy.io.PDBTools.Atom-class.html#__init__,Method ZIBMolPy.io.PDBTools.Chain.__init__()=ZIBMolPy.io.PDBTools.Chain-class.html#__init__,Method ZIBMolPy.io.PDBTools.Residue.__init__()=ZIBMolPy.io.PDBTools.Residue-class.html#__init__,Method ZIBMolPy.io.PDBTools.Structure.__init__()=ZIBMolPy.io.PDBTools.Structure-class.html#__init__,Method ZIBMolPy.io.pdb.PdbFile.__init__()=ZIBMolPy.io.pdb.PdbFile-class.html#__init__,Method ZIBMolPy.io.topology.Atomtype.__init__()=ZIBMolPy.io.topology.Atomtype-class.html#__init__,Method ZIBMolPy.io.topology.Dihedraltype.__init__()=ZIBMolPy.io.topology.Dihedraltype-class.html#__init__,Method ZIBMolPy.io.topology.LineEntry.__init__()=ZIBMolPy.io.topology.LineEntry-class.html#__init__,Method ZIBMolPy.io.topology.Moleculetype.__init__()=ZIBMolPy.io.topology.Moleculetype-class.html#__init__,Method ZIBMolPy.io.topology.Section.__init__()=ZIBMolPy.io.topology.Section-class.html#__init__,Method ZIBMolPy.io.topology.Topology.__init__()=ZIBMolPy.io.topology.Topology-class.html#__init__,Method ZIBMolPy.io.trr.TrrFile.__init__()=ZIBMolPy.io.trr.TrrFile-class.html#__init__,Method ZIBMolPy.io.trr.TrrFrame.__init__()=ZIBMolPy.io.trr.TrrFrame-class.html#__init__,Method ZIBMolPy.plots.CoordPlotManager.CoordPlotManager.__init__()=ZIBMolPy.plots.CoordPlotManager.CoordPlotManager-class.html#__init__,Method ZIBMolPy.plots.DistPlotManager.DistPlotManager.__init__()=ZIBMolPy.plots.DistPlotManager.DistPlotManager-class.html#__init__,Method ZIBMolPy.plots.FrameweightPlotManager.FrameweightPlotManager.__init__()=ZIBMolPy.plots.FrameweightPlotManager.FrameweightPlotManager-class.html#__init__,Method ZIBMolPy.plots.MatrixPlotManager.MatrixPlotManager.__init__()=ZIBMolPy.plots.MatrixPlotManager.MatrixPlotManager-class.html#__init__,Method ZIBMolPy.plots.NodeWeightPlotManager.NodeWeightPlotManager.__init__()=ZIBMolPy.plots.NodeWeightPlotManager.NodeWeightPlotManager-class.html#__init__,Method ZIBMolPy.plots.StatusPlotManager.StatusPlotManager.__init__()=ZIBMolPy.plots.StatusPlotManager.StatusPlotManager-class.html#__init__,Method ZIBMolPy.pool.NodeList.__init__()=ZIBMolPy.pool.NodeList-class.html#__init__,Method ZIBMolPy.pool.Pool.__init__()=ZIBMolPy.pool.Pool-class.html#__init__,Method ZIBMolPy.restraint.DihedralRestraint.__init__()=ZIBMolPy.restraint.DihedralRestraint-class.html#__init__,Method ZIBMolPy.restraint.DistanceRestraint.__init__()=ZIBMolPy.restraint.DistanceRestraint-class.html#__init__,Method ZIBMolPy.restraint.Restraint.__init__()=ZIBMolPy.restraint.Restraint-class.html#__init__,Method ZIBMolPy.topology.Moleculetype.__init__()=ZIBMolPy.topology.Moleculetype-class.html#__init__,Method ZIBMolPy.topology.Section.__init__()=ZIBMolPy.topology.Section-class.html#__init__,Method ZIBMolPy.topology.Topology.__init__()=ZIBMolPy.topology.Topology-class.html#__init__,Method ZIBMolPy.ui.Option.__init__()=ZIBMolPy.ui.Option-class.html#__init__,Method zgf_browser.AboutDialog.__init__()=zgf_browser.AboutDialog-class.html#__init__,Method zgf_browser.Blackboard.__init__()=zgf_browser.Blackboard-class.html#__init__,Method zgf_browser.CoordinateList.__init__()=zgf_browser.CoordinateList-class.html#__init__,Method zgf_browser.FileChangesObserver.__init__()=zgf_browser.FileChangesObserver-class.html#__init__,Method zgf_browser.MainWindow.__init__()=zgf_browser.MainWindow-class.html#__init__,Method zgf_browser.ManagedPlotsPanel.__init__()=zgf_browser.ManagedPlotsPanel-class.html#__init__,Method zgf_browser.Menubar.__init__()=zgf_browser.Menubar-class.html#__init__,Method zgf_browser.MyCheckButton.__init__()=zgf_browser.MyCheckButton-class.html#__init__,Method zgf_browser.MyComboBox.__init__()=zgf_browser.MyComboBox-class.html#__init__,Method zgf_browser.MyEntry.__init__()=zgf_browser.MyEntry-class.html#__init__,Method zgf_browser.MyFileChooser.__init__()=zgf_browser.MyFileChooser-class.html#__init__,Method zgf_browser.MyNodeChooser.__init__()=zgf_browser.MyNodeChooser-class.html#__init__,Method zgf_browser.MySpinButton.__init__()=zgf_browser.MySpinButton-class.html#__init__,Method zgf_browser.NodeList.__init__()=zgf_browser.NodeList-class.html#__init__,Method zgf_browser.RunDialog.__init__()=zgf_browser.RunDialog-class.html#__init__,Method zgf_browser.ScrolledWindow.__init__()=zgf_browser.ScrolledWindow-class.html#__init__,Method zgf_browser.StartDialog.__init__()=zgf_browser.StartDialog-class.html#__init__,Method zgf_browser.Statusbar.__init__()=zgf_browser.Statusbar-class.html#__init__"><a title="ZIBMolPy.internals.DihedralCoordinate.__init__
+ZIBMolPy.internals.InternalArray.__init__
+ZIBMolPy.internals.InternalCoordinate.__init__
+ZIBMolPy.internals.LinearCoordinate.__init__
+ZIBMolPy.internals.PbcResolver.__init__
+ZIBMolPy.io.PDBTools.Atom.__init__
+ZIBMolPy.io.PDBTools.Chain.__init__
+ZIBMolPy.io.PDBTools.Residue.__init__
+ZIBMolPy.io.PDBTools.Structure.__init__
+ZIBMolPy.io.pdb.PdbFile.__init__
+ZIBMolPy.io.topology.Atomtype.__init__
+ZIBMolPy.io.topology.Dihedraltype.__init__
+ZIBMolPy.io.topology.LineEntry.__init__
+ZIBMolPy.io.topology.Moleculetype.__init__
+ZIBMolPy.io.topology.Section.__init__
+ZIBMolPy.io.topology.Topology.__init__
+ZIBMolPy.io.trr.TrrFile.__init__
+ZIBMolPy.io.trr.TrrFrame.__init__
+ZIBMolPy.plots.CoordPlotManager.CoordPlotManager.__init__
+ZIBMolPy.plots.DistPlotManager.DistPlotManager.__init__
+ZIBMolPy.plots.FrameweightPlotManager.FrameweightPlotManager.__init__
+ZIBMolPy.plots.MatrixPlotManager.MatrixPlotManager.__init__
+ZIBMolPy.plots.NodeWeightPlotManager.NodeWeightPlotManager.__init__
+ZIBMolPy.plots.StatusPlotManager.StatusPlotManager.__init__
+ZIBMolPy.pool.NodeList.__init__
+ZIBMolPy.pool.Pool.__init__
+ZIBMolPy.restraint.DihedralRestraint.__init__
+ZIBMolPy.restraint.DistanceRestraint.__init__
+ZIBMolPy.restraint.Restraint.__init__
+ZIBMolPy.topology.Moleculetype.__init__
+ZIBMolPy.topology.Section.__init__
+ZIBMolPy.topology.Topology.__init__
+ZIBMolPy.ui.Option.__init__
+zgf_browser.AboutDialog.__init__
+zgf_browser.Blackboard.__init__
+zgf_browser.CoordinateList.__init__
+zgf_browser.FileChangesObserver.__init__
+zgf_browser.MainWindow.__init__
+zgf_browser.ManagedPlotsPanel.__init__
+zgf_browser.Menubar.__init__
+zgf_browser.MyCheckButton.__init__
+zgf_browser.MyComboBox.__init__
+zgf_browser.MyEntry.__init__
+zgf_browser.MyFileChooser.__init__
+zgf_browser.MyNodeChooser.__init__
+zgf_browser.MySpinButton.__init__
+zgf_browser.NodeList.__init__
+zgf_browser.RunDialog.__init__
+zgf_browser.ScrolledWindow.__init__
+zgf_browser.StartDialog.__init__
+zgf_browser.Statusbar.__init__" class="py-name" href="#" onclick="return doclink('link-13', '__init__', 'link-13');">__init__</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+<a name="L20"></a><tt class="py-lineno"> 20</tt>  <tt class="py-line">                <tt class="py-keyword">if</tt><tt class="py-op">(</tt><tt class="py-name">nodes</tt> <tt class="py-op">!=</tt> <tt class="py-name">None</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L21"></a><tt class="py-lineno"> 21</tt>  <tt class="py-line">                        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-14" class="py-name" targets="Function zgf_refine.extend()=zgf_refine-module.html#extend"><a title="zgf_refine.extend" class="py-name" href="#" onclick="return doclink('link-14', 'extend', 'link-14');">extend</a></tt><tt class="py-op">(</tt><tt class="py-name">nodes</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L22"></a><tt class="py-lineno"> 22</tt>  <tt class="py-line">         </tt>
+<a name="L23"></a><tt class="py-lineno"> 23</tt>  <tt class="py-line">        <tt class="py-comment">#---------------------------------------------------------------------------</tt> </tt>
+<a name="L24"></a><tt class="py-lineno"> 24</tt>  <tt class="py-line">        <tt class="py-decorator">@</tt><tt class="py-decorator">property</tt> </tt>
+<a name="NodeList.internals"></a><div id="NodeList.internals-def"><a name="L25"></a><tt class="py-lineno"> 25</tt> <a class="py-toggle" href="#" id="NodeList.internals-toggle" onclick="return toggle('NodeList.internals');">-</a><tt class="py-line">        <tt class="py-keyword">def</tt> <a class="py-def-name" href="ZIBMolPy.pool.NodeList-class.html#internals">internals</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="NodeList.internals-collapsed" style="display:none;" pad="+++" indent="++++++++++++"></div><div id="NodeList.internals-expanded"><a name="L26"></a><tt class="py-lineno"> 26</tt>  <tt class="py-line">                <tt class="py-name">arrays</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-name">n</tt><tt class="py-op">.</tt><tt id="link-15" class="py-name"><a title="ZIBMolPy.internals
+ZIBMolPy.pool.NodeList.internals" class="py-name" href="#" onclick="return doclink('link-15', 'internals', 'link-1');">internals</a></tt> <tt class="py-keyword">for</tt> <tt class="py-name">n</tt> <tt class="py-keyword">in</tt> <tt class="py-name">self</tt> <tt class="py-keyword">if</tt> <tt class="py-name">hasattr</tt><tt class="py-op">(</tt><tt class="py-name">n</tt><tt class="py-op">,</tt> <tt class="py-string">"internals"</tt><tt class="py-op">)</tt><tt class="py-op">]</tt> </tt>
+<a name="L27"></a><tt class="py-lineno"> 27</tt>  <tt class="py-line">                <tt class="py-keyword">if</tt><tt class="py-op">(</tt><tt class="py-name">len</tt><tt class="py-op">(</tt><tt class="py-name">arrays</tt><tt class="py-op">)</tt> <tt class="py-op">==</tt> <tt class="py-number">0</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L28"></a><tt class="py-lineno"> 28</tt>  <tt class="py-line">                        <tt class="py-keyword">return</tt><tt class="py-op">(</tt><tt class="py-name">None</tt><tt class="py-op">)</tt> </tt>
+<a name="L29"></a><tt class="py-lineno"> 29</tt>  <tt class="py-line">                <tt class="py-keyword">return</tt><tt class="py-op">(</tt> <tt id="link-16" class="py-name"><a title="ZIBMolPy.internals.InternalArray" class="py-name" href="#" onclick="return doclink('link-16', 'InternalArray', 'link-2');">InternalArray</a></tt><tt class="py-op">.</tt><tt id="link-17" class="py-name" targets="Class Method ZIBMolPy.internals.InternalArray.stack_frames()=ZIBMolPy.internals.InternalArray-class.html#stack_frames"><a title="ZIBMolPy.internals.InternalArray.stack_frames" class="py-name" href="#" onclick="return doclink('link-17', 'stack_frames', 'link-17');">stack_frames</a></tt><tt class="py-op">(</tt><tt class="py-name">arrays</tt><tt class="py-op">)</tt> <tt class="py-op">)</tt> </tt>
+</div><a name="L30"></a><tt class="py-lineno"> 30</tt>  <tt class="py-line">         </tt>
+<a name="L31"></a><tt class="py-lineno"> 31</tt>  <tt class="py-line">         </tt>
+<a name="L32"></a><tt class="py-lineno"> 32</tt>  <tt class="py-line">        <tt class="py-comment">#---------------------------------------------------------------------------</tt> </tt>
+<a name="NodeList.where"></a><div id="NodeList.where-def"><a name="L33"></a><tt class="py-lineno"> 33</tt> <a class="py-toggle" href="#" id="NodeList.where-toggle" onclick="return toggle('NodeList.where');">-</a><tt class="py-line">        <tt class="py-keyword">def</tt> <a class="py-def-name" href="ZIBMolPy.pool.NodeList-class.html#where">where</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">query</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="NodeList.where-collapsed" style="display:none;" pad="+++" indent="++++++++++++"></div><div id="NodeList.where-expanded"><a name="L34"></a><tt class="py-lineno"> 34</tt>  <tt class="py-line">                <tt class="py-docstring">""" very cool, smart query tool - runs a python-statement on every node """</tt> </tt>
+<a name="L35"></a><tt class="py-lineno"> 35</tt>  <tt class="py-line">                <tt class="py-keyword">class</tt> <tt class="py-def-name">Resolver</tt><tt class="py-op">(</tt><tt class="py-base-class">dict</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L36"></a><tt class="py-lineno"> 36</tt>  <tt class="py-line">                        <tt class="py-keyword">def</tt> <tt class="py-def-name">__init__</tt><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">node</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L37"></a><tt class="py-lineno"> 37</tt>  <tt class="py-line">                                <tt class="py-name">dict</tt><tt class="py-op">.</tt><tt id="link-18" class="py-name"><a title="ZIBMolPy.internals.DihedralCoordinate.__init__
+ZIBMolPy.internals.InternalArray.__init__
+ZIBMolPy.internals.InternalCoordinate.__init__
+ZIBMolPy.internals.LinearCoordinate.__init__
+ZIBMolPy.internals.PbcResolver.__init__
+ZIBMolPy.io.PDBTools.Atom.__init__
+ZIBMolPy.io.PDBTools.Chain.__init__
+ZIBMolPy.io.PDBTools.Residue.__init__
+ZIBMolPy.io.PDBTools.Structure.__init__
+ZIBMolPy.io.pdb.PdbFile.__init__
+ZIBMolPy.io.topology.Atomtype.__init__
+ZIBMolPy.io.topology.Dihedraltype.__init__
+ZIBMolPy.io.topology.LineEntry.__init__
+ZIBMolPy.io.topology.Moleculetype.__init__
+ZIBMolPy.io.topology.Section.__init__
+ZIBMolPy.io.topology.Topology.__init__
+ZIBMolPy.io.trr.TrrFile.__init__
+ZIBMolPy.io.trr.TrrFrame.__init__
+ZIBMolPy.plots.CoordPlotManager.CoordPlotManager.__init__
+ZIBMolPy.plots.DistPlotManager.DistPlotManager.__init__
+ZIBMolPy.plots.FrameweightPlotManager.FrameweightPlotManager.__init__
+ZIBMolPy.plots.MatrixPlotManager.MatrixPlotManager.__init__
+ZIBMolPy.plots.NodeWeightPlotManager.NodeWeightPlotManager.__init__
+ZIBMolPy.plots.StatusPlotManager.StatusPlotManager.__init__
+ZIBMolPy.pool.NodeList.__init__
+ZIBMolPy.pool.Pool.__init__
+ZIBMolPy.restraint.DihedralRestraint.__init__
+ZIBMolPy.restraint.DistanceRestraint.__init__
+ZIBMolPy.restraint.Restraint.__init__
+ZIBMolPy.topology.Moleculetype.__init__
+ZIBMolPy.topology.Section.__init__
+ZIBMolPy.topology.Topology.__init__
+ZIBMolPy.ui.Option.__init__
+zgf_browser.AboutDialog.__init__
+zgf_browser.Blackboard.__init__
+zgf_browser.CoordinateList.__init__
+zgf_browser.FileChangesObserver.__init__
+zgf_browser.MainWindow.__init__
+zgf_browser.ManagedPlotsPanel.__init__
+zgf_browser.Menubar.__init__
+zgf_browser.MyCheckButton.__init__
+zgf_browser.MyComboBox.__init__
+zgf_browser.MyEntry.__init__
+zgf_browser.MyFileChooser.__init__
+zgf_browser.MyNodeChooser.__init__
+zgf_browser.MySpinButton.__init__
+zgf_browser.NodeList.__init__
+zgf_browser.RunDialog.__init__
+zgf_browser.ScrolledWindow.__init__
+zgf_browser.StartDialog.__init__
+zgf_browser.Statusbar.__init__" class="py-name" href="#" onclick="return doclink('link-18', '__init__', 'link-13');">__init__</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+<a name="L38"></a><tt class="py-lineno"> 38</tt>  <tt class="py-line">                                <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-19" class="py-name"><a title="ZIBMolPy.node" class="py-name" href="#" onclick="return doclink('link-19', 'node', 'link-5');">node</a></tt> <tt class="py-op">=</tt> <tt id="link-20" class="py-name"><a title="ZIBMolPy.node" class="py-name" href="#" onclick="return doclink('link-20', 'node', 'link-5');">node</a></tt> </tt>
+</div><a name="L39"></a><tt class="py-lineno"> 39</tt>  <tt class="py-line">                         </tt>
+<a name="L40"></a><tt class="py-lineno"> 40</tt>  <tt class="py-line">                        <tt class="py-keyword">def</tt> <tt class="py-def-name">__getitem__</tt><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">key</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L41"></a><tt class="py-lineno"> 41</tt>  <tt class="py-line">                                <tt class="py-keyword">if</tt><tt class="py-op">(</tt><tt class="py-name">key</tt> <tt class="py-op">==</tt> <tt class="py-string">"hasattr"</tt><tt class="py-op">)</tt><tt class="py-op">:</tt>  </tt>
+<a name="L42"></a><tt class="py-lineno"> 42</tt>  <tt class="py-line">                                        <tt class="py-keyword">return</tt><tt class="py-op">(</tt> <tt class="py-keyword">lambda</tt> <tt id="link-21" class="py-name" targets="Variable zgf_refine.x=zgf_refine-module.html#x,Variable zgf_submit_job_HLRN.x=zgf_submit_job_HLRN-module.html#x"><a title="zgf_refine.x
+zgf_submit_job_HLRN.x" class="py-name" href="#" onclick="return doclink('link-21', 'x', 'link-21');">x</a></tt><tt class="py-op">:</tt> <tt class="py-name">hasattr</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-22" class="py-name"><a title="ZIBMolPy.node" class="py-name" href="#" onclick="return doclink('link-22', 'node', 'link-5');">node</a></tt><tt class="py-op">,</tt> <tt id="link-23" class="py-name"><a title="zgf_refine.x
+zgf_submit_job_HLRN.x" class="py-name" href="#" onclick="return doclink('link-23', 'x', 'link-21');">x</a></tt><tt class="py-op">)</tt> <tt class="py-op">)</tt> </tt>
+<a name="L43"></a><tt class="py-lineno"> 43</tt>  <tt class="py-line">                                <tt class="py-keyword">return</tt><tt class="py-op">(</tt><tt class="py-name">getattr</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-24" class="py-name"><a title="ZIBMolPy.node" class="py-name" href="#" onclick="return doclink('link-24', 'node', 'link-5');">node</a></tt><tt class="py-op">,</tt> <tt class="py-name">key</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+</div></div><a name="L44"></a><tt class="py-lineno"> 44</tt>  <tt class="py-line">                 </tt>
+<a name="L45"></a><tt class="py-lineno"> 45</tt>  <tt class="py-line">                <tt class="py-name">matches</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt> <tt class="py-name">n</tt> <tt class="py-keyword">for</tt> <tt class="py-name">n</tt> <tt class="py-keyword">in</tt> <tt class="py-name">self</tt> <tt class="py-keyword">if</tt> <tt class="py-name">eval</tt><tt class="py-op">(</tt><tt class="py-name">query</tt><tt class="py-op">,</tt> <tt class="py-name">Resolver</tt><tt class="py-op">(</tt><tt class="py-name">n</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> <tt class="py-op">]</tt>  </tt>
+<a name="L46"></a><tt class="py-lineno"> 46</tt>  <tt class="py-line">                <tt class="py-keyword">return</tt><tt class="py-op">(</tt> <tt id="link-25" class="py-name" targets="Class ZIBMolPy.pool.NodeList=ZIBMolPy.pool.NodeList-class.html,Class zgf_browser.NodeList=zgf_browser.NodeList-class.html"><a title="ZIBMolPy.pool.NodeList
+zgf_browser.NodeList" class="py-name" href="#" onclick="return doclink('link-25', 'NodeList', 'link-25');">NodeList</a></tt><tt class="py-op">(</tt><tt class="py-name">matches</tt><tt class="py-op">)</tt> <tt class="py-op">)</tt> </tt>
+</div><a name="L47"></a><tt class="py-lineno"> 47</tt>  <tt class="py-line">         </tt>
+<a name="L48"></a><tt class="py-lineno"> 48</tt>  <tt class="py-line">        <tt class="py-comment">#---------------------------------------------------------------------------</tt> </tt>
+<a name="NodeList.coord_range"></a><div id="NodeList.coord_range-def"><a name="L49"></a><tt class="py-lineno"> 49</tt> <a class="py-toggle" href="#" id="NodeList.coord_range-toggle" onclick="return toggle('NodeList.coord_range');">-</a><tt class="py-line">        <tt class="py-keyword">def</tt> <a class="py-def-name" href="ZIBMolPy.pool.NodeList-class.html#coord_range">coord_range</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">coord</tt><tt class="py-op">,</tt> <tt class="py-param">num</tt><tt class="py-op">=</tt><tt class="py-number">360</tt><tt class="py-op">,</tt> <tt class="py-param">lin_slack</tt><tt class="py-op">=</tt><tt class="py-name">True</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="NodeList.coord_range-collapsed" style="display:none;" pad="+++" indent="++++++++++++"></div><div id="NodeList.coord_range-expanded"><a name="L50"></a><tt class="py-lineno"> 50</tt>  <tt class="py-line">                <tt class="py-comment"># ask the coordinate            </tt> </tt>
+<a name="L51"></a><tt class="py-lineno"> 51</tt>  <tt class="py-line">                <tt class="py-keyword">if</tt><tt class="py-op">(</tt><tt class="py-name">coord</tt><tt class="py-op">.</tt><tt id="link-26" class="py-name" targets="Variable ZIBMolPy.internals.DihedralCoordinate.plot_max_range=ZIBMolPy.internals.DihedralCoordinate-class.html#plot_max_range,Variable ZIBMolPy.internals.InternalCoordinate.plot_max_range=ZIBMolPy.internals.InternalCoordinate-class.html#plot_max_range"><a title="ZIBMolPy.internals.DihedralCoordinate.plot_max_range
+ZIBMolPy.internals.InternalCoordinate.plot_max_range" class="py-name" href="#" onclick="return doclink('link-26', 'plot_max_range', 'link-26');">plot_max_range</a></tt> <tt class="py-op">!=</tt> <tt class="py-name">None</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L52"></a><tt class="py-lineno"> 52</tt>  <tt class="py-line">                        <tt class="py-op">(</tt><tt class="py-name">lower</tt><tt class="py-op">,</tt> <tt class="py-name">upper</tt><tt class="py-op">)</tt> <tt class="py-op">=</tt> <tt class="py-name">coord</tt><tt class="py-op">.</tt><tt id="link-27" class="py-name"><a title="ZIBMolPy.internals.DihedralCoordinate.plot_max_range
+ZIBMolPy.internals.InternalCoordinate.plot_max_range" class="py-name" href="#" onclick="return doclink('link-27', 'plot_max_range', 'link-26');">plot_max_range</a></tt> </tt>
+<a name="L53"></a><tt class="py-lineno"> 53</tt>  <tt class="py-line">                        <tt class="py-keyword">return</tt><tt class="py-op">(</tt> <tt class="py-name">np</tt><tt class="py-op">.</tt><tt class="py-name">linspace</tt><tt class="py-op">(</tt><tt class="py-name">lower</tt><tt class="py-op">,</tt> <tt class="py-name">upper</tt><tt class="py-op">,</tt> <tt class="py-name">num</tt><tt class="py-op">=</tt><tt class="py-name">num</tt><tt class="py-op">)</tt> <tt class="py-op">)</tt> </tt>
+<a name="L54"></a><tt class="py-lineno"> 54</tt>  <tt class="py-line"> </tt>
+<a name="L55"></a><tt class="py-lineno"> 55</tt>  <tt class="py-line">                <tt class="py-op">(</tt><tt class="py-name">lower0</tt><tt class="py-op">,</tt> <tt class="py-name">upper0</tt><tt class="py-op">)</tt> <tt class="py-op">=</tt> <tt class="py-name">coord</tt><tt class="py-op">.</tt><tt id="link-28" class="py-name" targets="Variable ZIBMolPy.internals.DihedralCoordinate.plot_min_range=ZIBMolPy.internals.DihedralCoordinate-class.html#plot_min_range,Variable ZIBMolPy.internals.InternalCoordinate.plot_min_range=ZIBMolPy.internals.InternalCoordinate-class.html#plot_min_range"><a title="ZIBMolPy.internals.DihedralCoordinate.plot_min_range
+ZIBMolPy.internals.InternalCoordinate.plot_min_range" class="py-name" href="#" onclick="return doclink('link-28', 'plot_min_range', 'link-28');">plot_min_range</a></tt>  </tt>
+<a name="L56"></a><tt class="py-lineno"> 56</tt>  <tt class="py-line">                 </tt>
+<a name="L57"></a><tt class="py-lineno"> 57</tt>  <tt class="py-line">                <tt class="py-comment"># considering presampling-trajectory and position of all nodes</tt> </tt>
+<a name="L58"></a><tt class="py-lineno"> 58</tt>  <tt class="py-line">                <tt class="py-name">values</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt><tt class="py-op">.</tt><tt id="link-29" class="py-name" targets="Module ZIBMolPy.pool=ZIBMolPy.pool-module.html"><a title="ZIBMolPy.pool" class="py-name" href="#" onclick="return doclink('link-29', 'pool', 'link-29');">pool</a></tt><tt class="py-op">.</tt><tt id="link-30" class="py-name" targets="Variable ZIBMolPy.pool.Pool.root=ZIBMolPy.pool.Pool-class.html#root"><a title="ZIBMolPy.pool.Pool.root" class="py-name" href="#" onclick="return doclink('link-30', 'root', 'link-30');">root</a></tt><tt class="py-op">.</tt><tt id="link-31" class="py-name" targets="Variable ZIBMolPy.node.Node.trajectory=ZIBMolPy.node.Node-class.html#trajectory"><a title="ZIBMolPy.node.Node.trajectory" class="py-name" href="#" onclick="return doclink('link-31', 'trajectory', 'link-31');">trajectory</a></tt><tt class="py-op">.</tt><tt id="link-32" class="py-name" targets="Method ZIBMolPy.internals.InternalArray.getcoord()=ZIBMolPy.internals.InternalArray-class.html#getcoord"><a title="ZIBMolPy.internals.InternalArray.getcoord" class="py-name" href="#" onclick="return doclink('link-32', 'getcoord', 'link-32');">getcoord</a></tt><tt class="py-op">(</tt><tt class="py-name">coord</tt><tt class="py-op">)</tt> </tt>
+<a name="L59"></a><tt class="py-lineno"> 59</tt>  <tt class="py-line">                <tt class="py-op">(</tt><tt class="py-name">lower1</tt><tt class="py-op">,</tt> <tt class="py-name">upper1</tt><tt class="py-op">)</tt> <tt class="py-op">=</tt> <tt class="py-op">(</tt><tt class="py-name">min</tt><tt class="py-op">(</tt><tt class="py-name">values</tt><tt class="py-op">)</tt><tt class="py-op">,</tt> <tt class="py-name">max</tt><tt class="py-op">(</tt><tt class="py-name">values</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L60"></a><tt class="py-lineno"> 60</tt>  <tt class="py-line">                <tt class="py-op">(</tt><tt class="py-name">lower</tt><tt class="py-op">,</tt> <tt class="py-name">upper</tt><tt class="py-op">)</tt> <tt class="py-op">=</tt> <tt class="py-op">(</tt><tt class="py-name">min</tt><tt class="py-op">(</tt><tt class="py-name">lower0</tt><tt class="py-op">,</tt> <tt class="py-name">lower1</tt><tt class="py-op">)</tt><tt class="py-op">,</tt> <tt class="py-name">max</tt><tt class="py-op">(</tt><tt class="py-name">upper0</tt><tt class="py-op">,</tt> <tt class="py-name">upper1</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L61"></a><tt class="py-lineno"> 61</tt>  <tt class="py-line">                 </tt>
+<a name="L62"></a><tt class="py-lineno"> 62</tt>  <tt class="py-line">                <tt class="py-name">ints</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-33" class="py-name"><a title="ZIBMolPy.internals
+ZIBMolPy.pool.NodeList.internals" class="py-name" href="#" onclick="return doclink('link-33', 'internals', 'link-1');">internals</a></tt> <tt class="py-comment"># is None if no nodes besides root exist, yet</tt> </tt>
+<a name="L63"></a><tt class="py-lineno"> 63</tt>  <tt class="py-line">                <tt class="py-keyword">if</tt><tt class="py-op">(</tt><tt class="py-name">ints</tt> <tt class="py-op">!=</tt> <tt class="py-name">None</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L64"></a><tt class="py-lineno"> 64</tt>  <tt class="py-line">                        <tt class="py-name">values</tt> <tt class="py-op">=</tt> <tt class="py-name">ints</tt><tt class="py-op">.</tt><tt id="link-34" class="py-name"><a title="ZIBMolPy.internals.InternalArray.getcoord" class="py-name" href="#" onclick="return doclink('link-34', 'getcoord', 'link-32');">getcoord</a></tt><tt class="py-op">(</tt><tt class="py-name">coord</tt><tt class="py-op">)</tt> </tt>
+<a name="L65"></a><tt class="py-lineno"> 65</tt>  <tt class="py-line">                        <tt class="py-op">(</tt><tt class="py-name">lower2</tt><tt class="py-op">,</tt> <tt class="py-name">upper2</tt><tt class="py-op">)</tt> <tt class="py-op">=</tt> <tt class="py-op">(</tt><tt class="py-name">min</tt><tt class="py-op">(</tt><tt class="py-name">values</tt><tt class="py-op">)</tt><tt class="py-op">,</tt> <tt class="py-name">max</tt><tt class="py-op">(</tt><tt class="py-name">values</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L66"></a><tt class="py-lineno"> 66</tt>  <tt class="py-line">                        <tt class="py-op">(</tt><tt class="py-name">lower</tt><tt class="py-op">,</tt> <tt class="py-name">upper</tt><tt class="py-op">)</tt> <tt class="py-op">=</tt> <tt class="py-op">(</tt><tt class="py-name">min</tt><tt class="py-op">(</tt><tt class="py-name">lower</tt><tt class="py-op">,</tt> <tt class="py-name">lower2</tt><tt class="py-op">)</tt><tt class="py-op">,</tt> <tt class="py-name">max</tt><tt class="py-op">(</tt><tt class="py-name">upper</tt><tt class="py-op">,</tt> <tt class="py-name">upper2</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L67"></a><tt class="py-lineno"> 67</tt>  <tt class="py-line">                <tt class="py-name">slack</tt> <tt class="py-op">=</tt> <tt class="py-number">0</tt>                        </tt>
+<a name="L68"></a><tt class="py-lineno"> 68</tt>  <tt class="py-line">                <tt class="py-keyword">if</tt> <tt class="py-name">lin_slack</tt><tt class="py-op">:</tt> </tt>
+<a name="L69"></a><tt class="py-lineno"> 69</tt>  <tt class="py-line">                        <tt class="py-name">slack</tt> <tt class="py-op">=</tt> <tt class="py-number">0.1</tt><tt class="py-op">*</tt><tt class="py-op">(</tt><tt class="py-name">upper</tt> <tt class="py-op">-</tt> <tt class="py-name">lower</tt><tt class="py-op">)</tt> </tt>
+<a name="L70"></a><tt class="py-lineno"> 70</tt>  <tt class="py-line">                <tt class="py-keyword">return</tt><tt class="py-op">(</tt> <tt class="py-name">np</tt><tt class="py-op">.</tt><tt class="py-name">linspace</tt><tt class="py-op">(</tt><tt class="py-name">lower</tt><tt class="py-op">-</tt><tt class="py-name">slack</tt><tt class="py-op">,</tt> <tt class="py-name">upper</tt><tt class="py-op">+</tt><tt class="py-name">slack</tt><tt class="py-op">,</tt> <tt class="py-name">num</tt><tt class="py-op">=</tt><tt class="py-name">num</tt><tt class="py-op">)</tt> <tt class="py-op">)</tt> </tt>
+</div><a name="L71"></a><tt class="py-lineno"> 71</tt>  <tt class="py-line">                 </tt>
+<a name="L72"></a><tt class="py-lineno"> 72</tt>  <tt class="py-line">        <tt class="py-comment">#---------------------------------------------------------------------------</tt> </tt>
+<a name="NodeList.multilock"></a><div id="NodeList.multilock-def"><a name="L73"></a><tt class="py-lineno"> 73</tt> <a class="py-toggle" href="#" id="NodeList.multilock-toggle" onclick="return toggle('NodeList.multilock');">-</a><tt class="py-line">        <tt class="py-keyword">def</tt> <a class="py-def-name" href="ZIBMolPy.pool.NodeList-class.html#multilock">multilock</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="NodeList.multilock-collapsed" style="display:none;" pad="+++" indent="++++++++++++"></div><div id="NodeList.multilock-expanded"><a name="L74"></a><tt class="py-lineno"> 74</tt>  <tt class="py-line">                <tt class="py-name">nodes_lockable</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-35" class="py-name" targets="Method ZIBMolPy.pool.NodeList.where()=ZIBMolPy.pool.NodeList-class.html#where"><a title="ZIBMolPy.pool.NodeList.where" class="py-name" href="#" onclick="return doclink('link-35', 'where', 'link-35');">where</a></tt><tt class="py-op">(</tt><tt class="py-string">"not is_locked"</tt><tt class="py-op">)</tt> </tt>
+<a name="L75"></a><tt class="py-lineno"> 75</tt>  <tt class="py-line">                <tt class="py-keyword">for</tt> <tt class="py-name">n</tt> <tt class="py-keyword">in</tt> <tt class="py-name">nodes_lockable</tt><tt class="py-op">:</tt> </tt>
+<a name="L76"></a><tt class="py-lineno"> 76</tt>  <tt class="py-line">                        <tt class="py-name">n</tt><tt class="py-op">.</tt><tt id="link-36" class="py-name" targets="Method ZIBMolPy.node.Node.lock()=ZIBMolPy.node.Node-class.html#lock"><a title="ZIBMolPy.node.Node.lock" class="py-name" href="#" onclick="return doclink('link-36', 'lock', 'link-36');">lock</a></tt><tt class="py-op">(</tt><tt class="py-name">guardtime</tt><tt class="py-op">=</tt><tt class="py-number">0</tt><tt class="py-op">)</tt> </tt>
+<a name="L77"></a><tt class="py-lineno"> 77</tt>  <tt class="py-line">                         </tt>
+<a name="L78"></a><tt class="py-lineno"> 78</tt>  <tt class="py-line">                <tt class="py-keyword">if</tt><tt class="py-op">(</tt><tt class="py-name">len</tt><tt class="py-op">(</tt><tt class="py-name">nodes_lockable</tt><tt class="py-op">)</tt> <tt class="py-op">&gt;</tt> <tt class="py-number">0</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L79"></a><tt class="py-lineno"> 79</tt>  <tt class="py-line">                        <tt class="py-keyword">print</tt><tt class="py-op">(</tt><tt class="py-string">"Waiting for Node-Multilock..."</tt><tt class="py-op">)</tt> </tt>
+<a name="L80"></a><tt class="py-lineno"> 80</tt>  <tt class="py-line">                        <tt class="py-name">time</tt><tt class="py-op">.</tt><tt class="py-name">sleep</tt><tt class="py-op">(</tt><tt class="py-number">1</tt><tt class="py-op">)</tt> </tt>
+<a name="L81"></a><tt class="py-lineno"> 81</tt>  <tt class="py-line">                         </tt>
+<a name="L82"></a><tt class="py-lineno"> 82</tt>  <tt class="py-line">                <tt class="py-keyword">return</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-37" class="py-name"><a title="ZIBMolPy.pool.NodeList.where" class="py-name" href="#" onclick="return doclink('link-37', 'where', 'link-35');">where</a></tt><tt class="py-op">(</tt><tt class="py-string">"owns_lock"</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L83"></a><tt class="py-lineno"> 83</tt>  <tt class="py-line">         </tt>
+<a name="L84"></a><tt class="py-lineno"> 84</tt>  <tt class="py-line">        <tt class="py-comment">#---------------------------------------------------------------------------</tt> </tt>
+<a name="NodeList.unlock"></a><div id="NodeList.unlock-def"><a name="L85"></a><tt class="py-lineno"> 85</tt> <a class="py-toggle" href="#" id="NodeList.unlock-toggle" onclick="return toggle('NodeList.unlock');">-</a><tt class="py-line">        <tt class="py-keyword">def</tt> <a class="py-def-name" href="ZIBMolPy.pool.NodeList-class.html#unlock">unlock</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="NodeList.unlock-collapsed" style="display:none;" pad="+++" indent="++++++++++++"></div><div id="NodeList.unlock-expanded"><a name="L86"></a><tt class="py-lineno"> 86</tt>  <tt class="py-line">                <tt class="py-keyword">for</tt> <tt class="py-name">n</tt> <tt class="py-keyword">in</tt> <tt class="py-name">self</tt><tt class="py-op">:</tt> </tt>
+<a name="L87"></a><tt class="py-lineno"> 87</tt>  <tt class="py-line">                        <tt class="py-name">n</tt><tt class="py-op">.</tt><tt id="link-38" class="py-name" targets="Method ZIBMolPy.node.Node.unlock()=ZIBMolPy.node.Node-class.html#unlock,Method ZIBMolPy.pool.NodeList.unlock()=ZIBMolPy.pool.NodeList-class.html#unlock"><a title="ZIBMolPy.node.Node.unlock
+ZIBMolPy.pool.NodeList.unlock" class="py-name" href="#" onclick="return doclink('link-38', 'unlock', 'link-38');">unlock</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L88"></a><tt class="py-lineno"> 88</tt>  <tt class="py-line">         </tt>
+<a name="L89"></a><tt class="py-lineno"> 89</tt>  <tt class="py-line">        <tt class="py-comment">#---------------------------------------------------------------------------</tt> </tt>
+<a name="NodeList.append"></a><div id="NodeList.append-def"><a name="L90"></a><tt class="py-lineno"> 90</tt> <a class="py-toggle" href="#" id="NodeList.append-toggle" onclick="return toggle('NodeList.append');">-</a><tt class="py-line">        <tt class="py-keyword">def</tt> <a class="py-def-name" href="ZIBMolPy.pool.NodeList-class.html#append">append</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">n</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="NodeList.append-collapsed" style="display:none;" pad="+++" indent="++++++++++++"></div><div id="NodeList.append-expanded"><a name="L91"></a><tt class="py-lineno"> 91</tt>  <tt class="py-line">                <tt class="py-keyword">if</tt><tt class="py-op">(</tt><tt class="py-name">n</tt> <tt class="py-keyword">not</tt> <tt class="py-keyword">in</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L92"></a><tt class="py-lineno"> 92</tt>  <tt class="py-line">                        <tt class="py-name">list</tt><tt class="py-op">.</tt><tt id="link-39" class="py-name" targets="Method ZIBMolPy.pool.NodeList.append()=ZIBMolPy.pool.NodeList-class.html#append"><a title="ZIBMolPy.pool.NodeList.append" class="py-name" href="#" onclick="return doclink('link-39', 'append', 'link-39');">append</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">,</tt> <tt class="py-name">n</tt><tt class="py-op">)</tt> </tt>
+</div></div><a name="L93"></a><tt class="py-lineno"> 93</tt>  <tt class="py-line"> </tt>
+<a name="Pool"></a><div id="Pool-def"><a name="L94"></a><tt class="py-lineno"> 94</tt>  <tt class="py-line">                         </tt>
+<a name="L95"></a><tt class="py-lineno"> 95</tt>  <tt class="py-line"><tt class="py-comment">#===============================================================================</tt> </tt>
+<a name="L96"></a><tt class="py-lineno"> 96</tt> <a class="py-toggle" href="#" id="Pool-toggle" onclick="return toggle('Pool');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="ZIBMolPy.pool.Pool-class.html">Pool</a><tt class="py-op">(</tt><tt class="py-base-class">NodeList</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Pool-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="Pool-expanded"><a name="L97"></a><tt class="py-lineno"> 97</tt>  <tt class="py-line">        <tt id="link-40" class="py-name" targets="Variable ZIBMolPy.pool.Pool.FORMAT_VERSION=ZIBMolPy.pool.Pool-class.html#FORMAT_VERSION"><a title="ZIBMolPy.pool.Pool.FORMAT_VERSION" class="py-name" href="#" onclick="return doclink('link-40', 'FORMAT_VERSION', 'link-40');">FORMAT_VERSION</a></tt> <tt class="py-op">=</tt> <tt class="py-number">2</tt> </tt>
+<a name="L98"></a><tt class="py-lineno"> 98</tt>  <tt class="py-line">         </tt>
+<a name="L99"></a><tt class="py-lineno"> 99</tt>  <tt class="py-line">        <tt class="py-comment"># Singleton-Pattern</tt> </tt>
+<a name="L100"></a><tt class="py-lineno">100</tt>  <tt class="py-line">        <tt id="link-41" class="py-name" targets="Variable ZIBMolPy.pool.Pool._instance=ZIBMolPy.pool.Pool-class.html#_instance"><a title="ZIBMolPy.pool.Pool._instance" class="py-name" href="#" onclick="return doclink('link-41', '_instance', 'link-41');">_instance</a></tt> <tt class="py-op">=</tt> <tt class="py-name">None</tt> </tt>
+<a name="L101"></a><tt class="py-lineno">101</tt>  <tt class="py-line">         </tt>
+<a name="Pool.__new__"></a><div id="Pool.__new__-def"><a name="L102"></a><tt class="py-lineno">102</tt> <a class="py-toggle" href="#" id="Pool.__new__-toggle" onclick="return toggle('Pool.__new__');">-</a><tt class="py-line">        <tt class="py-keyword">def</tt> <a class="py-def-name" href="ZIBMolPy.pool.Pool-class.html#__new__">__new__</a><tt class="py-op">(</tt><tt class="py-param">cls</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Pool.__new__-collapsed" style="display:none;" pad="+++" indent="++++++++++++"></div><div id="Pool.__new__-expanded"><a name="L103"></a><tt class="py-lineno">103</tt>  <tt class="py-line">                <tt class="py-keyword">if</tt><tt class="py-op">(</tt><tt class="py-name">cls</tt><tt class="py-op">.</tt><tt id="link-42" class="py-name"><a title="ZIBMolPy.pool.Pool._instance" class="py-name" href="#" onclick="return doclink('link-42', '_instance', 'link-41');">_instance</a></tt> <tt class="py-op">!=</tt> <tt class="py-name">None</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L104"></a><tt class="py-lineno">104</tt>  <tt class="py-line">                        <tt class="py-keyword">return</tt><tt class="py-op">(</tt><tt class="py-name">cls</tt><tt class="py-op">.</tt><tt id="link-43" class="py-name"><a title="ZIBMolPy.pool.Pool._instance" class="py-name" href="#" onclick="return doclink('link-43', '_instance', 'link-41');">_instance</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L105"></a><tt class="py-lineno">105</tt>  <tt class="py-line">                         </tt>
+<a name="L106"></a><tt class="py-lineno">106</tt>  <tt class="py-line">                <tt class="py-name">self</tt> <tt class="py-op">=</tt> <tt id="link-44" class="py-name"><a title="ZIBMolPy.pool.NodeList
+zgf_browser.NodeList" class="py-name" href="#" onclick="return doclink('link-44', 'NodeList', 'link-25');">NodeList</a></tt><tt class="py-op">.</tt><tt id="link-45" class="py-name" targets="Static Method ZIBMolPy.internals.Converter.__new__()=ZIBMolPy.internals.Converter-class.html#__new__,Static Method ZIBMolPy.node.Node.__new__()=ZIBMolPy.node.Node-class.html#__new__,Static Method ZIBMolPy.pool.Pool.__new__()=ZIBMolPy.pool.Pool-class.html#__new__"><a title="ZIBMolPy.internals.Converter.__new__
+ZIBMolPy.node.Node.__new__
+ZIBMolPy.pool.Pool.__new__" class="py-name" href="#" onclick="return doclink('link-45', '__new__', 'link-45');">__new__</a></tt><tt class="py-op">(</tt><tt class="py-name">cls</tt><tt class="py-op">)</tt> </tt>
+<a name="L107"></a><tt class="py-lineno">107</tt>  <tt class="py-line">                <tt class="py-name">cls</tt><tt class="py-op">.</tt><tt id="link-46" class="py-name"><a title="ZIBMolPy.pool.Pool._instance" class="py-name" href="#" onclick="return doclink('link-46', '_instance', 'link-41');">_instance</a></tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt> </tt>
+<a name="L108"></a><tt class="py-lineno">108</tt>  <tt class="py-line">                         </tt>
+<a name="L109"></a><tt class="py-lineno">109</tt>  <tt class="py-line">                <tt class="py-comment"># actual init-code</tt> </tt>
+<a name="L110"></a><tt class="py-lineno">110</tt>  <tt class="py-line">                <tt id="link-47" class="py-name"><a title="ZIBMolPy.pool.NodeList
+zgf_browser.NodeList" class="py-name" href="#" onclick="return doclink('link-47', 'NodeList', 'link-25');">NodeList</a></tt><tt class="py-op">.</tt><tt id="link-48" class="py-name"><a title="ZIBMolPy.internals.DihedralCoordinate.__init__
+ZIBMolPy.internals.InternalArray.__init__
+ZIBMolPy.internals.InternalCoordinate.__init__
+ZIBMolPy.internals.LinearCoordinate.__init__
+ZIBMolPy.internals.PbcResolver.__init__
+ZIBMolPy.io.PDBTools.Atom.__init__
+ZIBMolPy.io.PDBTools.Chain.__init__
+ZIBMolPy.io.PDBTools.Residue.__init__
+ZIBMolPy.io.PDBTools.Structure.__init__
+ZIBMolPy.io.pdb.PdbFile.__init__
+ZIBMolPy.io.topology.Atomtype.__init__
+ZIBMolPy.io.topology.Dihedraltype.__init__
+ZIBMolPy.io.topology.LineEntry.__init__
+ZIBMolPy.io.topology.Moleculetype.__init__
+ZIBMolPy.io.topology.Section.__init__
+ZIBMolPy.io.topology.Topology.__init__
+ZIBMolPy.io.trr.TrrFile.__init__
+ZIBMolPy.io.trr.TrrFrame.__init__
+ZIBMolPy.plots.CoordPlotManager.CoordPlotManager.__init__
+ZIBMolPy.plots.DistPlotManager.DistPlotManager.__init__
+ZIBMolPy.plots.FrameweightPlotManager.FrameweightPlotManager.__init__
+ZIBMolPy.plots.MatrixPlotManager.MatrixPlotManager.__init__
+ZIBMolPy.plots.NodeWeightPlotManager.NodeWeightPlotManager.__init__
+ZIBMolPy.plots.StatusPlotManager.StatusPlotManager.__init__
+ZIBMolPy.pool.NodeList.__init__
+ZIBMolPy.pool.Pool.__init__
+ZIBMolPy.restraint.DihedralRestraint.__init__
+ZIBMolPy.restraint.DistanceRestraint.__init__
+ZIBMolPy.restraint.Restraint.__init__
+ZIBMolPy.topology.Moleculetype.__init__
+ZIBMolPy.topology.Section.__init__
+ZIBMolPy.topology.Topology.__init__
+ZIBMolPy.ui.Option.__init__
+zgf_browser.AboutDialog.__init__
+zgf_browser.Blackboard.__init__
+zgf_browser.CoordinateList.__init__
+zgf_browser.FileChangesObserver.__init__
+zgf_browser.MainWindow.__init__
+zgf_browser.ManagedPlotsPanel.__init__
+zgf_browser.Menubar.__init__
+zgf_browser.MyCheckButton.__init__
+zgf_browser.MyComboBox.__init__
+zgf_browser.MyEntry.__init__
+zgf_browser.MyFileChooser.__init__
+zgf_browser.MyNodeChooser.__init__
+zgf_browser.MySpinButton.__init__
+zgf_browser.NodeList.__init__
+zgf_browser.RunDialog.__init__
+zgf_browser.ScrolledWindow.__init__
+zgf_browser.StartDialog.__init__
+zgf_browser.Statusbar.__init__" class="py-name" href="#" onclick="return doclink('link-48', '__init__', 'link-13');">__init__</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+<a name="L111"></a><tt class="py-lineno">111</tt>  <tt class="py-line">                <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__dict__</tt><tt class="py-op">[</tt><tt class="py-string">"filename"</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-string">"pool-desc.txt"</tt> </tt>
+<a name="L112"></a><tt class="py-lineno">112</tt>  <tt class="py-line">                <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__dict__</tt><tt class="py-op">[</tt><tt class="py-string">"mtime"</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-op">-</tt><tt class="py-number">1</tt> <tt class="py-comment"># very old</tt> </tt>
+<a name="L113"></a><tt class="py-lineno">113</tt>  <tt class="py-line">                <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__dict__</tt><tt class="py-op">[</tt><tt class="py-string">"mtime_nodes"</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-op">-</tt><tt class="py-number">1</tt> <tt class="py-comment"># very old</tt> </tt>
+<a name="L114"></a><tt class="py-lineno">114</tt>  <tt class="py-line">                                                 </tt>
+<a name="L115"></a><tt class="py-lineno">115</tt>  <tt class="py-line">                <tt class="py-keyword">if</tt><tt class="py-op">(</tt><tt class="py-keyword">not</tt> <tt class="py-name">path</tt><tt class="py-op">.</tt><tt class="py-name">exists</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">filename</tt><tt class="py-op">)</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L116"></a><tt class="py-lineno">116</tt>  <tt class="py-line">                        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__dict__</tt><tt class="py-op">[</tt><tt class="py-string">"persistent"</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-op">{</tt><tt class="py-string">"format_version"</tt><tt class="py-op">:</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-49" class="py-name"><a title="ZIBMolPy.pool.Pool.FORMAT_VERSION" class="py-name" href="#" onclick="return doclink('link-49', 'FORMAT_VERSION', 'link-40');">FORMAT_VERSION</a></tt><tt class="py-op">}</tt> </tt>
+<a name="L117"></a><tt class="py-lineno">117</tt>  <tt class="py-line">                         </tt>
+<a name="L118"></a><tt class="py-lineno">118</tt>  <tt class="py-line">                        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">history</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-op">]</tt> </tt>
+<a name="L119"></a><tt class="py-lineno">119</tt>  <tt class="py-line">                <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L120"></a><tt class="py-lineno">120</tt>  <tt class="py-line">                        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-50" class="py-name" targets="Method ZIBMolPy.node.Node.reload()=ZIBMolPy.node.Node-class.html#reload,Method ZIBMolPy.pool.Pool.reload()=ZIBMolPy.pool.Pool-class.html#reload"><a title="ZIBMolPy.node.Node.reload
+ZIBMolPy.pool.Pool.reload" class="py-name" href="#" onclick="return doclink('link-50', 'reload', 'link-50');">reload</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L121"></a><tt class="py-lineno">121</tt>  <tt class="py-line">                <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-51" class="py-name" targets="Method ZIBMolPy.pool.Pool.reload_nodes()=ZIBMolPy.pool.Pool-class.html#reload_nodes"><a title="ZIBMolPy.pool.Pool.reload_nodes" class="py-name" href="#" onclick="return doclink('link-51', 'reload_nodes', 'link-51');">reload_nodes</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L122"></a><tt class="py-lineno">122</tt>  <tt class="py-line">                         </tt>
+<a name="L123"></a><tt class="py-lineno">123</tt>  <tt class="py-line">                <tt class="py-keyword">return</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L124"></a><tt class="py-lineno">124</tt>  <tt class="py-line">         </tt>
+<a name="L125"></a><tt class="py-lineno">125</tt>  <tt class="py-line">        <tt class="py-comment">#---------------------------------------------------------------------------</tt> </tt>
+<a name="Pool.__init__"></a><div id="Pool.__init__-def"><a name="L126"></a><tt class="py-lineno">126</tt> <a class="py-toggle" href="#" id="Pool.__init__-toggle" onclick="return toggle('Pool.__init__');">-</a><tt class="py-line">        <tt class="py-keyword">def</tt> <a class="py-def-name" href="ZIBMolPy.pool.Pool-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Pool.__init__-collapsed" style="display:none;" pad="+++" indent="++++++++++++"></div><div id="Pool.__init__-expanded"><a name="L127"></a><tt class="py-lineno">127</tt>  <tt class="py-line">                <tt class="py-comment">#because of singleton, we must not call the super constructor</tt> </tt>
+<a name="L128"></a><tt class="py-lineno">128</tt>  <tt class="py-line">                <tt class="py-comment">#pylint: disable=W0231</tt> </tt>
+<a name="L129"></a><tt class="py-lineno">129</tt>  <tt class="py-line">                <tt class="py-keyword">pass</tt>  </tt>
+</div><a name="L130"></a><tt class="py-lineno">130</tt>  <tt class="py-line">         </tt>
+<a name="L131"></a><tt class="py-lineno">131</tt>  <tt class="py-line">        <tt class="py-comment">#---------------------------------------------------------------------------</tt> </tt>
+<a name="Pool.reload"></a><div id="Pool.reload-def"><a name="L132"></a><tt class="py-lineno">132</tt> <a class="py-toggle" href="#" id="Pool.reload-toggle" onclick="return toggle('Pool.reload');">-</a><tt class="py-line">        <tt class="py-keyword">def</tt> <a class="py-def-name" href="ZIBMolPy.pool.Pool-class.html#reload">reload</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Pool.reload-collapsed" style="display:none;" pad="+++" indent="++++++++++++"></div><div id="Pool.reload-expanded"><a name="L133"></a><tt class="py-lineno">133</tt>  <tt class="py-line">                <tt class="py-keyword">try</tt><tt class="py-op">:</tt> </tt>
+<a name="L134"></a><tt class="py-lineno">134</tt>  <tt class="py-line">                        <tt class="py-name">raw</tt> <tt class="py-op">=</tt> <tt class="py-name">open</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">filename</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt class="py-name">read</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L135"></a><tt class="py-lineno">135</tt>  <tt class="py-line">                        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__dict__</tt><tt class="py-op">[</tt><tt class="py-string">"persistent"</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-name">eval</tt><tt class="py-op">(</tt><tt class="py-name">raw</tt><tt class="py-op">)</tt> </tt>
+<a name="L136"></a><tt class="py-lineno">136</tt>  <tt class="py-line">                        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__dict__</tt><tt class="py-op">[</tt><tt class="py-string">"mtime"</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-name">path</tt><tt class="py-op">.</tt><tt class="py-name">getmtime</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">filename</tt><tt class="py-op">)</tt> </tt>
+<a name="L137"></a><tt class="py-lineno">137</tt>  <tt class="py-line">                <tt class="py-keyword">except</tt><tt class="py-op">:</tt> </tt>
+<a name="L138"></a><tt class="py-lineno">138</tt>  <tt class="py-line">                        <tt class="py-name">traceback</tt><tt class="py-op">.</tt><tt class="py-name">print_exc</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L139"></a><tt class="py-lineno">139</tt>  <tt class="py-line">                        <tt class="py-keyword">raise</tt><tt class="py-op">(</tt><tt class="py-name">Exception</tt><tt class="py-op">(</tt><tt class="py-string">"Could not parse: "</tt><tt class="py-op">+</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">filename</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L140"></a><tt class="py-lineno">140</tt>  <tt class="py-line">                         </tt>
+<a name="L141"></a><tt class="py-lineno">141</tt>  <tt class="py-line">                <tt class="py-keyword">if</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">format_version</tt> <tt class="py-op">&gt;</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-52" class="py-name"><a title="ZIBMolPy.pool.Pool.FORMAT_VERSION" class="py-name" href="#" onclick="return doclink('link-52', 'FORMAT_VERSION', 'link-40');">FORMAT_VERSION</a></tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L142"></a><tt class="py-lineno">142</tt>  <tt class="py-line">                        <tt class="py-keyword">raise</tt><tt class="py-op">(</tt><tt class="py-name">Exception</tt><tt class="py-op">(</tt><tt class="py-string">"Pool was created with newer version of ZIBMolPy - run zgf_upgrade."</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L143"></a><tt class="py-lineno">143</tt>  <tt class="py-line">                         </tt>
+<a name="L144"></a><tt class="py-lineno">144</tt>  <tt class="py-line">        <tt class="py-comment">#---------------------------------------------------------------------------</tt> </tt>
+<a name="Pool.reload_nodes"></a><div id="Pool.reload_nodes-def"><a name="L145"></a><tt class="py-lineno">145</tt> <a class="py-toggle" href="#" id="Pool.reload_nodes-toggle" onclick="return toggle('Pool.reload_nodes');">-</a><tt class="py-line">        <tt class="py-keyword">def</tt> <a class="py-def-name" href="ZIBMolPy.pool.Pool-class.html#reload_nodes">reload_nodes</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Pool.reload_nodes-collapsed" style="display:none;" pad="+++" indent="++++++++++++"></div><div id="Pool.reload_nodes-expanded"><a name="L146"></a><tt class="py-lineno">146</tt>  <tt class="py-line">                <tt class="py-keyword">if</tt><tt class="py-op">(</tt><tt class="py-keyword">not</tt> <tt class="py-name">path</tt><tt class="py-op">.</tt><tt class="py-name">exists</tt><tt class="py-op">(</tt><tt class="py-string">"./nodes/"</tt><tt class="py-op">)</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L147"></a><tt class="py-lineno">147</tt>  <tt class="py-line">                        <tt class="py-keyword">return</tt> </tt>
+<a name="L148"></a><tt class="py-lineno">148</tt>  <tt class="py-line">                         </tt>
+<a name="L149"></a><tt class="py-lineno">149</tt>  <tt class="py-line">                <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__dict__</tt><tt class="py-op">[</tt><tt class="py-string">"mtime_nodes"</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-name">path</tt><tt class="py-op">.</tt><tt class="py-name">getmtime</tt><tt class="py-op">(</tt><tt class="py-string">"./nodes"</tt><tt class="py-op">)</tt> </tt>
+<a name="L150"></a><tt class="py-lineno">150</tt>  <tt class="py-line">                 </tt>
+<a name="L151"></a><tt class="py-lineno">151</tt>  <tt class="py-line">                <tt class="py-name">new_nodes</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-op">]</tt> </tt>
+<a name="L152"></a><tt class="py-lineno">152</tt>  <tt class="py-line">                <tt class="py-keyword">for</tt> <tt class="py-name">node_dir</tt> <tt class="py-keyword">in</tt> <tt class="py-name">sorted</tt><tt class="py-op">(</tt><tt class="py-name">glob</tt><tt class="py-op">(</tt><tt class="py-string">"./nodes/*"</tt><tt class="py-op">)</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L153"></a><tt class="py-lineno">153</tt>  <tt class="py-line">                        <tt class="py-name">node_name</tt> <tt class="py-op">=</tt> <tt class="py-name">path</tt><tt class="py-op">.</tt><tt class="py-name">basename</tt><tt class="py-op">(</tt><tt class="py-name">node_dir</tt><tt class="py-op">)</tt> </tt>
+<a name="L154"></a><tt class="py-lineno">154</tt>  <tt class="py-line">                        <tt class="py-keyword">if</tt><tt class="py-op">(</tt><tt class="py-keyword">not</tt> <tt class="py-name">path</tt><tt class="py-op">.</tt><tt class="py-name">exists</tt><tt class="py-op">(</tt><tt class="py-name">node_dir</tt><tt class="py-op">+</tt><tt class="py-string">"/"</tt><tt class="py-op">+</tt><tt class="py-name">node_name</tt><tt class="py-op">+</tt><tt class="py-string">"_desc.txt"</tt><tt class="py-op">)</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L155"></a><tt class="py-lineno">155</tt>  <tt class="py-line">                                <tt class="py-keyword">continue</tt> <tt class="py-comment">#ignoring not readily created nodes</tt> </tt>
+<a name="L156"></a><tt class="py-lineno">156</tt>  <tt class="py-line">                        <tt class="py-name">found_node</tt> <tt class="py-op">=</tt> <tt class="py-name">None</tt>  </tt>
+<a name="L157"></a><tt class="py-lineno">157</tt>  <tt class="py-line">                        <tt class="py-keyword">for</tt> <tt class="py-name">n</tt> <tt class="py-keyword">in</tt> <tt class="py-name">self</tt><tt class="py-op">:</tt> </tt>
+<a name="L158"></a><tt class="py-lineno">158</tt>  <tt class="py-line">                                <tt class="py-keyword">if</tt><tt class="py-op">(</tt><tt class="py-name">n</tt><tt class="py-op">.</tt><tt id="link-53" class="py-name" targets="Method ZIBMolPy.topology.Moleculetype.name()=ZIBMolPy.topology.Moleculetype-class.html#name"><a title="ZIBMolPy.topology.Moleculetype.name" class="py-name" href="#" onclick="return doclink('link-53', 'name', 'link-53');">name</a></tt> <tt class="py-op">==</tt> <tt class="py-name">node_name</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L159"></a><tt class="py-lineno">159</tt>  <tt class="py-line">                                        <tt class="py-name">found_node</tt> <tt class="py-op">=</tt> <tt class="py-name">n</tt> </tt>
+<a name="L160"></a><tt class="py-lineno">160</tt>  <tt class="py-line">                         </tt>
+<a name="L161"></a><tt class="py-lineno">161</tt>  <tt class="py-line">                        <tt class="py-keyword">if</tt><tt class="py-op">(</tt><tt class="py-name">found_node</tt> <tt class="py-op">==</tt> <tt class="py-name">None</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L162"></a><tt class="py-lineno">162</tt>  <tt class="py-line">                                <tt class="py-name">found_node</tt> <tt class="py-op">=</tt> <tt id="link-54" class="py-name"><a title="ZIBMolPy.node.Node" class="py-name" href="#" onclick="return doclink('link-54', 'Node', 'link-6');">Node</a></tt><tt class="py-op">(</tt><tt class="py-name">node_name</tt><tt class="py-op">)</tt> </tt>
+<a name="L163"></a><tt class="py-lineno">163</tt>  <tt class="py-line">                        <tt class="py-name">new_nodes</tt><tt class="py-op">.</tt><tt id="link-55" class="py-name"><a title="ZIBMolPy.pool.NodeList.append" class="py-name" href="#" onclick="return doclink('link-55', 'append', 'link-39');">append</a></tt><tt class="py-op">(</tt><tt class="py-name">found_node</tt><tt class="py-op">)</tt> </tt>
+<a name="L164"></a><tt class="py-lineno">164</tt>  <tt class="py-line">                 </tt>
+<a name="L165"></a><tt class="py-lineno">165</tt>  <tt class="py-line">                <tt class="py-name">self</tt><tt class="py-op">[</tt><tt class="py-op">:</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-name">new_nodes</tt> </tt>
+</div><a name="L166"></a><tt class="py-lineno">166</tt>  <tt class="py-line"> </tt>
+<a name="L167"></a><tt class="py-lineno">167</tt>  <tt class="py-line">         </tt>
+<a name="L168"></a><tt class="py-lineno">168</tt>  <tt class="py-line">        <tt class="py-comment">#---------------------------------------------------------------------------</tt> </tt>
+<a name="L169"></a><tt class="py-lineno">169</tt>  <tt class="py-line">        <tt class="py-comment"># proxy for persistent attributes</tt> </tt>
+<a name="Pool.__getattr__"></a><div id="Pool.__getattr__-def"><a name="L170"></a><tt class="py-lineno">170</tt> <a class="py-toggle" href="#" id="Pool.__getattr__-toggle" onclick="return toggle('Pool.__getattr__');">-</a><tt class="py-line">        <tt class="py-keyword">def</tt> <a class="py-def-name" href="ZIBMolPy.pool.Pool-class.html#__getattr__">__getattr__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">name</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Pool.__getattr__-collapsed" style="display:none;" pad="+++" indent="++++++++++++"></div><div id="Pool.__getattr__-expanded"><a name="L171"></a><tt class="py-lineno">171</tt>  <tt class="py-line">                <tt class="py-keyword">if</tt><tt class="py-op">(</tt><tt id="link-56" class="py-name"><a title="ZIBMolPy.topology.Moleculetype.name" class="py-name" href="#" onclick="return doclink('link-56', 'name', 'link-53');">name</a></tt> <tt class="py-keyword">not</tt> <tt class="py-keyword">in</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">persistent</tt><tt class="py-op">.</tt><tt class="py-name">keys</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L172"></a><tt class="py-lineno">172</tt>  <tt class="py-line">                        <tt class="py-keyword">raise</tt><tt class="py-op">(</tt><tt class="py-name">AttributeError</tt><tt class="py-op">(</tt><tt class="py-string">"Could not find '%s' in ZIBMolPy.Pool"</tt><tt class="py-op">%</tt><tt id="link-57" class="py-name"><a title="ZIBMolPy.topology.Moleculetype.name" class="py-name" href="#" onclick="return doclink('link-57', 'name', 'link-53');">name</a></tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L173"></a><tt class="py-lineno">173</tt>  <tt class="py-line">                <tt class="py-keyword">return</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">persistent</tt><tt class="py-op">[</tt><tt id="link-58" class="py-name"><a title="ZIBMolPy.topology.Moleculetype.name" class="py-name" href="#" onclick="return doclink('link-58', 'name', 'link-53');">name</a></tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L174"></a><tt class="py-lineno">174</tt>  <tt class="py-line">                 </tt>
+<a name="L175"></a><tt class="py-lineno">175</tt>  <tt class="py-line">        <tt class="py-comment">#---------------------------------------------------------------------------</tt> </tt>
+<a name="L176"></a><tt class="py-lineno">176</tt>  <tt class="py-line">        <tt class="py-comment"># proxy for persistent attributes</tt> </tt>
+<a name="Pool.__setattr__"></a><div id="Pool.__setattr__-def"><a name="L177"></a><tt class="py-lineno">177</tt> <a class="py-toggle" href="#" id="Pool.__setattr__-toggle" onclick="return toggle('Pool.__setattr__');">-</a><tt class="py-line">        <tt class="py-keyword">def</tt> <a class="py-def-name" href="ZIBMolPy.pool.Pool-class.html#__setattr__">__setattr__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">name</tt><tt class="py-op">,</tt> <tt class="py-param">value</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Pool.__setattr__-collapsed" style="display:none;" pad="+++" indent="++++++++++++"></div><div id="Pool.__setattr__-expanded"><a name="L178"></a><tt class="py-lineno">178</tt>  <tt class="py-line">                <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">persistent</tt><tt class="py-op">[</tt><tt id="link-59" class="py-name"><a title="ZIBMolPy.topology.Moleculetype.name" class="py-name" href="#" onclick="return doclink('link-59', 'name', 'link-53');">name</a></tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-name">value</tt> </tt>
+</div><a name="L179"></a><tt class="py-lineno">179</tt>  <tt class="py-line">         </tt>
+<a name="L180"></a><tt class="py-lineno">180</tt>  <tt class="py-line">        <tt class="py-comment">#---------------------------------------------------------------------------</tt> </tt>
+<a name="Pool.save"></a><div id="Pool.save-def"><a name="L181"></a><tt class="py-lineno">181</tt> <a class="py-toggle" href="#" id="Pool.save-toggle" onclick="return toggle('Pool.save');">-</a><tt class="py-line">        <tt class="py-keyword">def</tt> <a class="py-def-name" href="ZIBMolPy.pool.Pool-class.html#save">save</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Pool.save-collapsed" style="display:none;" pad="+++" indent="++++++++++++"></div><div id="Pool.save-expanded"><a name="L182"></a><tt class="py-lineno">182</tt>  <tt class="py-line">                <tt class="py-name">f</tt> <tt class="py-op">=</tt> <tt class="py-name">open</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">filename</tt><tt class="py-op">,</tt> <tt class="py-string">"w"</tt><tt class="py-op">)</tt> </tt>
+<a name="L183"></a><tt class="py-lineno">183</tt>  <tt class="py-line">                <tt class="py-name">f</tt><tt class="py-op">.</tt><tt id="link-60" class="py-name" targets="Method ZIBMolPy.io.topology.Moleculetype.write()=ZIBMolPy.io.topology.Moleculetype-class.html#write,Method ZIBMolPy.io.topology.Section.write()=ZIBMolPy.io.topology.Section-class.html#write,Method ZIBMolPy.io.topology.Topology.write()=ZIBMolPy.io.topology.Topology-class.html#write,Method ZIBMolPy.topology.Topology.write()=ZIBMolPy.topology.Topology-class.html#write"><a title="ZIBMolPy.io.topology.Moleculetype.write
+ZIBMolPy.io.topology.Section.write
+ZIBMolPy.io.topology.Topology.write
+ZIBMolPy.topology.Topology.write" class="py-name" href="#" onclick="return doclink('link-60', 'write', 'link-60');">write</a></tt><tt class="py-op">(</tt><tt id="link-61" class="py-name"><a title="ZIBMolPy.utils" class="py-name" href="#" onclick="return doclink('link-61', 'utils', 'link-8');">utils</a></tt><tt class="py-op">.</tt><tt id="link-62" class="py-name" targets="Function ZIBMolPy.utils.pformat()=ZIBMolPy.utils-module.html#pformat"><a title="ZIBMolPy.utils.pformat" class="py-name" href="#" onclick="return doclink('link-62', 'pformat', 'link-62');">pformat</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">persistent</tt><tt class="py-op">)</tt><tt class="py-op">+</tt><tt class="py-string">"\n"</tt><tt class="py-op">)</tt> </tt>
+<a name="L184"></a><tt class="py-lineno">184</tt>  <tt class="py-line">                <tt class="py-name">f</tt><tt class="py-op">.</tt><tt id="link-63" class="py-name" targets="Method ZIBMolPy.io.trr.TrrFile.close()=ZIBMolPy.io.trr.TrrFile-class.html#close"><a title="ZIBMolPy.io.trr.TrrFile.close" class="py-name" href="#" onclick="return doclink('link-63', 'close', 'link-63');">close</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L185"></a><tt class="py-lineno">185</tt>  <tt class="py-line">                <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__dict__</tt><tt class="py-op">[</tt><tt class="py-string">"mtime"</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-name">path</tt><tt class="py-op">.</tt><tt class="py-name">getmtime</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">filename</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L186"></a><tt class="py-lineno">186</tt>  <tt class="py-line">         </tt>
+<a name="L187"></a><tt class="py-lineno">187</tt>  <tt class="py-line">        <tt class="py-comment">#---------------------------------------------------------------------------</tt> </tt>
+<a name="L188"></a><tt class="py-lineno">188</tt>  <tt class="py-line">        <tt class="py-decorator">@</tt><tt class="py-decorator">property</tt> </tt>
+<a name="Pool.converter"></a><div id="Pool.converter-def"><a name="L189"></a><tt class="py-lineno">189</tt> <a class="py-toggle" href="#" id="Pool.converter-toggle" onclick="return toggle('Pool.converter');">-</a><tt class="py-line">        <tt class="py-keyword">def</tt> <a class="py-def-name" href="ZIBMolPy.pool.Pool-class.html#converter">converter</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> <tt class="py-comment">#TODO maybe cache instance</tt> </tt>
+</div><a name="L190"></a><tt class="py-lineno">190</tt>  <tt class="py-line">                <tt class="py-keyword">if</tt><tt class="py-op">(</tt><tt class="py-string">"int_fn"</tt> <tt class="py-keyword">in</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">persistent</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L191"></a><tt class="py-lineno">191</tt>  <tt class="py-line">                        <tt class="py-keyword">return</tt><tt class="py-op">(</tt><tt id="link-64" class="py-name"><a title="ZIBMolPy.internals.Converter" class="py-name" href="#" onclick="return doclink('link-64', 'Converter', 'link-3');">Converter</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">int_fn</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L192"></a><tt class="py-lineno">192</tt>  <tt class="py-line">                <tt class="py-keyword">return</tt><tt class="py-op">(</tt><tt class="py-name">None</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L193"></a><tt class="py-lineno">193</tt>  <tt class="py-line"> </tt>
+<a name="L194"></a><tt class="py-lineno">194</tt>  <tt class="py-line">        <tt class="py-comment">#---------------------------------------------------------------------------</tt> </tt>
+<a name="L195"></a><tt class="py-lineno">195</tt>  <tt class="py-line">        <tt class="py-decorator">@</tt><tt class="py-decorator">property</tt> </tt>
+<a name="Pool.root"></a><div id="Pool.root-def"><a name="L196"></a><tt class="py-lineno">196</tt> <a class="py-toggle" href="#" id="Pool.root-toggle" onclick="return toggle('Pool.root');">-</a><tt class="py-line">        <tt class="py-keyword">def</tt> <a class="py-def-name" href="ZIBMolPy.pool.Pool-class.html#root">root</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Pool.root-collapsed" style="display:none;" pad="+++" indent="++++++++++++"></div><div id="Pool.root-expanded"><a name="L197"></a><tt class="py-lineno">197</tt>  <tt class="py-line">                <tt class="py-keyword">for</tt> <tt class="py-name">n</tt> <tt class="py-keyword">in</tt> <tt class="py-name">self</tt><tt class="py-op">:</tt> </tt>
+<a name="L198"></a><tt class="py-lineno">198</tt>  <tt class="py-line">                        <tt class="py-keyword">if</tt><tt class="py-op">(</tt><tt class="py-name">n</tt><tt class="py-op">.</tt><tt id="link-65" class="py-name"><a title="ZIBMolPy.topology.Moleculetype.name" class="py-name" href="#" onclick="return doclink('link-65', 'name', 'link-53');">name</a></tt> <tt class="py-op">==</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">root_name</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L199"></a><tt class="py-lineno">199</tt>  <tt class="py-line">                                <tt class="py-keyword">return</tt><tt class="py-op">(</tt><tt class="py-name">n</tt><tt class="py-op">)</tt> </tt>
+<a name="L200"></a><tt class="py-lineno">200</tt>  <tt class="py-line">                <tt class="py-keyword">return</tt><tt class="py-op">(</tt><tt class="py-name">None</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L201"></a><tt class="py-lineno">201</tt>  <tt class="py-line">         </tt>
+<a name="L202"></a><tt class="py-lineno">202</tt>  <tt class="py-line">        <tt class="py-comment">#---------------------------------------------------------------------------</tt> </tt>
+<a name="Pool.__repr__"></a><div id="Pool.__repr__-def"><a name="L203"></a><tt class="py-lineno">203</tt> <a class="py-toggle" href="#" id="Pool.__repr__-toggle" onclick="return toggle('Pool.__repr__');">-</a><tt class="py-line">        <tt class="py-keyword">def</tt> <a class="py-def-name" href="ZIBMolPy.pool.Pool-class.html#__repr__">__repr__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Pool.__repr__-collapsed" style="display:none;" pad="+++" indent="++++++++++++"></div><div id="Pool.__repr__-expanded"><a name="L204"></a><tt class="py-lineno">204</tt>  <tt class="py-line">                <tt class="py-keyword">return</tt><tt class="py-op">(</tt> <tt class="py-string">"&lt;ZIBMolPy.Pool len=%d&gt;"</tt><tt class="py-op">%</tt> <tt class="py-op">(</tt><tt class="py-name">len</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> <tt class="py-op">)</tt> </tt>
+</div><a name="L205"></a><tt class="py-lineno">205</tt>  <tt class="py-line">                 </tt>
+<a name="Pool.__str__"></a><div id="Pool.__str__-def"><a name="L206"></a><tt class="py-lineno">206</tt> <a class="py-toggle" href="#" id="Pool.__str__-toggle" onclick="return toggle('Pool.__str__');">-</a><tt class="py-line">        <tt class="py-keyword">def</tt> <a class="py-def-name" href="ZIBMolPy.pool.Pool-class.html#__str__">__str__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Pool.__str__-collapsed" style="display:none;" pad="+++" indent="++++++++++++"></div><div id="Pool.__str__-expanded"><a name="L207"></a><tt class="py-lineno">207</tt>  <tt class="py-line">                <tt class="py-keyword">return</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-66" class="py-name" targets="Method ZIBMolPy.internals.Converter.__repr__()=ZIBMolPy.internals.Converter-class.html#__repr__,Method ZIBMolPy.internals.InternalArray.__repr__()=ZIBMolPy.internals.InternalArray-class.html#__repr__,Method ZIBMolPy.internals.InternalCoordinate.__repr__()=ZIBMolPy.internals.InternalCoordinate-class.html#__repr__,Method ZIBMolPy.internals.LinearCoordinate.__repr__()=ZIBMolPy.internals.LinearCoordinate-class.html#__repr__,Method ZIBMolPy.node.Node.__repr__()=ZIBMolPy.node.Node-class.html#__repr__,Method ZIBMolPy.pool.Pool.__repr__()=ZIBMolPy.pool.Pool-class.html#__repr__,Method ZIBMolPy.restraint.Restraint.__repr__()=ZIBMolPy.restraint.Restraint-class.html#__repr__,Method ZIBMolPy.topology.Moleculetype.__repr__()=ZIBMolPy.topology.Moleculetype-class.html#__repr__,Method ZIBMolPy.topology.Section.__repr__()=ZIBMolPy.topology.Section-class.html#__repr__,Method ZIBMolPy.ui.Option.__repr__()=ZIBMolPy.ui.Option-class.html#__repr__"><a title="ZIBMolPy.internals.Converter.__repr__
+ZIBMolPy.internals.InternalArray.__repr__
+ZIBMolPy.internals.InternalCoordinate.__repr__
+ZIBMolPy.internals.LinearCoordinate.__repr__
+ZIBMolPy.node.Node.__repr__
+ZIBMolPy.pool.Pool.__repr__
+ZIBMolPy.restraint.Restraint.__repr__
+ZIBMolPy.topology.Moleculetype.__repr__
+ZIBMolPy.topology.Section.__repr__
+ZIBMolPy.ui.Option.__repr__" class="py-name" href="#" onclick="return doclink('link-66', '__repr__', 'link-66');">__repr__</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L208"></a><tt class="py-lineno">208</tt>  <tt class="py-line"> </tt>
+<a name="L209"></a><tt class="py-lineno">209</tt>  <tt class="py-line"> </tt>
+<a name="L210"></a><tt class="py-lineno">210</tt>  <tt class="py-line">        <tt class="py-comment">#---------------------------------------------------------------------------</tt> </tt>
+<a name="L211"></a><tt class="py-lineno">211</tt>  <tt class="py-line">        <tt class="py-decorator">@</tt><tt class="py-decorator">property</tt>  </tt>
+<a name="Pool.analysis_dir"></a><div id="Pool.analysis_dir-def"><a name="L212"></a><tt class="py-lineno">212</tt> <a class="py-toggle" href="#" id="Pool.analysis_dir-toggle" onclick="return toggle('Pool.analysis_dir');">-</a><tt class="py-line">        <tt class="py-keyword">def</tt> <a class="py-def-name" href="ZIBMolPy.pool.Pool-class.html#analysis_dir">analysis_dir</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Pool.analysis_dir-collapsed" style="display:none;" pad="+++" indent="++++++++++++"></div><div id="Pool.analysis_dir-expanded"><a name="L213"></a><tt class="py-lineno">213</tt>  <tt class="py-line">                <tt class="py-keyword">return</tt><tt class="py-op">(</tt><tt class="py-string">"./analysis/"</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L214"></a><tt class="py-lineno">214</tt>  <tt class="py-line">                 </tt>
+<a name="L215"></a><tt class="py-lineno">215</tt>  <tt class="py-line">        <tt class="py-decorator">@</tt><tt class="py-decorator">property</tt>  </tt>
+<a name="Pool.s_mat_fn"></a><div id="Pool.s_mat_fn-def"><a name="L216"></a><tt class="py-lineno">216</tt> <a class="py-toggle" href="#" id="Pool.s_mat_fn-toggle" onclick="return toggle('Pool.s_mat_fn');">-</a><tt class="py-line">        <tt class="py-keyword">def</tt> <a class="py-def-name" href="ZIBMolPy.pool.Pool-class.html#s_mat_fn">s_mat_fn</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt>      </tt>
+</div><a name="L217"></a><tt class="py-lineno">217</tt>  <tt class="py-line">                <tt class="py-keyword">return</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-67" class="py-name" targets="Variable ZIBMolPy.pool.Pool.analysis_dir=ZIBMolPy.pool.Pool-class.html#analysis_dir"><a title="ZIBMolPy.pool.Pool.analysis_dir" class="py-name" href="#" onclick="return doclink('link-67', 'analysis_dir', 'link-67');">analysis_dir</a></tt><tt class="py-op">+</tt><tt class="py-string">"s_mat.npz"</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L218"></a><tt class="py-lineno">218</tt>  <tt class="py-line">                 </tt>
+<a name="L219"></a><tt class="py-lineno">219</tt>  <tt class="py-line">        <tt class="py-decorator">@</tt><tt class="py-decorator">property</tt> </tt>
+<a name="Pool.s_corr_mat_fn"></a><div id="Pool.s_corr_mat_fn-def"><a name="L220"></a><tt class="py-lineno">220</tt> <a class="py-toggle" href="#" id="Pool.s_corr_mat_fn-toggle" onclick="return toggle('Pool.s_corr_mat_fn');">-</a><tt class="py-line">        <tt class="py-keyword">def</tt> <a class="py-def-name" href="ZIBMolPy.pool.Pool-class.html#s_corr_mat_fn">s_corr_mat_fn</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt>  </tt>
+</div><a name="L221"></a><tt class="py-lineno">221</tt>  <tt class="py-line">                <tt class="py-keyword">return</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-68" class="py-name"><a title="ZIBMolPy.pool.Pool.analysis_dir" class="py-name" href="#" onclick="return doclink('link-68', 'analysis_dir', 'link-67');">analysis_dir</a></tt><tt class="py-op">+</tt><tt class="py-string">"s_corr_mat.npz"</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L222"></a><tt class="py-lineno">222</tt>  <tt class="py-line">                 </tt>
+<a name="L223"></a><tt class="py-lineno">223</tt>  <tt class="py-line">        <tt class="py-decorator">@</tt><tt class="py-decorator">property</tt> </tt>
+<a name="Pool.k_mat_fn"></a><div id="Pool.k_mat_fn-def"><a name="L224"></a><tt class="py-lineno">224</tt> <a class="py-toggle" href="#" id="Pool.k_mat_fn-toggle" onclick="return toggle('Pool.k_mat_fn');">-</a><tt class="py-line">        <tt class="py-keyword">def</tt> <a class="py-def-name" href="ZIBMolPy.pool.Pool-class.html#k_mat_fn">k_mat_fn</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt>  </tt>
+</div><a name="L225"></a><tt class="py-lineno">225</tt>  <tt class="py-line">                <tt class="py-keyword">return</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-69" class="py-name"><a title="ZIBMolPy.pool.Pool.analysis_dir" class="py-name" href="#" onclick="return doclink('link-69', 'analysis_dir', 'link-67');">analysis_dir</a></tt><tt class="py-op">+</tt><tt class="py-string">"k_mat.npz"</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L226"></a><tt class="py-lineno">226</tt>  <tt class="py-line">                 </tt>
+<a name="L227"></a><tt class="py-lineno">227</tt>  <tt class="py-line">        <tt class="py-decorator">@</tt><tt class="py-decorator">property</tt> </tt>
+<a name="Pool.k_corr_mat_fn"></a><div id="Pool.k_corr_mat_fn-def"><a name="L228"></a><tt class="py-lineno">228</tt> <a class="py-toggle" href="#" id="Pool.k_corr_mat_fn-toggle" onclick="return toggle('Pool.k_corr_mat_fn');">-</a><tt class="py-line">        <tt class="py-keyword">def</tt> <a class="py-def-name" href="ZIBMolPy.pool.Pool-class.html#k_corr_mat_fn">k_corr_mat_fn</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt>  </tt>
+</div><a name="L229"></a><tt class="py-lineno">229</tt>  <tt class="py-line">                <tt class="py-keyword">return</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-70" class="py-name"><a title="ZIBMolPy.pool.Pool.analysis_dir" class="py-name" href="#" onclick="return doclink('link-70', 'analysis_dir', 'link-67');">analysis_dir</a></tt><tt class="py-op">+</tt><tt class="py-string">"k_corr_mat.npz"</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L230"></a><tt class="py-lineno">230</tt>  <tt class="py-line">                 </tt>
+<a name="L231"></a><tt class="py-lineno">231</tt>  <tt class="py-line">        <tt class="py-decorator">@</tt><tt class="py-decorator">property</tt> </tt>
+<a name="Pool.chi_mat_fn"></a><div id="Pool.chi_mat_fn-def"><a name="L232"></a><tt class="py-lineno">232</tt> <a class="py-toggle" href="#" id="Pool.chi_mat_fn-toggle" onclick="return toggle('Pool.chi_mat_fn');">-</a><tt class="py-line">        <tt class="py-keyword">def</tt> <a class="py-def-name" href="ZIBMolPy.pool.Pool-class.html#chi_mat_fn">chi_mat_fn</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt>  </tt>
+</div><a name="L233"></a><tt class="py-lineno">233</tt>  <tt class="py-line">                <tt class="py-keyword">return</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-71" class="py-name"><a title="ZIBMolPy.pool.Pool.analysis_dir" class="py-name" href="#" onclick="return doclink('link-71', 'analysis_dir', 'link-67');">analysis_dir</a></tt><tt class="py-op">+</tt><tt class="py-string">"chi_mat.npz"</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L234"></a><tt class="py-lineno">234</tt>  <tt class="py-line">                 </tt>
+<a name="L235"></a><tt class="py-lineno">235</tt>  <tt class="py-line">        <tt class="py-decorator">@</tt><tt class="py-decorator">property</tt> </tt>
+<a name="Pool.qc_mat_fn"></a><div id="Pool.qc_mat_fn-def"><a name="L236"></a><tt class="py-lineno">236</tt> <a class="py-toggle" href="#" id="Pool.qc_mat_fn-toggle" onclick="return toggle('Pool.qc_mat_fn');">-</a><tt class="py-line">        <tt class="py-keyword">def</tt> <a class="py-def-name" href="ZIBMolPy.pool.Pool-class.html#qc_mat_fn">qc_mat_fn</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt>  </tt>
+</div><a name="L237"></a><tt class="py-lineno">237</tt>  <tt class="py-line">                <tt class="py-keyword">return</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-72" class="py-name"><a title="ZIBMolPy.pool.Pool.analysis_dir" class="py-name" href="#" onclick="return doclink('link-72', 'analysis_dir', 'link-67');">analysis_dir</a></tt><tt class="py-op">+</tt><tt class="py-string">"qc_mat.npz"</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L238"></a><tt class="py-lineno">238</tt>  <tt class="py-line"> </tt>
+<a name="L239"></a><tt class="py-lineno">239</tt>  <tt class="py-line">        <tt class="py-decorator">@</tt><tt class="py-decorator">property</tt> </tt>
+<a name="Pool.thermo_beta"></a><div id="Pool.thermo_beta-def"><a name="L240"></a><tt class="py-lineno">240</tt> <a class="py-toggle" href="#" id="Pool.thermo_beta-toggle" onclick="return toggle('Pool.thermo_beta');">-</a><tt class="py-line">        <tt class="py-keyword">def</tt> <a class="py-def-name" href="ZIBMolPy.pool.Pool-class.html#thermo_beta">thermo_beta</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Pool.thermo_beta-collapsed" style="display:none;" pad="+++" indent="++++++++++++"></div><div id="Pool.thermo_beta-expanded"><a name="L241"></a><tt class="py-lineno">241</tt>  <tt class="py-line">                <tt class="py-keyword">return</tt> <tt class="py-number">1</tt><tt class="py-op">/</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">temperature</tt><tt class="py-op">*</tt><tt id="link-73" class="py-name"><a title="ZIBMolPy.constants.BOLTZMANN" class="py-name" href="#" onclick="return doclink('link-73', 'BOLTZMANN', 'link-11');">BOLTZMANN</a></tt><tt class="py-op">*</tt><tt id="link-74" class="py-name"><a title="ZIBMolPy.constants.AVOGADRO" class="py-name" href="#" onclick="return doclink('link-74', 'AVOGADRO', 'link-12');">AVOGADRO</a></tt><tt class="py-op">)</tt> </tt>
+</div></div><a name="L242"></a><tt class="py-lineno">242</tt>  <tt class="py-line"> </tt>
+<a name="L243"></a><tt class="py-lineno">243</tt>  <tt class="py-line"><tt class="py-comment">#===============================================================================        </tt> </tt>
+<a name="L244"></a><tt class="py-lineno">244</tt>  <tt class="py-line"><tt class="py-comment">#EOF</tt> </tt>
+<a name="L245"></a><tt class="py-lineno">245</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="ZIBMolPy-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://wiki.kobv.de/confluence/display/AGCMD/ZIBMolPy">ZIBMolPy</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Tue Mar 13 15:06:55 2012
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

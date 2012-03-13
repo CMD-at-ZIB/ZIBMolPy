@@ -1,0 +1,366 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>zgf_analyze</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="ZIBMolPy-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://wiki.kobv.de/confluence/display/AGCMD/ZIBMolPy">ZIBMolPy</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        Module&nbsp;zgf_analyze
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="zgf_analyze-module.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== MODULE DESCRIPTION ==================== -->
+<h1 class="epydoc">Module zgf_analyze</h1><p class="nomargin-top"><span class="codelink"><a href="zgf_analyze-pysrc.html">source&nbsp;code</a></span></p>
+<h1 class="heading">What it does</h1>
+    <p><b>This is the final step of ZIBgridfree.</b></p>
+    <p>This tool will</p>
+    <ol start="1">
+      <li>
+        Calculate the initial S matrix (&Phi; overlap matrix) and K matrix 
+        (&Phi; transition matrix)
+      </li>
+      <li>
+        Symmetrize S and K using the direct node weights obtained by <a 
+        href="zgf_reweight-module.html" class="link">zgf_reweight</a>
+      </li>
+      <li>
+        Come up with a second, corrected version of node weights
+      </li>
+      <li>
+        Calculate eigenvalues and eigenvectors of the symmetrized S matrix
+      </li>
+      <li>
+        Sort the eigenvectors in descending order according to the value of
+        the corresponding eigenvalue
+      </li>
+      <li>
+        Orthogonalize the eigenvectors and deal with degeneracies
+      </li>
+      <li>
+        Perform PCCA+ on the orthogonalized eigenvectors, yielding &chi; 
+        (chi) matrix and cluster weights
+      </li>
+      <li>
+        Calculate the eigenvectors &xi; (xi) of the Q_c matrix (the Markov 
+        state model)
+      </li>
+      <li>
+        Calculate Q_c from &xi; and PCCA+ output
+      </li>
+    </ol>
+    <p>You may continue your analysis by looking at the clustering with <a 
+    href="zgf_browser-module.html" class="link">zgf_browser</a>. If you 
+    like the clustering, you can extract the frames belonging to the 
+    metastable conformations by using <a 
+    href="zgf_extract_conformations-module.html" 
+    class="link">zgf_extract_conformations</a> for visualization of cluster
+    representatives. If you don't like the clustering, you can rerun <a 
+    href="zgf_analyze-module.html" class="link">zgf_analyze</a> and try a 
+    different number of clusters.</p>
+  <h1 class="heading">How it works</h1>
+    <p>At the command line, type:</p>
+<pre class="literalblock">
+       $ zgf_analyze [options]
+</pre>
+  <h1 class="heading">PCCA+</h1>
+    <p>You will have to specify a number of clusters for PCCA+. An initial 
+    guess for this number will be made based on the largest gap between the
+    calculated eigenvalues. Ideally there is only real eigenvalue one, 
+    followed by a number of eigenvalues very close to one (together forming
+    the Perron cluster, which gives the number of metastable 
+    conformations), followed by a significant gap to mark the end of the 
+    Perron cluster. Eigenvectors belonging to eigenvalues that are not in 
+    the Perron cluster are irrelevant for PCCA+. The quality of the 
+    clustering result can be evaluated by taking a look at the (stochastic)
+    &chi; matrix, which for each node gives the membership to the 
+    metastable conformations identified during PCCA+. All matrices can also
+    be exported for use in Matlab. The matrices are stored in the analysis/
+    directory.</p>
+  <h1 class="heading">K matrix and lag time</h1>
+    <p>At the moment, the K matrix and its lag time are not used.</p>
+  <h1 class="heading">Symmetrization error threshold</h1>
+    <p>This parameter helps to adjust the weighting of overlap regions 
+    between &Phi; functions.</p>
+  <h1 class="heading">Options</h1>
+    <ul>
+      <li>
+        <b>error</b>:
+<pre class="literalblock">
+ default: 1E-02
+ help: error threshold for symmetrize
+ short_name: e
+ datatype: choice
+ choices: ('1E-02', '1E-03', '1E-04', '1E-05', '1E-06', '1E-07', '1E-08', '1E-09', '1E-10')
+ long_name: error
+</pre>
+      </li>
+      <li>
+        <b>export-matlab</b>:
+<pre class="literalblock">
+ help: export matrices as mat-files
+ short_name: m
+ datatype: bool
+ long_name: export-matlab
+</pre>
+      </li>
+      <li>
+        <b>auto-cluster</b>:
+<pre class="literalblock">
+ help: choose number of clusters automatically
+ short_name: c
+ datatype: bool
+ long_name: auto-cluster
+</pre>
+      </li>
+      <li>
+        <b>lag-time</b>:
+<pre class="literalblock">
+ default: 1
+ help: lag time for K matrix
+ short_name: l
+ datatype: int
+ long_name: lag-time
+</pre>
+      </li>
+      <li>
+        <b>overwrite-mat</b>:
+<pre class="literalblock">
+ help: overwrite existing matrices
+ short_name: o
+ datatype: bool
+ long_name: overwrite-mat
+</pre>
+      </li>
+    </ul>
+
+<!-- ==================== FUNCTIONS ==================== -->
+<a name="section-Functions"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td align="left" colspan="2" class="table-header">
+    <span class="table-header">Functions</span></td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="is_applicable"></a><span class="summary-sig-name">is_applicable</span>()</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="zgf_analyze-pysrc.html#is_applicable">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="main"></a><span class="summary-sig-name">main</span>()</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="zgf_analyze-pysrc.html#main">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="cache_matrix"></a><span class="summary-sig-name">cache_matrix</span>(<span class="summary-sig-arg">filename</span>,
+        <span class="summary-sig-arg">nodes</span>,
+        <span class="summary-sig-arg">shift</span>=<span class="summary-sig-default">0</span>,
+        <span class="summary-sig-arg">overwrite</span>=<span class="summary-sig-default">False</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="zgf_analyze-pysrc.html#cache_matrix">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="calc_matrix"></a><span class="summary-sig-name">calc_matrix</span>(<span class="summary-sig-arg">nodes</span>,
+        <span class="summary-sig-arg">shift</span>=<span class="summary-sig-default">0</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="zgf_analyze-pysrc.html#calc_matrix">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+</table>
+<!-- ==================== VARIABLES ==================== -->
+<a name="section-Variables"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td align="left" colspan="2" class="table-header">
+    <span class="table-header">Variables</span></td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="zgf_analyze-module.html#options_desc" class="summary-name">options_desc</a> = <code title="[&lt;ZIBMolPy.ui.Option error&gt;, &lt;ZIBMolPy.ui.Option export-matlab&gt;, &lt;ZIBM\
+olPy.ui.Option auto-cluster&gt;, &lt;ZIBMolPy.ui.Option lag-time&gt;, &lt;ZIBMolPy\
+.ui.Option overwrite-mat&gt;]">[&lt;ZIBMolPy.ui.Option error&gt;, &lt;ZIBMolPy.ui.Optio<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="__package__"></a><span class="summary-name">__package__</span> = <code title="None">None</code><br />
+      hash(x)
+    </td>
+  </tr>
+</table>
+<!-- ==================== VARIABLES DETAILS ==================== -->
+<a name="section-VariablesDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td align="left" colspan="2" class="table-header">
+    <span class="table-header">Variables Details</span></td>
+</tr>
+</table>
+<a name="options_desc"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">options_desc</h3>
+  
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+[&lt;ZIBMolPy.ui.Option error&gt;, &lt;ZIBMolPy.ui.Option export-matlab&gt;, &lt;ZIBM<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+olPy.ui.Option auto-cluster&gt;, &lt;ZIBMolPy.ui.Option lag-time&gt;, &lt;ZIBMolPy<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+.ui.Option overwrite-mat&gt;]
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="ZIBMolPy-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://wiki.kobv.de/confluence/display/AGCMD/ZIBMolPy">ZIBMolPy</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Tue Mar 13 15:06:51 2012
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>ZIBMolPy.internals</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="ZIBMolPy-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://wiki.kobv.de/confluence/display/AGCMD/ZIBMolPy">ZIBMolPy</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="ZIBMolPy-module.html">Package&nbsp;ZIBMolPy</a> ::
+        Module&nbsp;internals
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="ZIBMolPy.internals-module.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== MODULE DESCRIPTION ==================== -->
+<h1 class="epydoc">Module internals</h1><p class="nomargin-top"><span class="codelink"><a href="ZIBMolPy.internals-pysrc.html">source&nbsp;code</a></span></p>
+<p>Classes for working with internal coordinates.</p>
+  <h1 class="heading">The int File Format</h1>
+    <p>An internals file (int-file) contains the definition of the internal
+    coordinates used in the simulation. So far, dihedral angles (dihedrals)
+    and distances (linears) are supported.</p>
+    <p>The first line of an int-file contains the list of relevant 
+    dihedrals defined by the four atoms involved, e. g.:</p>
+<pre class="literalblock">
+       (0-1-2-4),(1-2-3-4), ...
+</pre>
+    <p>The second line of an int-file contains the list of relevant linears
+    defined by the two atoms involved, e. g.:</p>
+<pre class="literalblock">
+       (0-4),(20-46), ...
+</pre>
+  <h1 class="heading">Atom Indices</h1>
+    <p>Please note:</p>
+    <ol start="1">
+      <li>
+        Atom indices in int-files start with zero.
+      </li>
+      <li>
+        Atom indices in int-files refer to the absolut atom indices as can 
+        be found in the coordinate file of the complete system, and not on 
+        a per-molecule topology basis.
+      </li>
+    </ol>
+  <h1 class="heading">Labels</h1>
+    <p>Each internal coordinate comes with a standard label stating its 
+    type and index. Optional custom labels can be specified within the 
+    int-file as:</p>
+<pre class="literalblock">
+       (0-1-2-4){'label':'cat'},(1-2-3-4), ...
+</pre>
+    <p>which will overwrite the standard label &quot;dih_000&quot; with 
+    &quot;cat&quot;.</p>
+  <h1 class="heading">Weights and Offsets</h1>
+    <p>Angle coordinates can take on only values between -2&pi; and +2&pi;.
+    But distance coordinates can in principle take on any positiv value. 
+    This can lead to problems where distance coordinates are overly 
+    dominate.</p>
+    <p>Therefore, distance coordinates also offer a weight and an offset 
+    paramter:</p>
+<pre class="literalblock">
+       (0-4){'weight':2.0, 'offset':1.5},(20-46){'label':'puppy', 'weight':2.0, 'offset':-0.4}
+</pre>
+    <p>See also <a href="ZIBMolPy.internals.LinearCoordinate-class.html" 
+    class="link">LinearCoordinate</a>.</p>
+  <h1 class="heading">Custom Coordinate</h1>
+    <p>One can create his own subclasses of <a 
+    href="ZIBMolPy.internals.InternalCoordinate-class.html" 
+    class="link">InternalCoordinate</a>.</p>
+    <p>They can be addressed in the int-file by providing a 'type' argument
+    e.g.:</p>
+<pre class="literalblock">
+       (3-1-4){'type':'Funny', 'foobar':'cat'},...
+</pre>
+    <p>This will call the following constructor:</p>
+<pre class="literalblock">
+       FunnyCoordinate(3, 1, 4, foobar='cat')
+</pre>
+    <p>Besides writting a subclass one also has make some adjustments to 
+    the code in <a href="zgf_create_nodes-module.html" 
+    class="link">zgf_create_nodes</a>, which determines the associated 
+    gromacs-restraints.</p>
+
+<!-- ==================== CLASSES ==================== -->
+<a name="section-Classes"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td align="left" colspan="2" class="table-header">
+    <span class="table-header">Classes</span></td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="ZIBMolPy.internals.InternalArray-class.html" class="summary-name">InternalArray</a>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="ZIBMolPy.internals.PbcResolver-class.html" class="summary-name">PbcResolver</a><br />
+      Resolves periodic boundary conditions by explicitly calculating all
+        27 possible images and applying the minimum image convention.
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="ZIBMolPy.internals.Converter-class.html" class="summary-name">Converter</a>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="ZIBMolPy.internals.InternalCoordinate-class.html" class="summary-name">InternalCoordinate</a>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="ZIBMolPy.internals.DihedralCoordinate-class.html" class="summary-name">DihedralCoordinate</a><br />
+      <a href="http://en.wikipedia.org/wiki/Dihedral_angle" 
+        target="_top">http://en.wikipedia.org/wiki/Dihedral_angle</a>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="ZIBMolPy.internals.LinearCoordinate-class.html" class="summary-name">LinearCoordinate</a>
+    </td>
+  </tr>
+</table>
+<!-- ==================== VARIABLES ==================== -->
+<a name="section-Variables"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td align="left" colspan="2" class="table-header">
+    <span class="table-header">Variables</span></td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="__package__"></a><span class="summary-name">__package__</span> = <code title="'ZIBMolPy'"><code class="variable-quote">'</code><code class="variable-string">ZIBMolPy</code><code class="variable-quote">'</code></code>
+    </td>
+  </tr>
+</table>
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="ZIBMolPy-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://wiki.kobv.de/confluence/display/AGCMD/ZIBMolPy">ZIBMolPy</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Tue Mar 13 15:06:51 2012
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

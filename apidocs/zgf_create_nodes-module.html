@@ -1,0 +1,556 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>zgf_create_nodes</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="ZIBMolPy-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://wiki.kobv.de/confluence/display/AGCMD/ZIBMolPy">ZIBMolPy</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        Module&nbsp;zgf_create_nodes
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="zgf_create_nodes-module.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== MODULE DESCRIPTION ==================== -->
+<h1 class="epydoc">Module zgf_create_nodes</h1><p class="nomargin-top"><span class="codelink"><a href="zgf_create_nodes-pysrc.html">source&nbsp;code</a></span></p>
+<h1 class="heading">What it does</h1>
+    <p><b>This is the second step of ZIBgridfree.</b></p>
+    <p>This tool will generate a discretization of conformational space 
+    specified by certain internal coordinates from a supplied ZIBgridfree 
+    sampling node. If the node pool is empty, the root node (i. e. the 
+    presampling) will be used in order to generate an initial 
+    discretization. Later on, new nodes can be created from arbitrary nodes
+    in the node pool: <a href="zgf_create_nodes-module.html" 
+    class="link">zgf_create_nodes</a> is also called from <a 
+    href="zgf_refine-module.html" class="link">zgf_refine</a>.</p>
+    <p>Radial basis functions are used to form a (more or less) soft 
+    partitioning of the conformational space. The function &Phi;_i(q) 
+    (taking values between zero and one) gives the membership of 
+    configuration q to basis function i. The potential modifications 
+    representing the basis functions during the sampling are approximated 
+    by standard Gromacs restraint potentials.</p>
+    <p>You should use <a href="zgf_browser-module.html" 
+    class="link">zgf_browser</a> to check if you are happy with the 
+    discretization (coverage of conformational space, i. e. the number of 
+    nodes), and the quality of the &Phi; function fit.</p>
+    <p><b>The next step is <a href="zgf_setup_nodes-module.html" 
+    class="link">zgf_setup_nodes</a>.</b></p>
+  <h1 class="heading">How it works</h1>
+    <p>At the command line, type:</p>
+<pre class="literalblock">
+       $ zgf_create_nodes [options]
+</pre>
+  <h1 class="heading">Discretization parameters</h1>
+    <ul>
+      <li>
+        <b>&alpha; (alpha)</b> specifies the stiffness of the 
+        discretization: Larger &alpha; values mean harder basis functions 
+        and less overlap. &alpha; is either specified directly by the user 
+        or calculated via &theta;. In general, &alpha; will increase with 
+        the number of nodes, as with increasing number of nodes, each 
+        individual node has to cover less conformational space. Under 
+        normal conditions, higher &alpha; values will lead to better 
+        convergence of the sampling.
+      </li>
+      <li>
+        <b>&theta; (theta)</b> is calculated as the average of the 
+        distances of each node to its nearest neighbor: High minimum 
+        distances will lead to soft basis funtions, small minimum distances
+        will lead to hard basis functions.
+        <p>Note that very large &alpha; values may lead to infinitely large
+        force constants in the Gromacs restraint potentials. This indicates
+        that the density of nodes (which is usually strongly related to the
+        number of nodes) is too high.</p>
+        <p>Currently, for averaging we use the <b>median</b> of minimum 
+        distances. This will result in harder basis functions compared to 
+        when using the <b>mean</b>, as exceptionally large minimum 
+        distances do not weigh in.</p>
+      </li>
+    </ul>
+  <h1 class="heading">Options</h1>
+    <ul>
+      <li>
+        <b>methodnodes</b>:
+<pre class="literalblock">
+ default: kmeans
+ help: method to determine nodes
+ short_name: N
+ datatype: choice
+ choices: ('kmeans', 'equidist', 'all')
+ long_name: methodnodes
+</pre>
+      </li>
+      <li>
+        <b>methodalphas</b>:
+<pre class="literalblock">
+ default: theta
+ help: method to determine alphas
+ short_name: A
+ datatype: choice
+ choices: ('theta', 'user')
+ long_name: methodalphas
+</pre>
+      </li>
+      <li>
+        <b>numnodes</b>:
+<pre class="literalblock">
+ default: 10
+ help: number of nodes to create
+ short_name: K
+ datatype: int
+ min_value: 1
+ long_name: numnodes
+</pre>
+      </li>
+      <li>
+        <b>ext-max</b>:
+<pre class="literalblock">
+ default: 5
+ help: max. number of extensions if not converged
+ short_name: E
+ datatype: int
+ long_name: ext-max
+</pre>
+      </li>
+      <li>
+        <b>ext-length</b>:
+<pre class="literalblock">
+ default: 100
+ help: length per extension in ps
+ short_name: L
+ datatype: int
+ min_value: 1
+ long_name: ext-length
+</pre>
+      </li>
+      <li>
+        <b>methodphifit</b>:
+<pre class="literalblock">
+ default: switch
+ help: method to determine phi fit
+ short_name: P
+ datatype: choice
+ choices: ('switch', 'harmonic', 'leastsq')
+ long_name: methodphifit
+</pre>
+      </li>
+      <li>
+        <b>parent-node</b>:
+<pre class="literalblock">
+ default: root
+ help: parent-node
+ short_name: p
+ datatype: node
+ long_name: parent-node
+</pre>
+      </li>
+      <li>
+        <b>write-preview</b>:
+<pre class="literalblock">
+ help: write frames of new nodes as pdb-trajectory
+ short_name: w
+ datatype: bool
+ long_name: write-preview
+</pre>
+      </li>
+      <li>
+        <b>random-seed</b>:
+<pre class="literalblock">
+ help: seed for random number generator
+ short_name: s
+ datatype: str
+ long_name: random-seed
+</pre>
+      </li>
+    </ul>
+
+<!-- ==================== FUNCTIONS ==================== -->
+<a name="section-Functions"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td align="left" colspan="2" class="table-header">
+    <span class="table-header">Functions</span></td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="is_applicable"></a><span class="summary-sig-name">is_applicable</span>()</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="zgf_create_nodes-pysrc.html#is_applicable">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="main"></a><span class="summary-sig-name">main</span>(<span class="summary-sig-arg">argv</span>=<span class="summary-sig-default">None</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="zgf_create_nodes-pysrc.html#main">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="mknodes_kmeans"></a><span class="summary-sig-name">mknodes_kmeans</span>(<span class="summary-sig-arg">parent</span>,
+        <span class="summary-sig-arg">numnodes</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="zgf_create_nodes-pysrc.html#mknodes_kmeans">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="mknodes_equidist"></a><span class="summary-sig-name">mknodes_equidist</span>(<span class="summary-sig-arg">parent</span>,
+        <span class="summary-sig-arg">numnodes</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="zgf_create_nodes-pysrc.html#mknodes_equidist">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="mknodes_all"></a><span class="summary-sig-name">mknodes_all</span>(<span class="summary-sig-arg">parent</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="zgf_create_nodes-pysrc.html#mknodes_all">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="calc_alpha_theta"></a><span class="summary-sig-name">calc_alpha_theta</span>(<span class="summary-sig-arg">pool</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="zgf_create_nodes-pysrc.html#calc_alpha_theta">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="calc_theta"></a><span class="summary-sig-name">calc_theta</span>(<span class="summary-sig-arg">active_nodes</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="zgf_create_nodes-pysrc.html#calc_theta">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="get_force_constant"></a><span class="summary-sig-name">get_force_constant</span>(<span class="summary-sig-arg">node</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="zgf_create_nodes-pysrc.html#get_force_constant">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="do_phifit_leastsq"></a><span class="summary-sig-name">do_phifit_leastsq</span>(<span class="summary-sig-arg">pool</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="zgf_create_nodes-pysrc.html#do_phifit_leastsq">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="do_phifit_harmonic"></a><span class="summary-sig-name">do_phifit_harmonic</span>(<span class="summary-sig-arg">pool</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="zgf_create_nodes-pysrc.html#do_phifit_harmonic">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="do_phifit_switch"></a><span class="summary-sig-name">do_phifit_switch</span>(<span class="summary-sig-arg">pool</span>,
+        <span class="summary-sig-arg">frames_int</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="zgf_create_nodes-pysrc.html#do_phifit_switch">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="write_node_preview"></a><span class="summary-sig-name">write_node_preview</span>(<span class="summary-sig-arg">pool</span>,
+        <span class="summary-sig-arg">parent</span>,
+        <span class="summary-sig-arg">chosen_idx</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="zgf_create_nodes-pysrc.html#write_node_preview">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+</table>
+<!-- ==================== VARIABLES ==================== -->
+<a name="section-Variables"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td align="left" colspan="2" class="table-header">
+    <span class="table-header">Variables</span></td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="EPSILON2"></a><span class="summary-name">EPSILON2</span> = <code title="0.001">0.001</code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="PLATEAU_THRESHOLD"></a><span class="summary-name">PLATEAU_THRESHOLD</span> = <code title="0.02">0.02</code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="PLATEAU_BREAK"></a><span class="summary-name">PLATEAU_BREAK</span> = <code title="0.0349065850399">0.0349065850399</code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="THE_BIG_NUMBER"></a><span class="summary-name">THE_BIG_NUMBER</span> = <code title="99999.0">99999.0</code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="zgf_create_nodes-module.html#options_desc" class="summary-name">options_desc</a> = <code title="[&lt;ZIBMolPy.ui.Option methodnodes&gt;, &lt;ZIBMolPy.ui.Option methodalphas&gt;, \
+&lt;ZIBMolPy.ui.Option numnodes&gt;, &lt;ZIBMolPy.ui.Option ext-max&gt;, &lt;ZIBMolPy\
+.ui.Option ext-length&gt;, &lt;ZIBMolPy.ui.Option methodphifit&gt;, &lt;ZIBMolPy.u\
+i.Option parent-node&gt;, &lt;ZIBMolPy.ui.Option write-preview&gt;, &lt;ZIBMolPy.u\
+i.Option random-seed&gt;]">[&lt;ZIBMolPy.ui.Option methodnodes&gt;, &lt;ZIBMolPy.ui<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="__package__"></a><span class="summary-name">__package__</span> = <code title="None">None</code><br />
+      hash(x)
+    </td>
+  </tr>
+</table>
+<!-- ==================== VARIABLES DETAILS ==================== -->
+<a name="section-VariablesDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td align="left" colspan="2" class="table-header">
+    <span class="table-header">Variables Details</span></td>
+</tr>
+</table>
+<a name="options_desc"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">options_desc</h3>
+  
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+[&lt;ZIBMolPy.ui.Option methodnodes&gt;, &lt;ZIBMolPy.ui.Option methodalphas&gt;, <span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+&lt;ZIBMolPy.ui.Option numnodes&gt;, &lt;ZIBMolPy.ui.Option ext-max&gt;, &lt;ZIBMolPy<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+.ui.Option ext-length&gt;, &lt;ZIBMolPy.ui.Option methodphifit&gt;, &lt;ZIBMolPy.u<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+i.Option parent-node&gt;, &lt;ZIBMolPy.ui.Option write-preview&gt;, &lt;ZIBMolPy.u<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+i.Option random-seed&gt;]
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="ZIBMolPy-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://wiki.kobv.de/confluence/display/AGCMD/ZIBMolPy">ZIBMolPy</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Tue Mar 13 15:06:51 2012
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

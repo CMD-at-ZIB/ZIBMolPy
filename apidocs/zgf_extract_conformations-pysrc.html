@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>zgf_extract_conformations</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="ZIBMolPy-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://wiki.kobv.de/confluence/display/AGCMD/ZIBMolPy">ZIBMolPy</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        Module&nbsp;zgf_extract_conformations
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="zgf_extract_conformations-pysrc.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="zgf_extract_conformations-module.html">Module zgf_extract_conformations</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno">  1</tt>  <tt class="py-line"><tt class="py-comment">#!/usr/bin/python</tt> </tt>
+<a name="L2"></a><tt class="py-lineno">  2</tt>  <tt class="py-line"><tt class="py-comment"># -*- coding: utf-8 -*-</tt> </tt>
+<a name="L3"></a><tt class="py-lineno">  3</tt>  <tt class="py-line"> </tt>
+<a name="L4"></a><tt class="py-lineno">  4</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-0" class="py-name" targets="Package ZIBMolPy=ZIBMolPy-module.html"><a title="ZIBMolPy" class="py-name" href="#" onclick="return doclink('link-0', 'ZIBMolPy', 'link-0');">ZIBMolPy</a></tt><tt class="py-op">.</tt><tt id="link-1" class="py-name" targets="Module ZIBMolPy.utils=ZIBMolPy.utils-module.html"><a title="ZIBMolPy.utils" class="py-name" href="#" onclick="return doclink('link-1', 'utils', 'link-1');">utils</a></tt> <tt class="py-keyword">import</tt> <tt id="link-2" class="py-name" targets="Function ZIBMolPy.utils.register_file_dependency()=ZIBMolPy.utils-module.html#register_file_dependency"><a title="ZIBMolPy.utils.register_file_dependency" class="py-name" href="#" onclick="return doclink('link-2', 'register_file_dependency', 'link-2');">register_file_dependency</a></tt> </tt>
+<a name="L5"></a><tt class="py-lineno">  5</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-3" class="py-name"><a title="ZIBMolPy" class="py-name" href="#" onclick="return doclink('link-3', 'ZIBMolPy', 'link-0');">ZIBMolPy</a></tt><tt class="py-op">.</tt><tt id="link-4" class="py-name" targets="Module ZIBMolPy.ui=ZIBMolPy.ui-module.html"><a title="ZIBMolPy.ui" class="py-name" href="#" onclick="return doclink('link-4', 'ui', 'link-4');">ui</a></tt> <tt class="py-keyword">import</tt> <tt id="link-5" class="py-name" targets="Class ZIBMolPy.ui.Option=ZIBMolPy.ui.Option-class.html"><a title="ZIBMolPy.ui.Option" class="py-name" href="#" onclick="return doclink('link-5', 'Option', 'link-5');">Option</a></tt><tt class="py-op">,</tt> <tt id="link-6" class="py-name" targets="Class ZIBMolPy.ui.OptionsList=ZIBMolPy.ui.OptionsList-class.html"><a title="ZIBMolPy.ui.OptionsList" class="py-name" href="#" onclick="return doclink('link-6', 'OptionsList', 'link-6');">OptionsList</a></tt> </tt>
+<a name="L6"></a><tt class="py-lineno">  6</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-7" class="py-name"><a title="ZIBMolPy" class="py-name" href="#" onclick="return doclink('link-7', 'ZIBMolPy', 'link-0');">ZIBMolPy</a></tt><tt class="py-op">.</tt><tt id="link-8" class="py-name" targets="Package ZIBMolPy.io=ZIBMolPy.io-module.html"><a title="ZIBMolPy.io" class="py-name" href="#" onclick="return doclink('link-8', 'io', 'link-8');">io</a></tt><tt class="py-op">.</tt><tt id="link-9" class="py-name" targets="Module ZIBMolPy.io.trr=ZIBMolPy.io.trr-module.html"><a title="ZIBMolPy.io.trr" class="py-name" href="#" onclick="return doclink('link-9', 'trr', 'link-9');">trr</a></tt> <tt class="py-keyword">import</tt> <tt id="link-10" class="py-name" targets="Class ZIBMolPy.io.trr.TrrFile=ZIBMolPy.io.trr.TrrFile-class.html"><a title="ZIBMolPy.io.trr.TrrFile" class="py-name" href="#" onclick="return doclink('link-10', 'TrrFile', 'link-10');">TrrFile</a></tt> </tt>
+<a name="L7"></a><tt class="py-lineno">  7</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-11" class="py-name"><a title="ZIBMolPy" class="py-name" href="#" onclick="return doclink('link-11', 'ZIBMolPy', 'link-0');">ZIBMolPy</a></tt><tt class="py-op">.</tt><tt id="link-12" class="py-name" targets="Module ZIBMolPy.node=ZIBMolPy.node-module.html"><a title="ZIBMolPy.node" class="py-name" href="#" onclick="return doclink('link-12', 'node', 'link-12');">node</a></tt> <tt class="py-keyword">import</tt> <tt id="link-13" class="py-name" targets="Class ZIBMolPy.node.Node=ZIBMolPy.node.Node-class.html"><a title="ZIBMolPy.node.Node" class="py-name" href="#" onclick="return doclink('link-13', 'Node', 'link-13');">Node</a></tt> </tt>
+<a name="L8"></a><tt class="py-lineno">  8</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-14" class="py-name"><a title="ZIBMolPy" class="py-name" href="#" onclick="return doclink('link-14', 'ZIBMolPy', 'link-0');">ZIBMolPy</a></tt><tt class="py-op">.</tt><tt id="link-15" class="py-name" targets="Module ZIBMolPy.pool=ZIBMolPy.pool-module.html"><a title="ZIBMolPy.pool" class="py-name" href="#" onclick="return doclink('link-15', 'pool', 'link-15');">pool</a></tt> <tt class="py-keyword">import</tt> <tt id="link-16" class="py-name" targets="Class ZIBMolPy.pool.Pool=ZIBMolPy.pool.Pool-class.html"><a title="ZIBMolPy.pool.Pool" class="py-name" href="#" onclick="return doclink('link-16', 'Pool', 'link-16');">Pool</a></tt> </tt>
+<a name="L9"></a><tt class="py-lineno">  9</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt id="link-17" class="py-name" targets="Module zgf_cleanup=zgf_cleanup-module.html"><a title="zgf_cleanup" class="py-name" href="#" onclick="return doclink('link-17', 'zgf_cleanup', 'link-17');">zgf_cleanup</a></tt> </tt>
+<a name="L10"></a><tt class="py-lineno"> 10</tt>  <tt class="py-line"> </tt>
+<a name="L11"></a><tt class="py-lineno"> 11</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">subprocess</tt> <tt class="py-keyword">import</tt> <tt class="py-name">Popen</tt><tt class="py-op">,</tt> <tt class="py-name">PIPE</tt> </tt>
+<a name="L12"></a><tt class="py-lineno"> 12</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">tempfile</tt> <tt class="py-keyword">import</tt> <tt class="py-name">mktemp</tt> </tt>
+<a name="L13"></a><tt class="py-lineno"> 13</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">os</tt> <tt class="py-keyword">import</tt> <tt class="py-name">path</tt> </tt>
+<a name="L14"></a><tt class="py-lineno"> 14</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">numpy</tt> <tt class="py-keyword">as</tt> <tt class="py-name">np</tt> </tt>
+<a name="L15"></a><tt class="py-lineno"> 15</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">sys</tt> </tt>
+<a name="L16"></a><tt class="py-lineno"> 16</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">os</tt> </tt>
+<a name="L17"></a><tt class="py-lineno"> 17</tt>  <tt class="py-line"> </tt>
+<a name="L18"></a><tt class="py-lineno"> 18</tt>  <tt class="py-line"> </tt>
+<a name="L19"></a><tt class="py-lineno"> 19</tt>  <tt class="py-line"><tt id="link-18" class="py-name" targets="Variable zgf_analyze.options_desc=zgf_analyze-module.html#options_desc,Variable zgf_cleanup.options_desc=zgf_cleanup-module.html#options_desc,Variable zgf_create_nodes.options_desc=zgf_create_nodes-module.html#options_desc,Variable zgf_create_pool.options_desc=zgf_create_pool-module.html#options_desc,Variable zgf_create_rates.options_desc=zgf_create_rates-module.html#options_desc,Variable zgf_extract_conformations.options_desc=zgf_extract_conformations-module.html#options_desc,Variable zgf_grompp.options_desc=zgf_grompp-module.html#options_desc,Variable zgf_mdrun.options_desc=zgf_mdrun-module.html#options_desc,Variable zgf_refine.options_desc=zgf_refine-module.html#options_desc,Variable zgf_remove_nodes.options_desc=zgf_remove_nodes-module.html#options_desc,Variable zgf_reweight.options_desc=zgf_reweight-module.html#options_desc,Variable zgf_setup_nodes.options_desc=zgf_setup_nodes-module.html#options_desc,Variable zgf_submit_job_HLRN.options_desc=zgf_submit_job_HLRN-module.html#options_desc,Variable zgf_upgrade.options_desc=zgf_upgrade-module.html#options_desc"><a title="zgf_analyze.options_desc
+zgf_cleanup.options_desc
+zgf_create_nodes.options_desc
+zgf_create_pool.options_desc
+zgf_create_rates.options_desc
+zgf_extract_conformations.options_desc
+zgf_grompp.options_desc
+zgf_mdrun.options_desc
+zgf_refine.options_desc
+zgf_remove_nodes.options_desc
+zgf_reweight.options_desc
+zgf_setup_nodes.options_desc
+zgf_submit_job_HLRN.options_desc
+zgf_upgrade.options_desc" class="py-name" href="#" onclick="return doclink('link-18', 'options_desc', 'link-18');">options_desc</a></tt> <tt class="py-op">=</tt> <tt id="link-19" class="py-name"><a title="ZIBMolPy.ui.OptionsList" class="py-name" href="#" onclick="return doclink('link-19', 'OptionsList', 'link-6');">OptionsList</a></tt><tt class="py-op">(</tt><tt class="py-op">[</tt> </tt>
+<a name="L20"></a><tt class="py-lineno"> 20</tt>  <tt class="py-line">        <tt id="link-20" class="py-name"><a title="ZIBMolPy.ui.Option" class="py-name" href="#" onclick="return doclink('link-20', 'Option', 'link-5');">Option</a></tt><tt class="py-op">(</tt><tt class="py-string">"c"</tt><tt class="py-op">,</tt> <tt class="py-string">"node-threshold"</tt><tt class="py-op">,</tt> <tt class="py-string">"float"</tt><tt class="py-op">,</tt> <tt class="py-string">"threshold for node conformation membership, based on chi value"</tt><tt class="py-op">,</tt> <tt class="py-name">default</tt><tt class="py-op">=</tt><tt class="py-number">0.5</tt><tt class="py-op">)</tt><tt class="py-op">,</tt> </tt>
+<a name="L21"></a><tt class="py-lineno"> 21</tt>  <tt class="py-line">        <tt id="link-21" class="py-name"><a title="ZIBMolPy.ui.Option" class="py-name" href="#" onclick="return doclink('link-21', 'Option', 'link-5');">Option</a></tt><tt class="py-op">(</tt><tt class="py-string">"f"</tt><tt class="py-op">,</tt> <tt class="py-string">"frame-threshold"</tt><tt class="py-op">,</tt> <tt class="py-string">"float"</tt><tt class="py-op">,</tt> <tt class="py-string">"threshold for frame conformation membership, based on frame weight"</tt><tt class="py-op">,</tt> <tt class="py-name">default</tt><tt class="py-op">=</tt><tt class="py-number">0.5</tt><tt class="py-op">)</tt><tt class="py-op">,</tt> </tt>
+<a name="L22"></a><tt class="py-lineno"> 22</tt>  <tt class="py-line">        <tt id="link-22" class="py-name"><a title="ZIBMolPy.ui.Option" class="py-name" href="#" onclick="return doclink('link-22', 'Option', 'link-5');">Option</a></tt><tt class="py-op">(</tt><tt class="py-string">"s"</tt><tt class="py-op">,</tt> <tt class="py-string">"write-sol"</tt><tt class="py-op">,</tt> <tt class="py-string">"bool"</tt><tt class="py-op">,</tt> <tt class="py-string">"write output trajectories with SOL"</tt><tt class="py-op">,</tt> <tt class="py-name">default</tt><tt class="py-op">=</tt><tt class="py-name">False</tt><tt class="py-op">)</tt><tt class="py-op">,</tt> </tt>
+<a name="L23"></a><tt class="py-lineno"> 23</tt>  <tt class="py-line"><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L24"></a><tt class="py-lineno"> 24</tt>  <tt class="py-line">         </tt>
+<a name="is_applicable"></a><div id="is_applicable-def"><a name="L25"></a><tt class="py-lineno"> 25</tt> <a class="py-toggle" href="#" id="is_applicable-toggle" onclick="return toggle('is_applicable');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="zgf_extract_conformations-module.html#is_applicable">is_applicable</a><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="is_applicable-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="is_applicable-expanded"><a name="L26"></a><tt class="py-lineno"> 26</tt>  <tt class="py-line">        <tt id="link-23" class="py-name"><a title="ZIBMolPy.pool" class="py-name" href="#" onclick="return doclink('link-23', 'pool', 'link-15');">pool</a></tt> <tt class="py-op">=</tt> <tt id="link-24" class="py-name"><a title="ZIBMolPy.pool.Pool" class="py-name" href="#" onclick="return doclink('link-24', 'Pool', 'link-16');">Pool</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L27"></a><tt class="py-lineno"> 27</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt><tt class="py-op">(</tt> <tt class="py-name">path</tt><tt class="py-op">.</tt><tt class="py-name">exists</tt><tt class="py-op">(</tt><tt id="link-25" class="py-name"><a title="ZIBMolPy.pool" class="py-name" href="#" onclick="return doclink('link-25', 'pool', 'link-15');">pool</a></tt><tt class="py-op">.</tt><tt id="link-26" class="py-name" targets="Variable ZIBMolPy.pool.Pool.chi_mat_fn=ZIBMolPy.pool.Pool-class.html#chi_mat_fn"><a title="ZIBMolPy.pool.Pool.chi_mat_fn" class="py-name" href="#" onclick="return doclink('link-26', 'chi_mat_fn', 'link-26');">chi_mat_fn</a></tt><tt class="py-op">)</tt> <tt class="py-op">)</tt> </tt>
+</div><a name="L28"></a><tt class="py-lineno"> 28</tt>  <tt class="py-line"> </tt>
+<a name="L29"></a><tt class="py-lineno"> 29</tt>  <tt class="py-line"> </tt>
+<a name="L30"></a><tt class="py-lineno"> 30</tt>  <tt class="py-line"><tt class="py-comment">#===============================================================================</tt> </tt>
+<a name="main"></a><div id="main-def"><a name="L31"></a><tt class="py-lineno"> 31</tt> <a class="py-toggle" href="#" id="main-toggle" onclick="return toggle('main');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="zgf_extract_conformations-module.html#main">main</a><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="main-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="main-expanded"><a name="L32"></a><tt class="py-lineno"> 32</tt>  <tt class="py-line">        <tt class="py-name">options</tt> <tt class="py-op">=</tt> <tt id="link-27" class="py-name"><a title="zgf_analyze.options_desc
+zgf_cleanup.options_desc
+zgf_create_nodes.options_desc
+zgf_create_pool.options_desc
+zgf_create_rates.options_desc
+zgf_extract_conformations.options_desc
+zgf_grompp.options_desc
+zgf_mdrun.options_desc
+zgf_refine.options_desc
+zgf_remove_nodes.options_desc
+zgf_reweight.options_desc
+zgf_setup_nodes.options_desc
+zgf_submit_job_HLRN.options_desc
+zgf_upgrade.options_desc" class="py-name" href="#" onclick="return doclink('link-27', 'options_desc', 'link-18');">options_desc</a></tt><tt class="py-op">.</tt><tt id="link-28" class="py-name" targets="Method ZIBMolPy.ui.OptionsList.parse_args()=ZIBMolPy.ui.OptionsList-class.html#parse_args"><a title="ZIBMolPy.ui.OptionsList.parse_args" class="py-name" href="#" onclick="return doclink('link-28', 'parse_args', 'link-28');">parse_args</a></tt><tt class="py-op">(</tt><tt class="py-name">sys</tt><tt class="py-op">.</tt><tt class="py-name">argv</tt><tt class="py-op">)</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt> </tt>
+<a name="L33"></a><tt class="py-lineno"> 33</tt>  <tt class="py-line"> </tt>
+<a name="L34"></a><tt class="py-lineno"> 34</tt>  <tt class="py-line">        <tt id="link-29" class="py-name"><a title="zgf_cleanup" class="py-name" href="#" onclick="return doclink('link-29', 'zgf_cleanup', 'link-17');">zgf_cleanup</a></tt><tt class="py-op">.</tt><tt id="link-30" class="py-name" targets="Function zgf_analyze.main()=zgf_analyze-module.html#main,Function zgf_browser.main()=zgf_browser-module.html#main,Function zgf_cleanup.main()=zgf_cleanup-module.html#main,Function zgf_create_nodes.main()=zgf_create_nodes-module.html#main,Function zgf_create_pool.main()=zgf_create_pool-module.html#main,Function zgf_create_rates.main()=zgf_create_rates-module.html#main,Function zgf_extract_conformations.main()=zgf_extract_conformations-module.html#main,Function zgf_grompp.main()=zgf_grompp-module.html#main,Function zgf_mdrun.main()=zgf_mdrun-module.html#main,Function zgf_refine.main()=zgf_refine-module.html#main,Function zgf_remove_nodes.main()=zgf_remove_nodes-module.html#main,Function zgf_reweight.main()=zgf_reweight-module.html#main,Function zgf_setup_nodes.main()=zgf_setup_nodes-module.html#main,Function zgf_submit_job_HLRN.main()=zgf_submit_job_HLRN-module.html#main,Function zgf_test.main()=zgf_test-module.html#main,Function zgf_upgrade.main()=zgf_upgrade-module.html#main"><a title="zgf_analyze.main
+zgf_browser.main
+zgf_cleanup.main
+zgf_create_nodes.main
+zgf_create_pool.main
+zgf_create_rates.main
+zgf_extract_conformations.main
+zgf_grompp.main
+zgf_mdrun.main
+zgf_refine.main
+zgf_remove_nodes.main
+zgf_reweight.main
+zgf_setup_nodes.main
+zgf_submit_job_HLRN.main
+zgf_test.main
+zgf_upgrade.main" class="py-name" href="#" onclick="return doclink('link-30', 'main', 'link-30');">main</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L35"></a><tt class="py-lineno"> 35</tt>  <tt class="py-line">         </tt>
+<a name="L36"></a><tt class="py-lineno"> 36</tt>  <tt class="py-line">        <tt id="link-31" class="py-name"><a title="ZIBMolPy.pool" class="py-name" href="#" onclick="return doclink('link-31', 'pool', 'link-15');">pool</a></tt> <tt class="py-op">=</tt> <tt id="link-32" class="py-name"><a title="ZIBMolPy.pool.Pool" class="py-name" href="#" onclick="return doclink('link-32', 'Pool', 'link-16');">Pool</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L37"></a><tt class="py-lineno"> 37</tt>  <tt class="py-line">        <tt class="py-name">npz_file</tt> <tt class="py-op">=</tt> <tt class="py-name">np</tt><tt class="py-op">.</tt><tt class="py-name">load</tt><tt class="py-op">(</tt><tt id="link-33" class="py-name"><a title="ZIBMolPy.pool" class="py-name" href="#" onclick="return doclink('link-33', 'pool', 'link-15');">pool</a></tt><tt class="py-op">.</tt><tt id="link-34" class="py-name"><a title="ZIBMolPy.pool.Pool.chi_mat_fn" class="py-name" href="#" onclick="return doclink('link-34', 'chi_mat_fn', 'link-26');">chi_mat_fn</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L38"></a><tt class="py-lineno"> 38</tt>  <tt class="py-line">        <tt class="py-name">chi_matrix</tt> <tt class="py-op">=</tt> <tt class="py-name">npz_file</tt><tt class="py-op">[</tt><tt class="py-string">'matrix'</tt><tt class="py-op">]</tt> </tt>
+<a name="L39"></a><tt class="py-lineno"> 39</tt>  <tt class="py-line">        <tt class="py-name">node_names</tt> <tt class="py-op">=</tt> <tt class="py-name">npz_file</tt><tt class="py-op">[</tt><tt class="py-string">'node_names'</tt><tt class="py-op">]</tt> </tt>
+<a name="L40"></a><tt class="py-lineno"> 40</tt>  <tt class="py-line">        <tt class="py-name">n_clusters</tt> <tt class="py-op">=</tt> <tt class="py-name">npz_file</tt><tt class="py-op">[</tt><tt class="py-string">'n_clusters'</tt><tt class="py-op">]</tt> </tt>
+<a name="L41"></a><tt class="py-lineno"> 41</tt>  <tt class="py-line">        <tt class="py-name">active_nodes</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt id="link-35" class="py-name"><a title="ZIBMolPy.node.Node" class="py-name" href="#" onclick="return doclink('link-35', 'Node', 'link-13');">Node</a></tt><tt class="py-op">(</tt><tt class="py-name">nn</tt><tt class="py-op">)</tt> <tt class="py-keyword">for</tt> <tt class="py-name">nn</tt> <tt class="py-keyword">in</tt> <tt class="py-name">node_names</tt><tt class="py-op">]</tt> </tt>
+<a name="L42"></a><tt class="py-lineno"> 42</tt>  <tt class="py-line">         </tt>
+<a name="L43"></a><tt class="py-lineno"> 43</tt>  <tt class="py-line">        <tt class="py-comment"># create and open dest_files, intialize counters for statistics</tt> </tt>
+<a name="L44"></a><tt class="py-lineno"> 44</tt>  <tt class="py-line">        <tt class="py-name">dest_filenames</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt> <tt id="link-36" class="py-name"><a title="ZIBMolPy.pool" class="py-name" href="#" onclick="return doclink('link-36', 'pool', 'link-15');">pool</a></tt><tt class="py-op">.</tt><tt id="link-37" class="py-name" targets="Variable ZIBMolPy.pool.Pool.analysis_dir=ZIBMolPy.pool.Pool-class.html#analysis_dir"><a title="ZIBMolPy.pool.Pool.analysis_dir" class="py-name" href="#" onclick="return doclink('link-37', 'analysis_dir', 'link-37');">analysis_dir</a></tt><tt class="py-op">+</tt><tt class="py-string">"cluster%d.trr"</tt><tt class="py-op">%</tt><tt class="py-op">(</tt><tt class="py-name">c</tt><tt class="py-op">+</tt><tt class="py-number">1</tt><tt class="py-op">)</tt> <tt class="py-keyword">for</tt> <tt class="py-name">c</tt> <tt class="py-keyword">in</tt> <tt class="py-name">range</tt><tt class="py-op">(</tt><tt class="py-name">n_clusters</tt><tt class="py-op">)</tt> <tt class="py-op">]</tt> </tt>
+<a name="L45"></a><tt class="py-lineno"> 45</tt>  <tt class="py-line">        <tt class="py-name">dest_files</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt> <tt class="py-name">open</tt><tt class="py-op">(</tt><tt class="py-name">fn</tt><tt class="py-op">,</tt> <tt class="py-string">"wb"</tt><tt class="py-op">)</tt> <tt class="py-keyword">for</tt> <tt class="py-name">fn</tt> <tt class="py-keyword">in</tt> <tt class="py-name">dest_filenames</tt> <tt class="py-op">]</tt> </tt>
+<a name="L46"></a><tt class="py-lineno"> 46</tt>  <tt class="py-line">        <tt class="py-name">dest_frame_counters</tt> <tt class="py-op">=</tt> <tt class="py-name">np</tt><tt class="py-op">.</tt><tt class="py-name">zeros</tt><tt class="py-op">(</tt><tt class="py-name">n_clusters</tt><tt class="py-op">)</tt> </tt>
+<a name="L47"></a><tt class="py-lineno"> 47</tt>  <tt class="py-line">         </tt>
+<a name="L48"></a><tt class="py-lineno"> 48</tt>  <tt class="py-line">         </tt>
+<a name="L49"></a><tt class="py-lineno"> 49</tt>  <tt class="py-line">        <tt class="py-comment"># For each active node...</tt> </tt>
+<a name="L50"></a><tt class="py-lineno"> 50</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt class="py-op">(</tt><tt class="py-name">i</tt><tt class="py-op">,</tt> <tt class="py-name">n</tt><tt class="py-op">)</tt> <tt class="py-keyword">in</tt> <tt class="py-name">enumerate</tt><tt class="py-op">(</tt><tt class="py-name">active_nodes</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L51"></a><tt class="py-lineno"> 51</tt>  <tt class="py-line">                <tt class="py-comment"># ... find the clusters to which it belongs (might be more than one)...</tt> </tt>
+<a name="L52"></a><tt class="py-lineno"> 52</tt>  <tt class="py-line">                <tt class="py-name">belonging_clusters</tt> <tt class="py-op">=</tt> <tt class="py-name">np</tt><tt class="py-op">.</tt><tt class="py-name">argwhere</tt><tt class="py-op">(</tt><tt class="py-name">chi_matrix</tt><tt class="py-op">[</tt><tt class="py-name">i</tt><tt class="py-op">]</tt> <tt class="py-op">&gt;</tt> <tt class="py-name">options</tt><tt class="py-op">.</tt><tt class="py-name">node_threshold</tt><tt class="py-op">)</tt> </tt>
+<a name="L53"></a><tt class="py-lineno"> 53</tt>  <tt class="py-line">                 </tt>
+<a name="L54"></a><tt class="py-lineno"> 54</tt>  <tt class="py-line">                <tt class="py-comment"># ... and find all typical frames of this node.</tt> </tt>
+<a name="L55"></a><tt class="py-lineno"> 55</tt>  <tt class="py-line">                <tt class="py-comment">#TODO not an optimal solution... discuss</tt> </tt>
+<a name="L56"></a><tt class="py-lineno"> 56</tt>  <tt class="py-line">                <tt class="py-comment"># per default, we take every frame with above average weight</tt> </tt>
+<a name="L57"></a><tt class="py-lineno"> 57</tt>  <tt class="py-line">                <tt class="py-name">frame_threshold</tt> <tt class="py-op">=</tt> <tt class="py-name">options</tt><tt class="py-op">.</tt><tt class="py-name">frame_threshold</tt><tt class="py-op">*</tt><tt class="py-number">2</tt><tt class="py-op">*</tt><tt class="py-name">np</tt><tt class="py-op">.</tt><tt id="link-38" class="py-name" targets="Static Method ZIBMolPy.internals.DihedralCoordinate.mean()=ZIBMolPy.internals.DihedralCoordinate-class.html#mean,Method ZIBMolPy.internals.InternalArray.mean()=ZIBMolPy.internals.InternalArray-class.html#mean,Static Method ZIBMolPy.internals.LinearCoordinate.mean()=ZIBMolPy.internals.LinearCoordinate-class.html#mean"><a title="ZIBMolPy.internals.DihedralCoordinate.mean
+ZIBMolPy.internals.InternalArray.mean
+ZIBMolPy.internals.LinearCoordinate.mean" class="py-name" href="#" onclick="return doclink('link-38', 'mean', 'link-38');">mean</a></tt><tt class="py-op">(</tt><tt class="py-name">n</tt><tt class="py-op">.</tt><tt id="link-39" class="py-name" targets="Variable ZIBMolPy.internals.InternalArray.frameweights=ZIBMolPy.internals.InternalArray-class.html#frameweights,Variable ZIBMolPy.node.Node.frameweights=ZIBMolPy.node.Node-class.html#frameweights"><a title="ZIBMolPy.internals.InternalArray.frameweights
+ZIBMolPy.node.Node.frameweights" class="py-name" href="#" onclick="return doclink('link-39', 'frameweights', 'link-39');">frameweights</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L58"></a><tt class="py-lineno"> 58</tt>  <tt class="py-line">                <tt class="py-name">typical_frame_nums</tt> <tt class="py-op">=</tt> <tt class="py-name">np</tt><tt class="py-op">.</tt><tt class="py-name">argwhere</tt><tt class="py-op">(</tt><tt class="py-name">n</tt><tt class="py-op">.</tt><tt id="link-40" class="py-name"><a title="ZIBMolPy.internals.InternalArray.frameweights
+ZIBMolPy.node.Node.frameweights" class="py-name" href="#" onclick="return doclink('link-40', 'frameweights', 'link-39');">frameweights</a></tt> <tt class="py-op">&gt;</tt> <tt class="py-name">frame_threshold</tt><tt class="py-op">)</tt> </tt>
+<a name="L59"></a><tt class="py-lineno"> 59</tt>  <tt class="py-line">                 </tt>
+<a name="L60"></a><tt class="py-lineno"> 60</tt>  <tt class="py-line">                <tt class="py-comment"># Go through the node's trajectory ...</tt> </tt>
+<a name="L61"></a><tt class="py-lineno"> 61</tt>  <tt class="py-line">                <tt class="py-name">trr_in</tt> <tt class="py-op">=</tt> <tt id="link-41" class="py-name"><a title="ZIBMolPy.io.trr.TrrFile" class="py-name" href="#" onclick="return doclink('link-41', 'TrrFile', 'link-10');">TrrFile</a></tt><tt class="py-op">(</tt><tt class="py-name">n</tt><tt class="py-op">.</tt><tt id="link-42" class="py-name" targets="Variable ZIBMolPy.node.Node.trr_fn=ZIBMolPy.node.Node-class.html#trr_fn"><a title="ZIBMolPy.node.Node.trr_fn" class="py-name" href="#" onclick="return doclink('link-42', 'trr_fn', 'link-42');">trr_fn</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L62"></a><tt class="py-lineno"> 62</tt>  <tt class="py-line">                <tt class="py-name">curr_frame</tt> <tt class="py-op">=</tt> <tt class="py-name">trr_in</tt><tt class="py-op">.</tt><tt class="py-name">first_frame</tt> </tt>
+<a name="L63"></a><tt class="py-lineno"> 63</tt>  <tt class="py-line">                <tt class="py-keyword">for</tt> <tt class="py-name">i</tt> <tt class="py-keyword">in</tt> <tt class="py-name">typical_frame_nums</tt><tt class="py-op">:</tt> </tt>
+<a name="L64"></a><tt class="py-lineno"> 64</tt>  <tt class="py-line">                        <tt class="py-comment"># ...stop at each typical frame...</tt> </tt>
+<a name="L65"></a><tt class="py-lineno"> 65</tt>  <tt class="py-line">                        <tt class="py-keyword">while</tt><tt class="py-op">(</tt><tt class="py-name">i</tt> <tt class="py-op">!=</tt> <tt class="py-name">curr_frame</tt><tt class="py-op">.</tt><tt class="py-name">number</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L66"></a><tt class="py-lineno"> 66</tt>  <tt class="py-line">                                <tt class="py-name">curr_frame</tt> <tt class="py-op">=</tt> <tt class="py-name">curr_frame</tt><tt class="py-op">.</tt><tt id="link-43" class="py-name" targets="Method ZIBMolPy.io.trr.TrrFrame.next()=ZIBMolPy.io.trr.TrrFrame-class.html#next"><a title="ZIBMolPy.io.trr.TrrFrame.next" class="py-name" href="#" onclick="return doclink('link-43', 'next', 'link-43');">next</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L67"></a><tt class="py-lineno"> 67</tt>  <tt class="py-line">                        <tt class="py-keyword">assert</tt><tt class="py-op">(</tt><tt class="py-name">curr_frame</tt><tt class="py-op">.</tt><tt class="py-name">number</tt> <tt class="py-op">==</tt> <tt class="py-name">i</tt><tt class="py-op">)</tt> </tt>
+<a name="L68"></a><tt class="py-lineno"> 68</tt>  <tt class="py-line">                        <tt class="py-comment">#... and copy it into the dest_file of each belonging cluster.</tt> </tt>
+<a name="L69"></a><tt class="py-lineno"> 69</tt>  <tt class="py-line">                        <tt class="py-keyword">for</tt> <tt class="py-name">c</tt> <tt class="py-keyword">in</tt> <tt class="py-name">belonging_clusters</tt><tt class="py-op">:</tt> </tt>
+<a name="L70"></a><tt class="py-lineno"> 70</tt>  <tt class="py-line">                                <tt class="py-name">dest_files</tt><tt class="py-op">[</tt><tt class="py-name">c</tt><tt class="py-op">]</tt><tt class="py-op">.</tt><tt id="link-44" class="py-name" targets="Method ZIBMolPy.io.topology.Moleculetype.write()=ZIBMolPy.io.topology.Moleculetype-class.html#write,Method ZIBMolPy.io.topology.Section.write()=ZIBMolPy.io.topology.Section-class.html#write,Method ZIBMolPy.io.topology.Topology.write()=ZIBMolPy.io.topology.Topology-class.html#write,Method ZIBMolPy.topology.Topology.write()=ZIBMolPy.topology.Topology-class.html#write"><a title="ZIBMolPy.io.topology.Moleculetype.write
+ZIBMolPy.io.topology.Section.write
+ZIBMolPy.io.topology.Topology.write
+ZIBMolPy.topology.Topology.write" class="py-name" href="#" onclick="return doclink('link-44', 'write', 'link-44');">write</a></tt><tt class="py-op">(</tt><tt class="py-name">curr_frame</tt><tt class="py-op">.</tt><tt id="link-45" class="py-name" targets="Variable ZIBMolPy.io.trr.TrrFrame.raw_data=ZIBMolPy.io.trr.TrrFrame-class.html#raw_data"><a title="ZIBMolPy.io.trr.TrrFrame.raw_data" class="py-name" href="#" onclick="return doclink('link-45', 'raw_data', 'link-45');">raw_data</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L71"></a><tt class="py-lineno"> 71</tt>  <tt class="py-line">                                <tt class="py-name">dest_frame_counters</tt><tt class="py-op">[</tt><tt class="py-name">c</tt><tt class="py-op">]</tt> <tt class="py-op">+=</tt> <tt class="py-number">1</tt> </tt>
+<a name="L72"></a><tt class="py-lineno"> 72</tt>  <tt class="py-line">                <tt class="py-name">trr_in</tt><tt class="py-op">.</tt><tt id="link-46" class="py-name" targets="Method ZIBMolPy.io.trr.TrrFile.close()=ZIBMolPy.io.trr.TrrFile-class.html#close"><a title="ZIBMolPy.io.trr.TrrFile.close" class="py-name" href="#" onclick="return doclink('link-46', 'close', 'link-46');">close</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> <tt class="py-comment"># close source file</tt> </tt>
+<a name="L73"></a><tt class="py-lineno"> 73</tt>  <tt class="py-line"> </tt>
+<a name="L74"></a><tt class="py-lineno"> 74</tt>  <tt class="py-line"> </tt>
+<a name="L75"></a><tt class="py-lineno"> 75</tt>  <tt class="py-line">        <tt class="py-comment"># close dest_files</tt> </tt>
+<a name="L76"></a><tt class="py-lineno"> 76</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt class="py-name">f</tt> <tt class="py-keyword">in</tt> <tt class="py-name">dest_files</tt><tt class="py-op">:</tt> </tt>
+<a name="L77"></a><tt class="py-lineno"> 77</tt>  <tt class="py-line">                <tt class="py-name">f</tt><tt class="py-op">.</tt><tt id="link-47" class="py-name"><a title="ZIBMolPy.io.trr.TrrFile.close" class="py-name" href="#" onclick="return doclink('link-47', 'close', 'link-46');">close</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L78"></a><tt class="py-lineno"> 78</tt>  <tt class="py-line">        <tt class="py-keyword">del</tt><tt class="py-op">(</tt><tt class="py-name">dest_files</tt><tt class="py-op">)</tt> </tt>
+<a name="L79"></a><tt class="py-lineno"> 79</tt>  <tt class="py-line">         </tt>
+<a name="L80"></a><tt class="py-lineno"> 80</tt>  <tt class="py-line">        <tt class="py-comment"># desolvate cluster-trajectories 'in-place'</tt> </tt>
+<a name="L81"></a><tt class="py-lineno"> 81</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt><tt class="py-op">(</tt><tt class="py-keyword">not</tt> <tt class="py-name">options</tt><tt class="py-op">.</tt><tt class="py-name">write_sol</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L82"></a><tt class="py-lineno"> 82</tt>  <tt class="py-line">                <tt class="py-keyword">for</tt> <tt class="py-name">dest_fn</tt> <tt class="py-keyword">in</tt> <tt class="py-name">dest_filenames</tt><tt class="py-op">:</tt> </tt>
+<a name="L83"></a><tt class="py-lineno"> 83</tt>  <tt class="py-line">                        <tt class="py-name">tmp_fn</tt> <tt class="py-op">=</tt> <tt class="py-name">mktemp</tt><tt class="py-op">(</tt><tt class="py-name">suffix</tt><tt class="py-op">=</tt><tt class="py-string">'.trr'</tt><tt class="py-op">,</tt> <tt class="py-name">dir</tt><tt class="py-op">=</tt><tt id="link-48" class="py-name"><a title="ZIBMolPy.pool" class="py-name" href="#" onclick="return doclink('link-48', 'pool', 'link-15');">pool</a></tt><tt class="py-op">.</tt><tt id="link-49" class="py-name"><a title="ZIBMolPy.pool.Pool.analysis_dir" class="py-name" href="#" onclick="return doclink('link-49', 'analysis_dir', 'link-37');">analysis_dir</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L84"></a><tt class="py-lineno"> 84</tt>  <tt class="py-line">                        <tt class="py-name">os</tt><tt class="py-op">.</tt><tt class="py-name">rename</tt><tt class="py-op">(</tt><tt class="py-name">dest_fn</tt><tt class="py-op">,</tt> <tt class="py-name">tmp_fn</tt><tt class="py-op">)</tt> <tt class="py-comment"># works as both files are in same dir</tt> </tt>
+<a name="L85"></a><tt class="py-lineno"> 85</tt>  <tt class="py-line">                        <tt class="py-name">cmd</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-string">"trjconv"</tt><tt class="py-op">,</tt> <tt class="py-string">"-f"</tt><tt class="py-op">,</tt> <tt class="py-name">tmp_fn</tt><tt class="py-op">,</tt> <tt class="py-string">"-o"</tt><tt class="py-op">,</tt> <tt class="py-name">dest_fn</tt><tt class="py-op">,</tt> <tt class="py-string">"-n"</tt><tt class="py-op">,</tt> <tt id="link-50" class="py-name"><a title="ZIBMolPy.pool" class="py-name" href="#" onclick="return doclink('link-50', 'pool', 'link-15');">pool</a></tt><tt class="py-op">.</tt><tt class="py-name">ndx_fn</tt><tt class="py-op">]</tt> </tt>
+<a name="L86"></a><tt class="py-lineno"> 86</tt>  <tt class="py-line">                        <tt class="py-name">p</tt> <tt class="py-op">=</tt> <tt class="py-name">Popen</tt><tt class="py-op">(</tt><tt class="py-name">cmd</tt><tt class="py-op">,</tt> <tt class="py-name">stdin</tt><tt class="py-op">=</tt><tt class="py-name">PIPE</tt><tt class="py-op">)</tt> </tt>
+<a name="L87"></a><tt class="py-lineno"> 87</tt>  <tt class="py-line">                        <tt class="py-name">p</tt><tt class="py-op">.</tt><tt class="py-name">communicate</tt><tt class="py-op">(</tt><tt class="py-name">input</tt><tt class="py-op">=</tt><tt class="py-string">"MOI\n"</tt><tt class="py-op">)</tt> </tt>
+<a name="L88"></a><tt class="py-lineno"> 88</tt>  <tt class="py-line">                        <tt class="py-keyword">assert</tt><tt class="py-op">(</tt><tt class="py-name">p</tt><tt class="py-op">.</tt><tt class="py-name">wait</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> <tt class="py-op">==</tt> <tt class="py-number">0</tt><tt class="py-op">)</tt> </tt>
+<a name="L89"></a><tt class="py-lineno"> 89</tt>  <tt class="py-line">                        <tt class="py-name">os</tt><tt class="py-op">.</tt><tt class="py-name">remove</tt><tt class="py-op">(</tt><tt class="py-name">tmp_fn</tt><tt class="py-op">)</tt> </tt>
+<a name="L90"></a><tt class="py-lineno"> 90</tt>  <tt class="py-line">                         </tt>
+<a name="L91"></a><tt class="py-lineno"> 91</tt>  <tt class="py-line">        <tt class="py-comment"># register dependencies</tt> </tt>
+<a name="L92"></a><tt class="py-lineno"> 92</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt class="py-name">fn</tt> <tt class="py-keyword">in</tt> <tt class="py-name">dest_filenames</tt><tt class="py-op">:</tt> </tt>
+<a name="L93"></a><tt class="py-lineno"> 93</tt>  <tt class="py-line">                <tt id="link-51" class="py-name"><a title="ZIBMolPy.utils.register_file_dependency" class="py-name" href="#" onclick="return doclink('link-51', 'register_file_dependency', 'link-2');">register_file_dependency</a></tt><tt class="py-op">(</tt><tt class="py-name">fn</tt><tt class="py-op">,</tt> <tt id="link-52" class="py-name"><a title="ZIBMolPy.pool" class="py-name" href="#" onclick="return doclink('link-52', 'pool', 'link-15');">pool</a></tt><tt class="py-op">.</tt><tt id="link-53" class="py-name"><a title="ZIBMolPy.pool.Pool.chi_mat_fn" class="py-name" href="#" onclick="return doclink('link-53', 'chi_mat_fn', 'link-26');">chi_mat_fn</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L94"></a><tt class="py-lineno"> 94</tt>  <tt class="py-line">         </tt>
+<a name="L95"></a><tt class="py-lineno"> 95</tt>  <tt class="py-line">        <tt class="py-comment"># check number of written frames</tt> </tt>
+<a name="L96"></a><tt class="py-lineno"> 96</tt>  <tt class="py-line">        <tt class="py-name">sys</tt><tt class="py-op">.</tt><tt class="py-name">stdout</tt><tt class="py-op">.</tt><tt id="link-54" class="py-name"><a title="ZIBMolPy.io.topology.Moleculetype.write
+ZIBMolPy.io.topology.Section.write
+ZIBMolPy.io.topology.Topology.write
+ZIBMolPy.topology.Topology.write" class="py-name" href="#" onclick="return doclink('link-54', 'write', 'link-44');">write</a></tt><tt class="py-op">(</tt><tt class="py-string">"Checking lenghts of written trajectories... "</tt><tt class="py-op">)</tt> </tt>
+<a name="L97"></a><tt class="py-lineno"> 97</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt class="py-name">i</tt> <tt class="py-keyword">in</tt> <tt class="py-name">range</tt><tt class="py-op">(</tt><tt class="py-name">n_clusters</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L98"></a><tt class="py-lineno"> 98</tt>  <tt class="py-line">                <tt class="py-name">f</tt> <tt class="py-op">=</tt> <tt id="link-55" class="py-name"><a title="ZIBMolPy.io.trr.TrrFile" class="py-name" href="#" onclick="return doclink('link-55', 'TrrFile', 'link-10');">TrrFile</a></tt><tt class="py-op">(</tt><tt class="py-name">dest_filenames</tt><tt class="py-op">[</tt><tt class="py-name">i</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L99"></a><tt class="py-lineno"> 99</tt>  <tt class="py-line">                <tt class="py-keyword">assert</tt><tt class="py-op">(</tt><tt class="py-name">f</tt><tt class="py-op">.</tt><tt id="link-56" class="py-name" targets="Method ZIBMolPy.io.trr.TrrFile.count_frames()=ZIBMolPy.io.trr.TrrFile-class.html#count_frames"><a title="ZIBMolPy.io.trr.TrrFile.count_frames" class="py-name" href="#" onclick="return doclink('link-56', 'count_frames', 'link-56');">count_frames</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> <tt class="py-op">==</tt> <tt class="py-name">dest_frame_counters</tt><tt class="py-op">[</tt><tt class="py-name">i</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L100"></a><tt class="py-lineno">100</tt>  <tt class="py-line">                <tt class="py-name">f</tt><tt class="py-op">.</tt><tt id="link-57" class="py-name"><a title="ZIBMolPy.io.trr.TrrFile.close" class="py-name" href="#" onclick="return doclink('link-57', 'close', 'link-46');">close</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L101"></a><tt class="py-lineno">101</tt>  <tt class="py-line">        <tt class="py-keyword">print</tt><tt class="py-op">(</tt><tt class="py-string">"done."</tt><tt class="py-op">)</tt> </tt>
+<a name="L102"></a><tt class="py-lineno">102</tt>  <tt class="py-line">         </tt>
+<a name="L103"></a><tt class="py-lineno">103</tt>  <tt class="py-line">        <tt class="py-comment">#output statistics</tt> </tt>
+<a name="L104"></a><tt class="py-lineno">104</tt>  <tt class="py-line">        <tt class="py-keyword">print</tt> <tt class="py-string">"\n### Extraction summary ###\nnode threshold: %1.1f, frame threshold: %1.1f"</tt><tt class="py-op">%</tt><tt class="py-op">(</tt><tt class="py-name">options</tt><tt class="py-op">.</tt><tt class="py-name">node_threshold</tt><tt class="py-op">,</tt> <tt class="py-name">options</tt><tt class="py-op">.</tt><tt class="py-name">frame_threshold</tt><tt class="py-op">)</tt> </tt>
+<a name="L105"></a><tt class="py-lineno">105</tt>  <tt class="py-line">        <tt class="py-keyword">print</tt> <tt class="py-string">"Cluster trajectories were written to %s:"</tt><tt class="py-op">%</tt><tt id="link-58" class="py-name"><a title="ZIBMolPy.pool" class="py-name" href="#" onclick="return doclink('link-58', 'pool', 'link-15');">pool</a></tt><tt class="py-op">.</tt><tt id="link-59" class="py-name"><a title="ZIBMolPy.pool.Pool.analysis_dir" class="py-name" href="#" onclick="return doclink('link-59', 'analysis_dir', 'link-37');">analysis_dir</a></tt> </tt>
+<a name="L106"></a><tt class="py-lineno">106</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt class="py-op">(</tt><tt class="py-name">c</tt><tt class="py-op">,</tt> <tt class="py-name">f</tt><tt class="py-op">)</tt> <tt class="py-keyword">in</tt> <tt class="py-name">enumerate</tt><tt class="py-op">(</tt><tt class="py-name">dest_frame_counters</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L107"></a><tt class="py-lineno">107</tt>  <tt class="py-line">                <tt class="py-keyword">print</tt> <tt class="py-string">"cluster%d.trr [%d frames] from node(s):"</tt><tt class="py-op">%</tt><tt class="py-op">(</tt><tt class="py-name">c</tt><tt class="py-op">+</tt><tt class="py-number">1</tt><tt class="py-op">,</tt> <tt class="py-name">f</tt><tt class="py-op">)</tt> </tt>
+<a name="L108"></a><tt class="py-lineno">108</tt>  <tt class="py-line">                <tt class="py-keyword">print</tt> <tt class="py-name">list</tt><tt class="py-op">(</tt><tt class="py-name">np</tt><tt class="py-op">.</tt><tt class="py-name">argwhere</tt><tt class="py-op">(</tt><tt class="py-name">chi_matrix</tt><tt class="py-op">[</tt><tt class="py-op">:</tt><tt class="py-op">,</tt><tt class="py-name">c</tt><tt class="py-op">]</tt> <tt class="py-op">&gt;</tt> <tt class="py-name">options</tt><tt class="py-op">.</tt><tt class="py-name">node_threshold</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt class="py-name">flat</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L109"></a><tt class="py-lineno">109</tt>  <tt class="py-line">                 </tt>
+<a name="L110"></a><tt class="py-lineno">110</tt>  <tt class="py-line">                 </tt>
+<a name="L111"></a><tt class="py-lineno">111</tt>  <tt class="py-line"><tt class="py-comment">#===============================================================================</tt> </tt>
+<a name="L112"></a><tt class="py-lineno">112</tt>  <tt class="py-line"><tt class="py-keyword">if</tt><tt class="py-op">(</tt><tt class="py-name">__name__</tt> <tt class="py-op">==</tt> <tt class="py-string">"__main__"</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L113"></a><tt class="py-lineno">113</tt>  <tt class="py-line">        <tt id="link-60" class="py-name"><a title="zgf_analyze.main
+zgf_browser.main
+zgf_cleanup.main
+zgf_create_nodes.main
+zgf_create_pool.main
+zgf_create_rates.main
+zgf_extract_conformations.main
+zgf_grompp.main
+zgf_mdrun.main
+zgf_refine.main
+zgf_remove_nodes.main
+zgf_reweight.main
+zgf_setup_nodes.main
+zgf_submit_job_HLRN.main
+zgf_test.main
+zgf_upgrade.main" class="py-name" href="#" onclick="return doclink('link-60', 'main', 'link-30');">main</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L114"></a><tt class="py-lineno">114</tt>  <tt class="py-line"> </tt>
+<a name="L115"></a><tt class="py-lineno">115</tt>  <tt class="py-line"><tt class="py-comment">#EOF</tt> </tt>
+<a name="L116"></a><tt class="py-lineno">116</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="ZIBMolPy-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://wiki.kobv.de/confluence/display/AGCMD/ZIBMolPy">ZIBMolPy</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Tue Mar 13 15:06:56 2012
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

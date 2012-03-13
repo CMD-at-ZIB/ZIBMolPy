@@ -1,0 +1,407 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>zgf_create_pool</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="ZIBMolPy-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://wiki.kobv.de/confluence/display/AGCMD/ZIBMolPy">ZIBMolPy</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        Module&nbsp;zgf_create_pool
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="zgf_create_pool-module.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== MODULE DESCRIPTION ==================== -->
+<h1 class="epydoc">Module zgf_create_pool</h1><p class="nomargin-top"><span class="codelink"><a href="zgf_create_pool-pysrc.html">source&nbsp;code</a></span></p>
+<h1 class="heading">What it does</h1>
+    <p><b>This is the first step of ZIBgridfree.</b></p>
+    <p>This tool will, based on a presampling trajectory, process your 
+    input in order to generate an (yet empty) pool of ZIBgridfree sampling 
+    nodes. In the directory where zgf_create_pool is run, two new folders 
+    will be created, nodes/ and analysis/, along with a file called 
+    pool-desc.txt that contains the current state of your node pool. The 
+    folder nodes/ will contain a single folder node0000, which represents 
+    the root node. The root node corresponds to the presampling. All 
+    following nodes will originate from the root node.</p>
+    <p><b>The next step is <a href="zgf_create_nodes-module.html" 
+    class="link">zgf_create_nodes</a>.</b></p>
+  <h1 class="heading">How it works</h1>
+    <p>At the command line, type:</p>
+<pre class="literalblock">
+       $ zgf_create_nodes [options]
+</pre>
+  <h1 class="heading">Requirements</h1>
+    <ul>
+      <li>
+        molecule in pdb-format
+      </li>
+      <li>
+        presampling trajectory in trr format
+      </li>
+      <li>
+        <a 
+        href="https://wiki.kobv.de/confluence/display/AGCMD/Example+mdp-file+for+Gromacs+with+ZIBgridfree"
+        target="_top">mdp file</a> for grompp
+      </li>
+      <li>
+        Gromacs topology for the molecule, and all included files
+      </li>
+      <li>
+        index file including group 'MOI' (molecule of interest)
+      </li>
+      <li>
+        <a 
+        href="http://www.zib.de/cmd-debian/ZIBMolPy/apidocs/ZIBMolPy.internals-module.html"
+        target="_top">internal coordinates</a> definition
+        <p>MOI will probably be everything except the solvent, or at least 
+        every molecule that is involved in your internal coordinates. You 
+        have to make sure that it is specified in the index file. 
+        Furthermore, MOI has to be among the energy groups ('energygrps') 
+        in the <a 
+        href="https://wiki.kobv.de/confluence/display/AGCMD/Example+mdp-file+for+Gromacs+with+ZIBgridfree"
+        target="_top">mdp file</a>.</p>
+        <p>The mdp-file has to require the following lines:</p>
+<pre class="literalblock">
+       ; Dihedral restraints
+       dihre               =  yes
+       dihre_fc            =  1
+       ; Distance restraints
+       disre               =  simple
+       disre_fc            =  1
+</pre>
+        <p>If the above lines are not present, they will be added and a 
+        fixed version of your mdp file will be written. Furthermore, the 
+        value for 'nstxout' has to be equal to the value of 
+        'nstenergy'.</p>
+        <p>An example mdp-file can be found <a 
+        href="https://wiki.kobv.de/confluence/display/AGCMD/Example+mdp-file+for+Gromacs+with+ZIBgridfree"
+        target="_top">here</a>.</p>
+      </li>
+    </ul>
+  <h1 class="heading">Gelman-Rubin parameters</h1>
+    <ul>
+      <li>
+        <b>GR threshold</b> defines a threshold for the Gelman-Rubin 
+        convergence check. The closer the value to 1.0, the more rigorous 
+        the convergence of the sampling is evaluated.
+      </li>
+      <li>
+        <b>GR chains</b> defines the number of chains for the Gelman-Rubin 
+        convergence check. More chains mean more rigorous evaluation of the
+        convergence, as the variance in each chain (intra-chain variance) 
+        is compared to the overall variance of the sampling (inter-chain 
+        variance).
+      </li>
+    </ul>
+  <h1 class="heading">Options</h1>
+    <ul>
+      <li>
+        <b>common-filename</b>:
+<pre class="literalblock">
+ help: Sets new, common default filenames for ALL options
+ short_name: c
+ datatype: str
+ long_name: common-filename
+</pre>
+      </li>
+      <li>
+        <b>molecule</b>:
+<pre class="literalblock">
+ default: molecule.pdb
+ short_name: s
+ datatype: file
+ long_name: molecule
+ extension: pdb
+</pre>
+      </li>
+      <li>
+        <b>presampling</b>:
+<pre class="literalblock">
+ default: presampling.trr
+ short_name: f
+ datatype: file
+ long_name: presampling
+ extension: trr
+</pre>
+      </li>
+      <li>
+        <b>grompp</b>:
+<pre class="literalblock">
+ default: run.mdp
+ short_name: g
+ datatype: file
+ long_name: grompp
+ extension: mdp
+</pre>
+      </li>
+      <li>
+        <b>topology</b>:
+<pre class="literalblock">
+ default: topol.top
+ short_name: p
+ datatype: file
+ long_name: topology
+ extension: top
+</pre>
+      </li>
+      <li>
+        <b>index</b>:
+<pre class="literalblock">
+ default: index.ndx
+ short_name: n
+ datatype: file
+ long_name: index
+ extension: ndx
+</pre>
+      </li>
+      <li>
+        <b>internals</b>:
+<pre class="literalblock">
+ default: internals.int
+ short_name: I
+ datatype: file
+ long_name: internals
+ extension: int
+</pre>
+      </li>
+      <li>
+        <b>temperature</b>:
+<pre class="literalblock">
+ default: 300
+ help: temperature in Kelvin
+ short_name: T
+ datatype: int
+ long_name: temperature
+</pre>
+      </li>
+      <li>
+        <b>gr-threshold</b>:
+<pre class="literalblock">
+ default: 1.1
+ help: Gelman-Rubin threshold
+ short_name: G
+ datatype: float
+ long_name: gr-threshold
+</pre>
+      </li>
+      <li>
+        <b>gr-chains</b>:
+<pre class="literalblock">
+ default: 5
+ help: Gelman-Rubin chains
+ short_name: C
+ datatype: int
+ min_value: 1
+ long_name: gr-chains
+</pre>
+      </li>
+      <li>
+        <b>balance-linears</b>:
+<pre class="literalblock">
+ help: balance linear weights
+ short_name: L
+ datatype: bool
+ long_name: balance-linears
+</pre>
+      </li>
+    </ul>
+
+<!-- ==================== FUNCTIONS ==================== -->
+<a name="section-Functions"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td align="left" colspan="2" class="table-header">
+    <span class="table-header">Functions</span></td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="is_applicable"></a><span class="summary-sig-name">is_applicable</span>()</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="zgf_create_pool-pysrc.html#is_applicable">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="main"></a><span class="summary-sig-name">main</span>()</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="zgf_create_pool-pysrc.html#main">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+</table>
+<!-- ==================== VARIABLES ==================== -->
+<a name="section-Variables"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td align="left" colspan="2" class="table-header">
+    <span class="table-header">Variables</span></td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="zgf_create_pool-module.html#options_desc" class="summary-name">options_desc</a> = <code title="[&lt;ZIBMolPy.ui.Option common-filename&gt;, &lt;ZIBMolPy.ui.Option molecule&gt;, \
+&lt;ZIBMolPy.ui.Option presampling&gt;, &lt;ZIBMolPy.ui.Option grompp&gt;, &lt;ZIBMol\
+Py.ui.Option topology&gt;, &lt;ZIBMolPy.ui.Option index&gt;, &lt;ZIBMolPy.ui.Optio\
+n internals&gt;, &lt;ZIBMolPy.ui.Option temperature&gt;, &lt;ZIBMolPy.ui.Option gr\
+-threshold&gt;, &lt;ZIBMolPy.ui.Option gr-chains&gt;, &lt;ZIBMolPy.ui.Option balan\
+ce-linears&gt;]">[&lt;ZIBMolPy.ui.Option common-filename&gt;, &lt;ZIBMolP<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="__package__"></a><span class="summary-name">__package__</span> = <code title="None">None</code><br />
+      hash(x)
+    </td>
+  </tr>
+</table>
+<!-- ==================== VARIABLES DETAILS ==================== -->
+<a name="section-VariablesDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td align="left" colspan="2" class="table-header">
+    <span class="table-header">Variables Details</span></td>
+</tr>
+</table>
+<a name="options_desc"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">options_desc</h3>
+  
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+[&lt;ZIBMolPy.ui.Option common-filename&gt;, &lt;ZIBMolPy.ui.Option molecule&gt;, <span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+&lt;ZIBMolPy.ui.Option presampling&gt;, &lt;ZIBMolPy.ui.Option grompp&gt;, &lt;ZIBMol<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+Py.ui.Option topology&gt;, &lt;ZIBMolPy.ui.Option index&gt;, &lt;ZIBMolPy.ui.Optio<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+n internals&gt;, &lt;ZIBMolPy.ui.Option temperature&gt;, &lt;ZIBMolPy.ui.Option gr<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+-threshold&gt;, &lt;ZIBMolPy.ui.Option gr-chains&gt;, &lt;ZIBMolPy.ui.Option balan<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+ce-linears&gt;]
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="ZIBMolPy-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://wiki.kobv.de/confluence/display/AGCMD/ZIBMolPy">ZIBMolPy</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Tue Mar 13 15:06:51 2012
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

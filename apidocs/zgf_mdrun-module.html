@@ -1,0 +1,393 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>zgf_mdrun</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="ZIBMolPy-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://wiki.kobv.de/confluence/display/AGCMD/ZIBMolPy">ZIBMolPy</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        Module&nbsp;zgf_mdrun
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="zgf_mdrun-module.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== MODULE DESCRIPTION ==================== -->
+<h1 class="epydoc">Module zgf_mdrun</h1><p class="nomargin-top"><span class="codelink"><a href="zgf_mdrun-pysrc.html">source&nbsp;code</a></span></p>
+<h1 class="heading">What it does</h1>
+    <p><b>This is the fifth step of ZIBgridfree.</b></p>
+    <p>This tool is a worker script that will process a pool of 
+    'mdrun-able' nodes in node-wise manner. If the script finds a node that
+    is not locked, it will lock the node and process it by initiating a 
+    sampling with Gromacs mdrun. After the sampling is finished, the worker
+    will check for convergence by applying the Gelman-Rubin (GR) 
+    convergence criterion to the timeseries of internal coordinates. If all
+    internal coordinates satisfy the GR criterion, the node does not need 
+    further processing and will be filed as 'converged'. If one or more 
+    internal coordinates do not satisfy the GR criterion, the node will 
+    remain in state 'mdrun_able' for further processing. If the node has 
+    already exceeded the maximum number of sampling extensions, it will be 
+    filed as 'not-converged'. Finally, the node will be unlocked.</p>
+    <p>The sampling progress and current node status can be monitored with 
+    <a href="zgf_browser-module.html" class="link">zgf_browser</a>.</p>
+    <p>Note that several workers can process the same node pool 
+    simultaneously.</p>
+    <p><b>The next step is <a href="zgf_refine-module.html" 
+    class="link">zgf_refine</a>, if you want to refine or extend nodes 
+    where convergence has not been achieved. Otherwise, you can proceed 
+    with <a href="zgf_reweight-module.html" 
+    class="link">zgf_reweight</a>.</b></p>
+  <h1 class="heading">How it works</h1>
+    <p>At the command line, type:</p>
+<pre class="literalblock">
+       $ zgf_mdrun [options]
+</pre>
+  <h1 class="heading">Stale node locks</h1>
+    <p>If a worker process hits the wall time while it is sampling a 
+    certain node, or the sampling crashes for some unforeseen reason, 
+    <b>the affected node will remain in a locked state</b> (&quot;stale 
+    node lock&quot;). While the node lock remains, the affected node cannot
+    be sampled by another worker process. If you encounter a stale node 
+    lock, you can use <a href="zgf_cleanup-module.html" 
+    class="link">zgf_cleanup</a> to have it removed. Afterwards, normal 
+    processing of the node can be resumed.</p>
+  <h1 class="heading">Convergence</h1>
+    <p>Information about the convergence properties of individual internal 
+    coordinates can be found in the convergence log file named 
+    'node0042_convergence.log' stored in the node directory. <b>Note that 
+    convergence as indicated by the GR criterion does not necessarily mean 
+    that the sampling is sufficient</b>. If, at the end of the day, not all
+    of the nodes in the pool have converged, you can use  <a 
+    href="zgf_browser-module.html" class="link">zgf_browser</a> to get an 
+    impression where convergence was not achieved.</p>
+    <p>In case that convergence keeps on failing due to a certain internal 
+    coordinate, or due to a certain internal coordinate type (such as 
+    linears), you might want to modify the <a 
+    href="http://www.zib.de/cmd-debian/ZIBMolPy/apidocs/ZIBMolPy.internals-module.html"
+    target="_top">internal coordinate weights</a>.</p>
+  <h1 class="heading">Automatic refinement</h1>
+    <p>If you use this option, <a href="zgf_mdrun-module.html" 
+    class="link">zgf_mdrun</a> will automatically call <a 
+    href="zgf_refine-module.html" class="link">zgf_refine</a> at most n 
+    times (where n is an option specified by you) in order to resolve nodes
+    that have not converged. Refinement is performed using default 
+    parameters from <a href="zgf_create_nodes-module.html" 
+    class="link">zgf_create_nodes</a>.</p>
+  <h1 class="heading">Nodes with state &quot;mdrun-failed&quot;</h1>
+    <p>If something goes seriously wrong during the sampling of a node, it 
+    will adapt the state &quot;mdrun-failed&quot;. You have to manually set
+    the node back to state &quot;mdrun-able&quot; after the problem is 
+    resolved. Possible causes for failed node samplings are:</p>
+    <ul>
+      <li>
+        <b>Problem:</b> Domain decomposition does not fit number of 
+        nodes/PME nodes. <b>Solution:</b> Change number of nodes/PME nodes,
+        or change PME grid dimension, or use particle decomposition.
+      </li>
+      <li>
+        <b>Problem:</b> Domain decomposition does not work with restraints.
+        <b>Solution:</b> Change number of nodes/PME nodes, or change PME 
+        grid dimension, or use particle decomposition.
+      </li>
+      <li>
+        <b>Problem:</b> Unspecific crashes when Linear Coordinates are 
+        used. <b>Solution:</b> Make periodic box bigger (at least double 
+        the size of the largest Linear Coordinate).
+      </li>
+    </ul>
+  <h1 class="heading">Options</h1>
+    <ul>
+      <li>
+        <b>seq</b>:
+<pre class="literalblock">
+ help: suppress parallel mdrun
+ short_name: s
+ datatype: bool
+ long_name: seq
+</pre>
+      </li>
+      <li>
+        <b>np</b>:
+<pre class="literalblock">
+ default: 4
+ help: Number of processors to be used
+ short_name: n
+ datatype: int
+ min_value: 1
+ long_name: np
+</pre>
+      </li>
+      <li>
+        <b>npme</b>:
+<pre class="literalblock">
+ default: -1
+ help: Number of separate processors to be used for PME, -1 is guess
+ short_name: p
+ datatype: int
+ min_value: -1
+ long_name: npme
+</pre>
+      </li>
+      <li>
+        <b>reprod</b>:
+<pre class="literalblock">
+ help: Avoid mdrun optimizations that affect binary reproducibility
+ short_name: r
+ datatype: bool
+ long_name: reprod
+</pre>
+      </li>
+      <li>
+        <b>pd</b>:
+<pre class="literalblock">
+ help: Use particle decomposition
+ short_name: d
+ datatype: bool
+ long_name: pd
+</pre>
+      </li>
+      <li>
+        <b>convtest</b>:
+<pre class="literalblock">
+ help: Test if nodes are converged - does not simulate
+ short_name: c
+ datatype: bool
+ long_name: convtest
+</pre>
+      </li>
+      <li>
+        <b>auto-refines</b>:
+<pre class="literalblock">
+ help: Number of automatic refinements
+ short_name: a
+ datatype: int
+ long_name: auto-refines
+</pre>
+      </li>
+    </ul>
+
+<!-- ==================== FUNCTIONS ==================== -->
+<a name="section-Functions"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td align="left" colspan="2" class="table-header">
+    <span class="table-header">Functions</span></td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="is_applicable"></a><span class="summary-sig-name">is_applicable</span>()</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="zgf_mdrun-pysrc.html#is_applicable">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="main"></a><span class="summary-sig-name">main</span>()</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="zgf_mdrun-pysrc.html#main">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="process"></a><span class="summary-sig-name">process</span>(<span class="summary-sig-arg">node</span>,
+        <span class="summary-sig-arg">options</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="zgf_mdrun-pysrc.html#process">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="conv_check_gelman_rubin"></a><span class="summary-sig-name">conv_check_gelman_rubin</span>(<span class="summary-sig-arg">node</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="zgf_mdrun-pysrc.html#conv_check_gelman_rubin">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+</table>
+<!-- ==================== VARIABLES ==================== -->
+<a name="section-Variables"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td align="left" colspan="2" class="table-header">
+    <span class="table-header">Variables</span></td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="zgf_mdrun-module.html#options_desc" class="summary-name">options_desc</a> = <code title="[&lt;ZIBMolPy.ui.Option seq&gt;, &lt;ZIBMolPy.ui.Option np&gt;, &lt;ZIBMolPy.ui.Optio\
+n npme&gt;, &lt;ZIBMolPy.ui.Option reprod&gt;, &lt;ZIBMolPy.ui.Option pd&gt;, &lt;ZIBMol\
+Py.ui.Option convtest&gt;, &lt;ZIBMolPy.ui.Option auto-refines&gt;]">[&lt;ZIBMolPy.ui.Option seq&gt;, &lt;ZIBMolPy.ui.Option <code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="__package__"></a><span class="summary-name">__package__</span> = <code title="None">None</code><br />
+      hash(x)
+    </td>
+  </tr>
+</table>
+<!-- ==================== VARIABLES DETAILS ==================== -->
+<a name="section-VariablesDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td align="left" colspan="2" class="table-header">
+    <span class="table-header">Variables Details</span></td>
+</tr>
+</table>
+<a name="options_desc"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">options_desc</h3>
+  
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+[&lt;ZIBMolPy.ui.Option seq&gt;, &lt;ZIBMolPy.ui.Option np&gt;, &lt;ZIBMolPy.ui.Optio<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+n npme&gt;, &lt;ZIBMolPy.ui.Option reprod&gt;, &lt;ZIBMolPy.ui.Option pd&gt;, &lt;ZIBMol<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+Py.ui.Option convtest&gt;, &lt;ZIBMolPy.ui.Option auto-refines&gt;]
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="ZIBMolPy-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://wiki.kobv.de/confluence/display/AGCMD/ZIBMolPy">ZIBMolPy</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Tue Mar 13 15:06:51 2012
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>
