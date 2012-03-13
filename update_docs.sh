@@ -5,19 +5,19 @@
 
 set -x 
 
-make docu || exit 1
+#make docu || exit 1
 
 echo "Cloning/pulling latest gh-pages branch"
 
 if [ ! -e gh-pages ]; then
-ec git clone -b gh-pages git@github.com:CMD-at-ZIB/ZIBMolPy.git gh-pages
+	git clone -b gh-pages git@github.com:CMD-at-ZIB/ZIBMolPy.git gh-pages
     cd gh-pages
 else
 	cd gh-pages
 	git checkout gh-pages
     git pull --rebase
 fi
-git rm -r apidoc
+git rm -r apidocs
 cp -r ../apidocs .
 git add apidocs
 git commit -m "latest apidocs"
