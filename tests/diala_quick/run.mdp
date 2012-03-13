@@ -1,0 +1,49 @@
+constraints         =  none
+integrator          =  md
+dt                  =  0.001  ; ps
+;nsteps              =  1000000 ; 1000 ps
+nsteps              =  1000 ; 1 ps
+nstcomm             =  1 
+nstxout             =  250     ; output coordinates every 0.5 ps 
+nstvout             =  0       ; frequency to write velocities to output trajectory, the last velocities are always written
+nstfout             =  0       ; frequency to write forces to output trajectory
+nstlog              =  250     ; frequency to write energies to log file
+nstenergy           =  250     ; frequency to write energies to edr file
+nstlist             =  10 
+ns_type             =  grid 
+rlist               =  1.0 
+coulombtype         =  PME 
+rcoulomb            =  1.0 
+rvdw                =  1.4 
+fourierspacing      =  0.12 
+fourier_nx          =  40
+fourier_ny          =  40 
+fourier_nz          =  40 
+pme_order           =  6 
+ewald_rtol          =  1e-5 
+optimize_fft        =  yes 
+energygrps          =  MOI SOL
+; V-rescale temperature coupling is on
+Tcoupl              =  v-rescale 
+tau_t               =  0.1   
+tc_grps             =  System 
+ref_t               =  300   
+; Pressure coupling is on 
+Pcoupl              =  berendsen 
+pcoupltype          =  isotropic 
+tau_p               =  1.0 
+compressibility     =  4.5e-5 
+ref_p               =  1.0 
+; Generate velocites is on at 300 K. 
+gen_vel             =  yes
+gen_temp            =  300 
+gen_seed            =  42
+
+; dihedral restraints
+dihre               =  yes
+dihre_fc            =  1
+;nstdihreout         =  50
+
+; distance restraints
+disre               =  simple
+disre_fc            =  1

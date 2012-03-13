@@ -1,0 +1,40 @@
+constraints         =  none
+integrator          =  md
+dt                  =  0.001   ; ps
+nsteps              =  1000    ; 1 ps
+nstcomm             =  10 
+nstcalcenergy       =  10 
+nstxout             =  100     ; frequency to write coordinates to output trajectory
+nstvout             =  0       ; frequency to write velocities to output trajectory; the last velocities are always written
+nstfout             =  0       ; frequency to write forces to output trajectory
+nstlog              =  100	   ; frequency to write energies to log file
+nstenergy           =  100     ; frequency to write energies to edr file
+
+vdwtype             =  cut-off
+coulombtype         =  cut-off
+
+pbc                 =  no
+
+nstlist             =  0 
+ns_type             =  simple 
+rlist               =  0       ; this means all-vs-all (no cut-off), which gets expensive for bigger systems
+rcoulomb            =  0
+rvdw                =  0
+
+comm-mode           =  angular
+comm-grps           =  Other
+
+optimize_fft        =  yes 
+
+; V-rescale temperature coupling is on
+Tcoupl              =  v-rescale 
+tau_t               =  0.1
+tc_grps             =  Other 
+ref_t               =  300 
+; Pressure coupling is off 
+Pcoupl              =  no 
+; Generate velocites is on 
+gen_vel             =  yes
+gen_temp            =  300 
+gen_seed            =   42
+

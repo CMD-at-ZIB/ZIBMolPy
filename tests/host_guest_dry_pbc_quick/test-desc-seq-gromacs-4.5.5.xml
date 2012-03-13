@@ -1,0 +1,239 @@
+<xml>
+<run>rm -rvf pool-desc.txt nodes analysis tmp_*.trr node_preview_from_*.pdb</run>
+
+<run>zgf_create_pool.py -C 2 -G 3 -p topol.top</run>
+
+<run>zgf_create_nodes.py -E 0 -K 10 -s 123</run>
+<match-stdout>
+k-means iteration  0 - Progress: 0.0896295
+k-means iteration  1 - Progress: 0.0154582
+k-means iteration  2 - Progress: 0.00437352
+k-means iteration  3 - Progress: 0.00114553
+k-means iteration  4 - Progress: 0.000542629
+k-means iteration  5 - Progress: 0
+k-means has converged - quitting
+
+Discretization overview:
+- Variance per int of presampling trajectory:
+[[ 0.35118406  0.35751275  0.56748817  0.5408919   0.0124033   0.01334475
+   0.01038938  0.01489443]]
+- Variance per int of chosen nodes:
+[[ 0.31689727  0.31236426  0.51732506  0.51159102  0.01820705  0.009634
+   0.01162089  0.0084119 ]]
+- Relative variance per int of chosen nodes:
+[[ 0.90236804  0.87371502  0.91160502  0.94582859  1.46792042  0.72193147
+   1.11853545  0.56476817]]
+
+### Obtain alpha: theta ###
+theta_mean: 0.560648, theta_median: 0.553292
+alpha (from theta_median): 10.028711
+</match-stdout>
+
+<run>zgf_setup_nodes.py</run>
+<match-stdout>
+node0001: pdb vs internals deviation: 5.96e-05
+node0002: pdb vs internals deviation: 9.10e-05
+node0003: pdb vs internals deviation: 6.37e-05
+node0004: pdb vs internals deviation: 5.52e-05
+node0005: pdb vs internals deviation: 8.25e-05
+node0006: pdb vs internals deviation: 9.00e-05
+node0007: pdb vs internals deviation: 4.87e-05
+node0008: pdb vs internals deviation: 8.71e-05
+node0009: pdb vs internals deviation: 8.97e-05
+node0010: pdb vs internals deviation: 4.94e-05
+</match-stdout>
+
+<run>zgf_grompp.py</run>
+
+<run>zgf_mdrun.py -sr</run>
+<match-stdout>
+('whole vs. pbc diff: ', 3.6823497029381258e-08)
+W_chain_vars [  1.44092569e-04   1.36058363e-04   4.68852575e-05   1.41847103e-05
+   1.73184754e-04   4.64961406e-05   1.24665627e-04   6.87748206e-05]
+B_total_var [  2.28858007e-05   5.59166190e-04   4.59350849e-05   1.37876064e-04
+   1.24971179e-04   3.89882131e-04   2.68974167e-04   4.00282443e-05]
+</match-stdout>
+<match-stdout>
+('whole vs. pbc diff: ', 2.4129214182266878e-08)
+W_chain_vars [  2.60509651e-04   2.49344598e-04   8.46518734e-04   3.82387210e-05
+   6.75310597e-05   3.97275329e-05   1.22672480e-04   5.40530292e-05]
+B_total_var [  2.05388200e-03   9.67949280e-04   5.17737260e-03   1.89161983e-06
+   1.80799680e-06   5.98778206e-06   4.24114405e-04   4.78672249e-08]
+</match-stdout>
+<match-stdout>
+('whole vs. pbc diff: ', 3.3044090352873923e-08)
+W_chain_vars [  1.64808185e-04   1.78757845e-04   4.64172840e-05   1.21626993e-04
+   1.64672312e-04   1.52596092e-04   5.28211756e-05   2.26232292e-04]
+B_total_var [  9.21614293e-04   1.71803660e-03   1.48891741e-06   1.79302486e-04
+   1.05920504e-03   2.26559991e-04   1.30550223e-04   5.65689639e-04]
+</match-stdout>
+<match-stdout>
+('whole vs. pbc diff: ', 3.3228908846716365e-08)
+W_chain_vars [  1.35427676e-05   3.47866769e-05   8.48038795e-05   9.56170715e-05
+   2.33252818e-05   1.66901756e-04   2.31769429e-04   1.86422332e-04]
+B_total_var [  6.74752937e-06   1.56623864e-05   4.88390564e-04   3.56401812e-04
+   2.12701161e-05   6.74479736e-07   4.63920092e-04   1.24412454e-05]
+</match-stdout>
+<match-stdout>
+('whole vs. pbc diff: ', 9.591564253952356e-08)
+W_chain_vars [  5.79502159e-05   1.29527292e-04   1.99003279e-05   3.21372857e-05
+   9.91516777e-05   9.21711403e-05   3.65700796e-04   1.77100906e-04]
+B_total_var [  5.90589343e-06   1.20356656e-03   3.77173856e-05   1.08400760e-04
+   2.28222809e-04   2.02962360e-06   8.70605072e-05   7.92269420e-05]
+</match-stdout>
+<match-stdout>
+('whole vs. pbc diff: ', 5.8636033473113969e-08)
+W_chain_vars [  4.09312156e-05   9.48545792e-05   9.28784173e-05   2.41891415e-05
+   1.05631637e-04   1.67476534e-04   4.02221755e-05   1.46369719e-04]
+B_total_var [  1.43594843e-05   3.80927173e-04   1.47321291e-04   5.66964300e-05
+   3.99663804e-07   9.51135182e-04   1.04187748e-05   2.77842744e-04]
+</match-stdout>
+<match-stdout>
+('whole vs. pbc diff: ', 1.6834295690770773e-07)
+W_chain_vars [  4.49531692e-05   1.91361468e-04   3.43467149e-05   2.04733498e-04
+   6.99702583e-05   7.51656335e-05   3.53869157e-05   4.23321481e-05]
+B_total_var [  2.28469635e-05   2.69829383e-04   2.01907483e-06   8.17865221e-05
+   2.94063007e-04   3.68723064e-04   7.69444068e-06   5.76176622e-04]
+</match-stdout>
+<match-stdout>
+('whole vs. pbc diff: ', 9.6546579397838173e-08)
+W_chain_vars [  2.60380291e-05   2.12700579e-04   1.84554655e-05   7.16948794e-05
+   8.25830110e-05   1.23547173e-04   4.71541425e-05   3.58258795e-05]
+B_total_var [  1.78654809e-05   3.33064469e-04   1.69842679e-05   3.65459209e-06
+   7.61456206e-04   1.33697235e-04   1.46643928e-04   2.21371563e-04]
+</match-stdout>
+<match-stdout>
+('whole vs. pbc diff: ', 6.1127361350443721e-07)
+W_chain_vars [  1.38241867e-04   1.91225950e-04   1.08809674e-04   5.34538819e-05
+   5.52631521e-05   2.96311544e-05   1.68340060e-04   1.17204188e-04]
+B_total_var [  5.16559230e-04   1.93345651e-03   3.93032940e-04   1.10291236e-04
+   2.08459707e-04   7.69271719e-05   1.01284066e-03   3.64377192e-04]
+</match-stdout>
+<match-stdout>
+('whole vs. pbc diff: ', 1.2197388166157452e-07)
+W_chain_vars [  4.31317224e-05   4.95953395e-05   9.72928050e-05   8.19000004e-05
+   2.76044037e-05   1.11542872e-04   3.65009292e-04   1.87822016e-04]
+B_total_var [  9.12208725e-06   7.66627636e-07   2.24167947e-04   2.15937489e-05
+   2.06888362e-05   2.54070947e-05   2.64419126e-03   2.35966826e-03]
+</match-stdout>
+
+<run>zgf_reweight.py -c</run>
+<match-stdout>
+dis_diff:  4.5118621923e-07
+</match-stdout>
+<match-stdout>
+dis_diff:  4.96072851122e-07
+</match-stdout>
+<match-stdout>
+dis_diff:  4.8102204199e-07
+</match-stdout>
+<match-stdout>
+dis_diff:  4.88934171502e-07
+</match-stdout>
+<match-stdout>
+dis_diff:  3.66232145803e-07
+</match-stdout>
+<match-stdout>
+dis_diff:  4.52555976808e-07
+</match-stdout>
+<match-stdout>
+dis_diff:  3.75313147227e-09
+</match-stdout>
+<match-stdout>
+dis_diff:  4.71813808327e-07
+</match-stdout>
+<match-stdout>
+dis_diff:  4.56297393888e-07
+</match-stdout>
+<match-stdout>
+dis_diff:  4.78347545839e-07
+</match-stdout>
+<match-stdout>
+  unweighted mean V: 2980.47742791 [kJ/mol], without penalty potential
+  phi-weighted mean V: 2980.47899316 [kJ/mol], without penalty potential
+  weighted mean V: 2980.468477 [kJ/mol]
+  energy region (=weighted V standard deviation): 43.519589 [kJ/mol]
+  evaluation region (=conjugate variance): 0.002555
+  number of refpoints: 7
+Thermodynamic weights calculated by method 'entropy' (ignore-sol=True):
+  node0002 with A: 2827.181962 [kJ/mol] and weight: 0.999991
+  node0003 with A: 2856.075922 [kJ/mol] and weight: 0.000009
+  node0001 with A: 2865.949692 [kJ/mol] and weight: 0.000000
+  node0009 with A: 2903.796243 [kJ/mol] and weight: 0.000000
+  node0006 with A: 2905.506960 [kJ/mol] and weight: 0.000000
+  node0007 with A: 2924.368012 [kJ/mol] and weight: 0.000000
+  node0004 with A: 2924.861663 [kJ/mol] and weight: 0.000000
+  node0005 with A: 2934.341831 [kJ/mol] and weight: 0.000000
+  node0008 with A: 2935.270898 [kJ/mol] and weight: 0.000000
+  node0010 with A: 2977.945185 [kJ/mol] and weight: 0.000000
+</match-stdout>
+
+<run>zgf_analyze.py -c</run>
+<match-stdout>
+### Node weights after symmetrization of S matrix:
+node0001: initial weight: 0.000000, corrected weight: 0.273978, weight change: 0.273977
+node0002: initial weight: 0.999991, corrected weight: 0.256347, weight change: 0.743643
+node0003: initial weight: 0.000009, corrected weight: 0.212462, weight change: 0.212453
+node0004: initial weight: 0.000000, corrected weight: 0.254413, weight change: 0.254413
+node0005: initial weight: 0.000000, corrected weight: 0.000004, weight change: 0.000004
+node0006: initial weight: 0.000000, corrected weight: 0.000945, weight change: 0.000945
+node0007: initial weight: 0.000000, corrected weight: 0.000000, weight change: 0.000000
+node0008: initial weight: 0.000000, corrected weight: 0.000000, weight change: 0.000000
+node0009: initial weight: 0.000000, corrected weight: 0.001851, weight change: 0.001851
+node0010: initial weight: 0.000000, corrected weight: 0.000000, weight change: 0.000000
+
+### Sorted eigenvalues of symmetrized S matrix:
+EV0001: 1.000000, gap to next: 0.000326, EV-weighted gap to next: 0.000326
+EV0002: 0.999674, gap to next: 0.100915, EV-weighted gap to next: 0.100882
+EV0003: 0.898759, gap to next: 0.096593, EV-weighted gap to next: 0.086814
+EV0004: 0.802166, gap to next: 0.097455, EV-weighted gap to next: 0.078175
+EV0005: 0.704711, gap to next: 0.181907, EV-weighted gap to next: 0.128192
+EV0006: 0.522804, gap to next: 0.223440, EV-weighted gap to next: 0.116815
+EV0007: 0.299364, gap to next: 0.049321, EV-weighted gap to next: 0.014765
+EV0008: 0.250043, gap to next: 0.132285, EV-weighted gap to next: 0.033077
+EV0009: 0.117759, gap to next: 0.076569, EV-weighted gap to next: 0.009017
+EV0010: 0.041190, gap to next: 0.000000, EV-weighted gap to next: 0.000000
+</match-stdout>
+<match-stdout>
+Q_c matrix:
+[[ -3.25578567e-04   3.11627439e-08   3.25547363e-04  -4.07828651e-10
+    4.51806346e-10   1.26858796e-11]
+ [  3.90185370e-08  -6.91808548e-02  -1.30425223e-01   2.53445128e-01
+   -1.92893447e-02  -3.45497447e-02]
+ [  2.09571980e-07   7.00135380e-01  -7.00999573e-01   1.10098505e-03
+   -8.58527585e-05  -1.51149295e-04]
+ [  9.45280762e-11   9.88829881e-04  -3.16134553e-04  -1.75026121e-01
+    5.96152575e-02   1.14738168e-01]
+ [  1.42303970e-12   1.48859506e-05  -4.75911408e-06   3.06894576e-02
+   -1.26047562e-01   9.53479771e-02]
+ [  2.73053815e-15   2.85597241e-08  -9.13185567e-09   1.03800309e-04
+    2.01345103e-04  -3.05164840e-04]]
+</match-stdout>
+<match-stdout>
+cluster weights (calculated twice for checking):
+[  3.27293743e-13   3.42236120e-06  -1.09408785e-06   9.54540094e-04
+   2.04351616e-03   9.96999646e-01]
+[  3.18809097e-13   3.33359339e-06  -1.06571224e-06   9.44938728e-04
+   2.03855515e-03   9.97014299e-01]
+</match-stdout>
+
+<run>zgf_extract_conformations.py</run>
+<match-stdout>
+### Extraction summary ###
+node threshold: 0.5, frame threshold: 0.5
+Cluster trajectories were written to ./analysis/:
+cluster1.trr [9 frames] from node(s):
+[6]
+cluster2.trr [12 frames] from node(s):
+[4, 7]
+cluster3.trr [7 frames] from node(s):
+[9]
+cluster4.trr [12 frames] from node(s):
+[4, 5]
+cluster5.trr [6 frames] from node(s):
+[8]
+cluster6.trr [19 frames] from node(s):
+[0, 1, 2, 3]
+</match-stdout>
+
+</xml>

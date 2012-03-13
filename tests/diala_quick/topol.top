@@ -1,0 +1,246 @@
+;
+;	File 'topol.top' was generated
+;	By user: bzfbujot (1000)
+;	On host: num-pc48
+;	At date: Thu Mar 10 17:18:06 2011
+;
+;	This is your topology file
+;	"Everybody's Good Enough For Some Change" (LIVE)
+;
+; Include forcefield parameters
+#include "ffoplsaa.itp"
+
+[ moleculetype ]
+; Name            nrexcl
+DiAla               3
+
+[ atoms ]
+;   nr       type  resnr residue  atom   cgnr     charge       mass  typeB    chargeB      massB
+     1   opls_287      1    ALA      N      1       -0.3    14.0067   ; qtot -0.3
+     2   opls_290      1    ALA     H1      1       0.33      1.008   ; qtot 0.03
+     3   opls_290      1    ALA     H2      1       0.33      1.008   ; qtot 0.36
+     4   opls_290      1    ALA     H3      1       0.33      1.008   ; qtot 0.69
+     5  opls_293B      1    ALA     CA      1       0.25     12.011   ; qtot 0.94
+     6   opls_140      1    ALA     HA      1       0.06      1.008   ; qtot 1
+     7   opls_135      1    ALA     CB      2      -0.18     12.011   ; qtot 0.82
+     8   opls_140      1    ALA    HB1      2       0.06      1.008   ; qtot 0.88
+     9   opls_140      1    ALA    HB2      2       0.06      1.008   ; qtot 0.94
+    10   opls_140      1    ALA    HB3      2       0.06      1.008   ; qtot 1
+    11   opls_235      1    ALA      C      3        0.5     12.011   ; qtot 1.5
+    12   opls_236      1    ALA      O      3       -0.5    15.9994   ; qtot 1
+    13   opls_238      2    ALA      N      4       -0.5    14.0067   ; qtot 0.5
+    14   opls_241      2    ALA      H      4        0.3      1.008   ; qtot 0.8
+    15   opls_283      2    ALA     CA      4       0.04     12.011   ; qtot 0.84
+    16   opls_140      2    ALA     HA      4       0.06      1.008   ; qtot 0.9
+    17   opls_135      2    ALA     CB      5      -0.18     12.011   ; qtot 0.72
+    18   opls_140      2    ALA    HB1      5       0.06      1.008   ; qtot 0.78
+    19   opls_140      2    ALA    HB2      5       0.06      1.008   ; qtot 0.84
+    20   opls_140      2    ALA    HB3      5       0.06      1.008   ; qtot 0.9
+    21   opls_271      2    ALA      C      6        0.7     12.011   ; qtot 1.6
+    22   opls_272      2    ALA     O1      6       -0.8    15.9994   ; qtot 0.8
+    23   opls_272      2    ALA     O2      6       -0.8    15.9994   ; qtot 0
+
+[ bonds ]
+;  ai    aj funct            c0            c1            c2            c3
+    1     2     1 
+    1     3     1 
+    1     4     1 
+    1     5     1 
+    5     6     1 
+    5     7     1 
+    5    11     1 
+    7     8     1 
+    7     9     1 
+    7    10     1 
+   11    12     1 
+   11    13     1 
+   13    14     1 
+   13    15     1 
+   15    16     1 
+   15    17     1 
+   15    21     1 
+   17    18     1 
+   17    19     1 
+   17    20     1 
+   21    22     1 
+   21    23     1 
+
+[ pairs ]
+;  ai    aj funct            c0            c1            c2            c3
+    1     8     1 
+    1     9     1 
+    1    10     1 
+    1    12     1 
+    1    13     1 
+    2     6     1 
+    2     7     1 
+    2    11     1 
+    3     6     1 
+    3     7     1 
+    3    11     1 
+    4     6     1 
+    4     7     1 
+    4    11     1 
+    5    14     1 
+    5    15     1 
+    6     8     1 
+    6     9     1 
+    6    10     1 
+    6    12     1 
+    6    13     1 
+    7    12     1 
+    7    13     1 
+    8    11     1 
+    9    11     1 
+   10    11     1 
+   11    16     1 
+   11    17     1 
+   11    21     1 
+   12    14     1 
+   12    15     1 
+   13    18     1 
+   13    19     1 
+   13    20     1 
+   13    22     1 
+   13    23     1 
+   14    16     1 
+   14    17     1 
+   14    21     1 
+   16    18     1 
+   16    19     1 
+   16    20     1 
+   16    22     1 
+   16    23     1 
+   17    22     1 
+   17    23     1 
+   18    21     1 
+   19    21     1 
+   20    21     1 
+
+[ angles ]
+;  ai    aj    ak funct            c0            c1            c2            c3
+    2     1     3     1 
+    2     1     4     1 
+    2     1     5     1 
+    3     1     4     1 
+    3     1     5     1 
+    4     1     5     1 
+    1     5     6     1 
+    1     5     7     1 
+    1     5    11     1 
+    6     5     7     1 
+    6     5    11     1 
+    7     5    11     1 
+    5     7     8     1 
+    5     7     9     1 
+    5     7    10     1 
+    8     7     9     1 
+    8     7    10     1 
+    9     7    10     1 
+    5    11    12     1 
+    5    11    13     1 
+   12    11    13     1 
+   11    13    14     1 
+   11    13    15     1 
+   14    13    15     1 
+   13    15    16     1 
+   13    15    17     1 
+   13    15    21     1 
+   16    15    17     1 
+   16    15    21     1 
+   17    15    21     1 
+   15    17    18     1 
+   15    17    19     1 
+   15    17    20     1 
+   18    17    19     1 
+   18    17    20     1 
+   19    17    20     1 
+   15    21    22     1 
+   15    21    23     1 
+   22    21    23     1 
+
+[ dihedrals ]
+;  ai    aj    ak    al funct            c0            c1            c2            c3            c4            c5
+    2     1     5     6     3 
+    2     1     5     7     3 
+    2     1     5    11     3 
+    3     1     5     6     3 
+    3     1     5     7     3 
+    3     1     5    11     3 
+    4     1     5     6     3 
+    4     1     5     7     3 
+    4     1     5    11     3 
+    1     5     7     8     3 
+    1     5     7     9     3 
+    1     5     7    10     3 
+    6     5     7     8     3 
+    6     5     7     9     3 
+    6     5     7    10     3 
+   11     5     7     8     3 
+   11     5     7     9     3 
+   11     5     7    10     3 
+    1     5    11    12     3 
+    1     5    11    13     3 
+    6     5    11    12     3 
+    6     5    11    13     3 
+    7     5    11    12     3 
+    7     5    11    13     3 
+    5    11    13    14     3 
+    5    11    13    15     3 
+   12    11    13    14     3 
+   12    11    13    15     3 
+   11    13    15    16     3 
+   11    13    15    17     3 
+   11    13    15    21     3 
+   14    13    15    16     3 
+   14    13    15    17     3 
+   14    13    15    21     3 
+   13    15    17    18     3 
+   13    15    17    19     3 
+   13    15    17    20     3 
+   16    15    17    18     3 
+   16    15    17    19     3 
+   16    15    17    20     3 
+   21    15    17    18     3 
+   21    15    17    19     3 
+   21    15    17    20     3 
+   13    15    21    22     3 
+   13    15    21    23     3 
+   16    15    21    22     3 
+   16    15    21    23     3 
+   17    15    21    22     3 
+   17    15    21    23     3 
+
+[ dihedrals ]
+;  ai    aj    ak    al funct            c0            c1            c2            c3
+    5    13    11    12     1    improper_O_C_X_Y
+   11    15    13    14     1    improper_Z_N_X_Y
+   15    22    21    23     1    improper_O_C_X_Y
+
+; Include Position restraint file
+#ifdef POSRES
+#include "posre.itp"
+#endif
+
+; Include water topology
+#include "tip4p.itp"
+
+#ifdef POSRES_WATER
+; Position restraint for each water oxygen
+[ position_restraints ]
+;  i funct       fcx        fcy        fcz
+   1    1       1000       1000       1000
+#endif
+
+; Include generic topology for ions
+#include "ions.itp"
+
+[ system ]
+; Name
+Alanine Dipeptide in water
+
+[ molecules ]
+; Compound        #mols
+DiAla               1
+SOL              1055
+SOL               469

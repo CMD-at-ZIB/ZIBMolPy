@@ -1,0 +1,108 @@
+<xml>
+<run>rm -rvf pool-desc.txt nodes analysis tmp_*.trr tmp_*.xtc node_preview_from_*.pdb</run>
+
+<run>zgf_create_pool.py -C 2 -G 3 -p topol-4.0.7.top</run>
+<run>zgf_create_nodes.py -E 2 -L 1 -K 3 -s 123</run>
+<match-stdout>
+Discretization overview:
+- Variance per int of presampling trajectory:
+[[ 1.98054345  1.88090812]]
+- Variance per int of chosen nodes:
+[[ 1.17336184  1.29637919]]
+- Relative variance per int of chosen nodes:
+[[ 0.59244438  0.68923047]]
+</match-stdout>
+<match-stdout>
+### Obtain alpha: theta ###
+theta_mean: 2.639225, theta_median: 2.609401
+alpha (from theta_median): 0.391952
+</match-stdout>
+
+<run>zgf_setup_nodes.py</run>
+<run>zgf_grompp.py</run>
+<run>zgf_cleanup.py</run>
+<match-stdout>
+Node node0000 is refined and not locked.
+Node node0001 is mdrun-able and not locked.
+Node node0002 is mdrun-able and not locked.
+Node node0003 is mdrun-able and not locked.
+</match-stdout>
+
+<run>zgf_mdrun.py -sr</run>
+<match-stdout>
+Loading trr-file: nodes/node0001/node0001_whole.trr... done.
+W_chain_vars [ 0.00139879  0.00287231]
+B_total_var [  1.53952598e-02   1.54310141e-06]
+</match-stdout>
+<match-stdout>
+Loading trr-file: nodes/node0001/node0001_whole.trr... done.
+W_chain_vars [ 0.00606357  0.00712063]
+B_total_var [ 0.00024261  0.00099621]
+</match-stdout>
+<match-stdout>
+Loading trr-file: nodes/node0002/node0002_whole.trr... done.
+W_chain_vars [ 0.00740034  0.01231023]
+B_total_var [ 0.01942171  0.00177925]
+</match-stdout>
+<match-stdout>
+Loading trr-file: nodes/node0003/node0003_whole.trr... done.
+W_chain_vars [ 0.05828307  0.02925848]
+B_total_var [ 0.0497014   0.01716595]
+</match-stdout>
+
+
+<run>zgf_cleanup.py</run>
+<match-stdout>
+Node node0000 is refined and not locked.
+Node node0001 is converged and not locked.
+Node node0002 is converged and not locked.
+Node node0003 is converged and not locked.
+</match-stdout>
+
+<run>zgf_reweight.py -c</run>
+<match-stdout>
+  unweighted mean V: 79.5727724 [kJ/mol], without penalty potential
+  phi-weighted mean V: 80.4147707405 [kJ/mol], without penalty potential
+  weighted mean V: 80.276598 [kJ/mol]
+  energy region (=weighted V standard deviation): 29.553747 [kJ/mol]
+  evaluation region (=conjugate variance): 0.056969
+  number of refpoints: 4
+WARNING: No nearpoints found for refpoint 4! (node0003)
+Thermodynamic weights calculated by method 'entropy' (ignore-sol=True):
+  node0003 with A: 79.002417 [kJ/mol] and weight: 0.999178
+  node0001 with A: 96.723613 [kJ/mol] and weight: 0.000821
+  node0002 with A: 112.563714 [kJ/mol] and weight: 0.000001
+</match-stdout>
+
+<run>zgf_analyze.py -c</run>
+<match-stdout>
+### Node weights after symmetrization of S matrix:
+node0001: initial weight: 0.000864, corrected weight: 0.479898, weight change: 0.479034
+node0002: initial weight: 0.000001, corrected weight: 0.308066, weight change: 0.308064
+node0003: initial weight: 0.999134, corrected weight: 0.212036, weight change: 0.787098
+
+### Sorted eigenvalues of symmetrized S matrix:
+eigenvalue 1: 1.000000, gap to next eigenvalue: 0.196397
+eigenvalue 2: 0.803603, gap to next eigenvalue: 0.149098
+eigenvalue 3: 0.654505, gap to next eigenvalue: 0.000000
+</match-stdout>
+<match-stdout>
+Q_c matrix:
+[[  2.22044605e-16]]
+</match-stdout>
+<match-stdout>
+cluster weights (calculated twice for checking):
+[-1.]
+[ 1.]
+</match-stdout>
+
+<run>zgf_extract_conformations.py</run>
+<match-stdout>
+### Extraction summary ###
+node threshold: 0.5, frame threshold: 0.5
+Cluster trajectories were written to ./analysis/:
+cluster1.trr [8 frames] from node(s):
+[0, 1, 2]
+</match-stdout>
+
+</xml>
