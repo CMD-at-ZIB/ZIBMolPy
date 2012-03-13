@@ -3,7 +3,7 @@
 all:
 	@echo "make install - Install on local system"
 	@echo "make install-home - Install for this user"
-	@echo "make debuild - Generate a deb package"
+#	@echo "make debuild - Generate a deb package"
 	@echo "make clean - Get rid of scratch and byte files"
 	@echo "make docu - Generate API documentation"
 	@echo "make upload-docu - Upload API-docu to webserver"
@@ -15,9 +15,7 @@ docu:
 	@export PYTHONPATH=./ZIBMolPy_package/:$(PYTHONPATH); epydoc --conf=epydoc.conf
 
 upload-docu:
-	# removeing old files prevents permission problems 
-	ssh nums11.zib.de rm /www/Abt-Numerik/cmd-debian/ZIBMolPy/apidocs/* || true
-	scp -r ./apidocs nums11.zib.de:/www/Abt-Numerik/cmd-debian/ZIBMolPy
+	upload_docu.sh	
 
 install-home:
 	cd ZIBMolPy_package; ./setup.py install --prefix=$(HOME)
@@ -31,8 +29,8 @@ install:
 #TODO: remove test-pools and temp-files
 	rsync -av --exclude='*/.svn*' tests $(DESTDIR)/usr/share/zibmolpy/
 	
-debuild:
-	debuild  -eCOMPILE="--no-compile"
+#debuild:
+#	debuild  -eCOMPILE="--no-compile"
 
 clean:
 	rm -rvf ZIBMolPy_package/build

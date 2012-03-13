@@ -11,12 +11,13 @@ echo "Cloning/pulling latest gh-pages branch"
 
 if [ ! -e gh-pages ]; then
 	git clone -b gh-pages git@github.com:CMD-at-ZIB/ZIBMolPy.git gh-pages
-    cd gh-pages
+	cd gh-pages
 else
 	cd gh-pages
 	git checkout gh-pages
-    git pull --rebase
+	git pull --rebase
 fi
+
 git rm -r apidocs
 cp -r ../apidocs .
 git add apidocs
