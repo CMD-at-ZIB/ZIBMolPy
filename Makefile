@@ -19,15 +19,19 @@ upload-docu:
 
 install-home:
 	cd ZIBMolPy_package; ./setup.py install --prefix=$(HOME)
+	mkdir -vp $(HOME)/bin/
+	mkdir -vp $(HOME)/share/zibmolpy/
+	rsync -av --exclude='*/.*' --exclude="*.pyc" tools/ $(HOME)/bin/
+	rsync -av --exclude='*/.*' --exclude="*.pyc" tests $(HOME)/share/zibmolpy/
 	
 install:
 	cd ZIBMolPy_package; ./setup.py install --root $(DESTDIR)/ $(COMPILE)
 	mkdir -vp $(DESTDIR)/usr/bin/
 	mkdir -vp $(DESTDIR)/usr/share/zibmolpy/
+	
 	cp -v tools/*.py $(DESTDIR)/usr/bin/
-
 #TODO: remove test-pools and temp-files
-	rsync -av --exclude='*/.svn*' tests $(DESTDIR)/usr/share/zibmolpy/
+	rsync -av --exclude='*/.*' tests $(DESTDIR)/usr/share/zibmolpy/
 	
 #debuild:
 #	debuild  -eCOMPILE="--no-compile"
