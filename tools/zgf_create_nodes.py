@@ -164,7 +164,6 @@ def main(argv=None):
 
 #==========================================================================
 def mknodes_kmeans(parent, numnodes):
-	print "parent", parent
 	frames_int = parent.trajectory
 	fixed_clusters = [n.internals for n in parent.children]
 	means = kmeans(frames_int, numnodes, fixed_clusters=fixed_clusters)
