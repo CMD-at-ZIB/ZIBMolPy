@@ -48,7 +48,6 @@ Simply run: <br />
 `make install-home`
 
 2. Add the following lines to your .bashrc:
-
 `export PYTHONPATH=$PYTHONPATH:~/libXX/pythonX.X/site-packages/` <br />
 `export PATH=$PATH:~/bin/`
 
@@ -58,21 +57,15 @@ Testing
 You can run some tests to make sure everything is working as intended.
 
 1. Go into the tests/ directory, which is located either in <br />
-
 `/usr/share/zibmolpy/tests`
-
 or <br />
-
 `~/share/zibmolpy/tests`.
 
 2. Chose one of the tests cases. The pentane_quick test takes the least amount of time to run.
 
 3. Depending on your gromacs version run either <br />
-
 `zgf_test test-desc-seq-gromacs-4.0.7.xml` <br />
-
 or <br />
-
 `zgf_test test-desc-seq-gromacs-4.5.5.xml`
 
 4. You can take a look at the results by starting zgf_browser.
