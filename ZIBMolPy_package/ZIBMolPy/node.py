@@ -224,6 +224,10 @@ class Node(object):
 	@property
 	def trr_fn(self):
 		return(self.dir+"/"+self.name+".trr")
+	
+	@property
+	def mdp_fn(self):
+		return(self.dir+"/"+self.name+".mdp")
 		
 	@property
 	def pdb_fn(self):

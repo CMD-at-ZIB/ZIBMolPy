@@ -69,6 +69,7 @@ options_desc = OptionsList([
 	Option("P", "methodphifit", "choice", "method to determine phi fit", choices=("switch", "harmonic", "leastsq") ),
 	Option("p", "parent-node", "node", "parent-node", default="root"),
 	Option("w", "write-preview", "bool", "write frames of new nodes as pdb-trajectory", default=False),
+	Option("l", "sampling-length", "int", "length of the normal sampling in ps", default=100, min_value=0),
 	Option("s", "random-seed", "str", "seed for random number generator"),
 	
 ])
@@ -127,6 +128,7 @@ def main(argv=None):
 		n.extensions_counter = 0
 		n.extensions_max = options.ext_max
 		n.extensions_length = options.ext_length
+		n.sampling_length = options.sampling_length	
 		n.internals = parent.trajectory.getframe(i)
 		pool.append(n)
 		

@@ -3,7 +3,7 @@
 
 <run>zgf_create_pool.py -C 2 -G 3 -p topol-4.5.5.top</run>
 
-<run>zgf_create_nodes.py -E 2 -L 1 -K 3 -s 123</run>
+<run>zgf_create_nodes.py -E 2 -L 1 -l 1 -K 3 -s 123</run>
 <match-stdout>
 Discretization overview:
 - Variance per int of presampling trajectory:

@@ -16,7 +16,6 @@ import pkgutil
 
 import ZIBMolPy.plots
 from ZIBMolPy.pool import Pool
-from ZIBMolPy.gromacs import read_mdp_file
 import pango # Pango is a library for rendering internationalized texts
 import gobject
 import gtk
@@ -274,8 +273,6 @@ class Statusbar(gtk.Statusbar):
 		if(self.board.pool.alpha!=None):
 			msg_parts.append("α=%.2f"%self.board.pool.alpha)
 		
-		mdp = read_mdp_file(self.board.pool.mdp_fn)
-		t_default = float(mdp['dt']) * float(mdp['nsteps']) #time of one default run
 		t_left = 0 #time still needed (estimate) 
 		t_used = 0 #time already used
 		
@@ -284,11 +281,11 @@ class Statusbar(gtk.Statusbar):
 				continue #this is probably the root-node
 			expected_exts = n.extensions_max/2.0 #how many extension do we expect?
 			if n.is_sampled:
-				t_used += t_default + n.extensions_length * n.extensions_counter
+				t_used += n.sampling_length + n.extensions_length * n.extensions_counter
 			elif(n.extensions_counter == 0):
-				t_left += t_default +  n.extensions_length * expected_exts 
+				t_left += n.sampling_length +  n.extensions_length * expected_exts 
 			else:
-				t_used += t_default + n.extensions_length * n.extensions_counter
+				t_used += n.sampling_length + n.extensions_length * n.extensions_counter
 				t_left +=  n.extensions_length * max(1, expected_exts - n.extensions_counter)
 		
 		msg_parts.append("time-used=%d ps"%t_used)

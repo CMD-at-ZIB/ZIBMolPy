@@ -22,9 +22,11 @@ from ZIBMolPy.pool import Pool
 import ZIBMolPy.topology as topology
 from ZIBMolPy.ui import OptionsList
 from ZIBMolPy.io.trr import TrrFile
+from ZIBMolPy.gromacs import read_mdp_file
 
 import sys
 import os
+import re
 from tempfile import mktemp
 from subprocess import Popen, PIPE
 from math import degrees
@@ -50,12 +52,29 @@ def main():
 	
 	extract_frames(pool)
 	generate_topology(pool)
+	generate_mdp(pool)
 	
 	for n in needy_nodes:
 		n.state = "grompp-able"
 		n.save()
 		n.unlock()
+
+#===============================================================================
+def generate_mdp(pool):
+	mdp = read_mdp_file(pool.mdp_fn)
+	dt = float(mdp['dt'])
+	orig_mdp = open(pool.mdp_fn).read()
+	orig_mdp = re.sub("\nnsteps", "\n; zgf_setup_nodes: commeted-out the following line\n; nsteps", orig_mdp)
 	
+	for n in pool.where("state == 'created'"):
+		print("Writting: "+n.mdp_fn)
+		nsteps = int(n.sampling_length / dt)
+		f = open(n.mdp_fn, "w")
+		f.write(orig_mdp)
+		f.write("\n;zgf_setup_nodes: possibly overwritting previous nsteps entry\n") 
+		f.write("nsteps = %d\n"%nsteps)
+		f.close()
+
 #===============================================================================
 def extract_frames(pool):
 	needy_nodes = pool.where("state == 'created'")

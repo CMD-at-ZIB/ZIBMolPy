@@ -34,16 +34,8 @@ THE_BIG_NUMBER = 99999.0 # is measured in [Chuck]
 
 #===============================================================================
 options_desc = OptionsList([
-#	Option("N", "methodnodes", "choice", "method to determine nodes", choices=("kmeans","equidist", "all")),
-#	Option("A", "methodalphas", "choice", "method to determine alphas", choices=("theta", "user") ),
-	Option("K", "numnodes", "int", "number of nodes to create", default=10, min_value=1),
-#	Option("E", "ext-max", "int", "max. number of extensions if not converged", default=5, min_value=0),
-#	Option("L", "ext-length", "int", "length per extension in ps", default=100, min_value=1),
-#	Option("P", "methodphifit", "choice", "method to determine phi fit", choices=("switch", "harmonic", "leastsq") ),
+	Option("K", "numnodes", "int", "number of nodes to create", default=4, min_value=1),
 	Option("p", "parent-node", "node", "parent-node"),
-#	Option("w", "write-preview", "bool", "write frames of new nodes as pdb-trajectory", default=False),
-#	Option("s", "random-seed", "str", "seed for random number generator"),
-	
 ])
 
 sys.modules[__name__].__doc__ += options_desc.epytext() # for epydoc
@@ -66,8 +58,10 @@ def main(argv=None):
 	assert(len(found_parents) == 1)
 	parent = found_parents[0]
 			
-	print "parent trr length: ", parent.trajectory.n_frames
-	chosen_idx = range(0, parent.trajectory.n_frames, 2)
+	
+	
+	chosen_idx = np.linspace(start=0, stop=parent.trajectory.n_frames-1, num=options.numnodes).astype(int) 
+	
 	print "choosen_idx: ",chosen_idx
 	
 	for i in chosen_idx:
@@ -78,6 +72,7 @@ def main(argv=None):
 		n.extensions_counter = 0
 		n.extensions_max = 0
 		n.extensions_length = 0
+		n.sampling_length = parent.sampling_length * 3
 		n.internals = parent.trajectory.getframe(i)
 		pool.append(n)
 		n.save()
