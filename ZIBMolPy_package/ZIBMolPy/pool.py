@@ -108,37 +108,34 @@ class Pool(NodeList):
 			
 		# actual init-code
 		NodeList.__init__(self)
-		self.__dict__["filename"] = "pool-desc.txt"
-		self.__dict__["mtime"] = -1 # very old
-		self.__dict__["mtime_nodes"] = -1 # very old
-						
-		if(not path.exists(self.filename)):
-			self.__dict__["persistent"] = {"format_version": self.FORMAT_VERSION}
-			
-			self.history = []
-		else:
+		self._mtime = -1 # very old
+		self._mtime_nodes = -1 # very old
+		self.history = []
+		self.format_version = self.FORMAT_VERSION
+		
+		if(path.exists(self.filename)):
 			self.reload()
-		self.reload_nodes()
-			
+			self.reload_nodes()
 		return(self)
+		
 	
 	#---------------------------------------------------------------------------
 	def __init__(self):
-		#because of singleton, we must not call the super constructor
+		#because of singleton, we must not(!) call the super constructor
 		#pylint: disable=W0231
 		pass 
 	
 	#---------------------------------------------------------------------------
 	def reload(self):
 		try:
-			raw = open(self.filename).read()
-			self.__dict__["persistent"] = eval(raw)
-			self.__dict__["mtime"] = path.getmtime(self.filename)
+			raw_persistent = eval(open(self.filename).read())
+			self.__dict__.update(raw_persistent)
+			self._mtime = path.getmtime(self.filename)
 		except:
 			traceback.print_exc()
 			raise(Exception("Could not parse: "+self.filename))
 			
-		if(self.format_version > self.FORMAT_VERSION):
+		if(self.format_version > Pool.FORMAT_VERSION):
 			raise(Exception("Pool was created with newer version of ZIBMolPy - run zgf_upgrade."))
 			
 	#---------------------------------------------------------------------------
@@ -146,7 +143,7 @@ class Pool(NodeList):
 		if(not path.exists("./nodes/")):
 			return
 			
-		self.__dict__["mtime_nodes"] = path.getmtime("./nodes")
+		self._mtime_nodes = path.getmtime("./nodes")
 		
 		new_nodes = []
 		for node_dir in sorted(glob("./nodes/*")):
@@ -166,28 +163,39 @@ class Pool(NodeList):
 
 	
 	#---------------------------------------------------------------------------
-	# proxy for persistent attributes
-	def __getattr__(self, name):
-		if(name not in self.persistent.keys()):
-			raise(AttributeError("Could not find '%s' in ZIBMolPy.Pool"%name))
-		return(self.persistent[name])
-		
-	#---------------------------------------------------------------------------
-	# proxy for persistent attributes
-	def __setattr__(self, name, value):
-		self.persistent[name] = value
+	def save(self):
+		persistent = dict([ (k,v) for k,v in self.__dict__.items() if k[0]!='_' ])
+		f = open(self.filename, "w")
+		f.write(utils.pformat(persistent)+"\n")
+		f.close()
+		self._mtime = path.getmtime(self.filename)
+	
 	
 	#---------------------------------------------------------------------------
-	def save(self):
-		f = open(self.filename, "w")
-		f.write(utils.pformat(self.persistent)+"\n")
-		f.close()
-		self.__dict__["mtime"] = path.getmtime(self.filename)
+	def __repr__(self):
+		return( "<Pool len=%d>"% (len(self)) )
+		
+	def __str__(self):
+		return(self.__repr__())
+
+	#---------------------------------------------------------------------------
+	@property
+	def filename(self):
+		return("pool-desc.txt")
+	
+
+	@property
+	def mtime(self):
+		return(self._mtime)
+	
+	@property
+	def mtime_nodes(self):
+		return(self._mtime_nodes)
 	
 	#---------------------------------------------------------------------------
 	@property
 	def converter(self): #TODO maybe cache instance
-		if("int_fn" in self.persistent):
+		if(hasattr(self, "int_fn")):
 			return(Converter(self.int_fn))
 		return(None)
 
@@ -198,14 +206,6 @@ class Pool(NodeList):
 			if(n.name == self.root_name):
 				return(n)
 		return(None)
-	
-	#---------------------------------------------------------------------------
-	def __repr__(self):
-		return( "<ZIBMolPy.Pool len=%d>"% (len(self)) )
-		
-	def __str__(self):
-		return(self.__repr__())
-
 
 	#---------------------------------------------------------------------------
 	@property 

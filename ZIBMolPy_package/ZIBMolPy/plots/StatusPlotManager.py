@@ -57,10 +57,14 @@ class StatusPlotManager(object):
 		self.board.canvas.figure.canvas.draw_idle()
 
 	def node2status(self, n):
-		if(n.is_extended): return("extended") 
-		if(n.is_locked): return("in progress")
-		if not(n.has_trajectory) and n.state == "mdrun-able": return('not sampled')
-		return(n.state)
+		if(n.state=='mdrun-able' and n.extensions_counter > 0 and not n.is_locked):
+			return("extended") 
+		elif(n.is_locked): 
+			return("in progress")
+		elif(not n.has_trajectory and n.state=="mdrun-able"):
+			return('not sampled')
+		else:
+			return(n.state)
 
 	def node2extensions(self, n):
 		if not(n.has_trajectory) and n.state == "mdrun-able": return('not sampled')

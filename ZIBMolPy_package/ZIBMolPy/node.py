@@ -31,6 +31,7 @@ class Store(dict):
 	def __setattr__(self, name, value):
 		self[name] = value
 		
+
 #===============================================================================
 class Node(object):
 	#pylint: disable=W0404
@@ -54,26 +55,52 @@ class Node(object):
 				if(path.exists("./nodes/"+name)): continue
 				break
 					
+		
 		self = object.__new__(cls)
 		cls._instances[name] = self
-		
+
 		#actuall init-code
 		from ZIBMolPy.pool import Pool #avoids circular imports
-		#have to use self.__dict__["foo"] because we defined __setattr__
-		self.__dict__["pool"] = Pool() #Pool is a singleton
-		self.__dict__["name"] = name
-		self.__dict__["dir"] = "nodes/"+name
-		self.__dict__["filename"] = self.dir+"/"+name+"_desc.txt"
-		self.__dict__["tmp"] = Store() #for thing that need to be stored temporarly
-		self.__dict__["obs"] = Store()
-		self.__dict__["persistent"] = Store()
-		
+		self._pool = Pool() #Pool is a singleton
+		self._name = name
+		self._tmp = Store() #for thing that need to be stored temporarly
+		self._obs = Store()
+		self.parent = None
+
 		if(path.exists(self.dir)):
 			self.reload()
 		
 		#self.pool.append(self) #register with pool
 		return(self)
+	
+	#---------------------------------------------------------------------------
+	@property
+	def obs(self):
+		return(self._obs)
+	
+	@property
+	def tmp(self):
+		return(self._tmp)
 		
+	@property
+	def pool(self):
+		return(self._pool)
+		
+	
+	#---------------------------------------------------------------------------
+	@property
+	def name(self):
+		return(self._name)
+	
+	#---------------------------------------------------------------------------
+	@property
+	def dir(self):
+		return("nodes/"+self.name)
+	
+	@property
+	def filename(self):
+		return(self.dir+"/"+self.name+"_desc.txt")
+	
 	#---------------------------------------------------------------------------
 	def reload(self):
 		#pylint: disable=W0612
@@ -84,13 +111,14 @@ class Node(object):
 			from numpy import array, float32, float64
 			from ZIBMolPy.restraint import DihedralRestraint, DistanceRestraint
 			from ZIBMolPy.internals import Converter
-			raw = open(self.filename).read()
-			self.persistent.update(eval(raw))
+			raw_persistent = eval(open(self.filename).read())
+			self.__dict__.update(raw_persistent)
 								
 			if(path.exists(self.observables_fn)):
-				raw2 = open(self.observables_fn).read()
-				self.obs.update(eval(raw2))
-			self.__dict__["mtime"] = t
+				raw_obs = eval(open(self.observables_fn).read())
+				self.obs.update(raw_obs)
+			
+			self._mtime = t
 		except:
 			traceback.print_exc()
 			raise(Exception("Could not parse: "+self.filename))
@@ -103,21 +131,27 @@ class Node(object):
 			os.makedirs(self.dir)
 		else:
 			assert(self.owns_lock)
+			
+		#save persistent node data
+		persistent = dict([ (k,v) for k,v in self.__dict__.items() if k[0]!='_' ])
+		f = open(self.filename, "w")
+		f.write(utils.pformat(persistent)+"\n")
+		f.close()
 		
-		for (fn, data) in [(self.filename, self.persistent), (self.observables_fn, self.obs)]:
-			if(len(data) > 0):
-				f = open(fn, "w")
-				f.write(utils.pformat(data)+"\n")
-				f.close()
+		# save observables, if there are any
+		if(len(self.obs) > 0):
+			f = open(self.observables_fn, "w")
+			f.write(utils.pformat(self.obs)+"\n")
+			f.close()
 		
-		self.__dict__["mtime"] = path.getmtime(self.filename)
+		self._mtime = path.getmtime(self.filename)
 	
 	#---------------------------------------------------------------------------
 	def __str__(self):
-		return("<ZIBMolPy.Node %s>"%(self.name))
+		return("<Node %s>"%self.name)
 	
 	def __eq__(self, other): #used e.g. in NodeList.append
-		return( isinstance(other, Node) and other.name == self.name )
+		return( isinstance(other, type(self)) and other.name == self.name )
 		
 	def	__hash__(self):
 		return(hash(self.name))
@@ -125,19 +159,20 @@ class Node(object):
 	def __repr__(self):
 		return("Node(name='%s')"%self.name)
 
-	# proxy for persistent attributes
-	def __getattr__(self, name):
-		if(name in self.persistent.keys()):
-			return(self.persistent[name])
-		raise(AttributeError("Could not find '%s' in ZIBMolPy.Node"%name))
-		
+	#---------------------------------------------------------------------------
+	@property
+	def mtime(self):
+		return(self._mtime)
+	
+	#---------------------------------------------------------------------------
+	@property
+	def observables_fn(self):
+		return(self.dir+"/"+self.name+"_observables.txt")
+	
+	@property
+	def lock_fn(self):
+		return(self.dir+"/lock")
 
-	# proxy for persistent attributes
-	def __setattr__(self, name, value):
-		self.persistent[name] = value
-	
-	
-		
 	@property
 	def is_locked(self):
 		""" Returns true when the node is lock (by whoever) """
@@ -175,19 +210,13 @@ class Node(object):
 	def unlock(self):
 		assert(self.owns_lock)
 		os.remove(self.lock_fn)
-
-
-	# some conjugate state information
-
+	
+	
+	#---------------------------------------------------------------------------
 	@property
-	def is_extended(self):
-		return((self.state == 'mdrun-able') and (self.extensions_counter > 0) and not path.exists(self.lock_fn))
-
-	# some aliases
-	@property
-	def lock_fn(self):
-		return(self.dir+"/lock")
-
+	def children(self):
+		return [n for n in self.pool if n.parent == self]
+	
 	@property
 	def tpr_fn(self):
 		return(self.dir+"/run.tpr")
@@ -205,10 +234,6 @@ class Node(object):
 		return(self.dir+"/"+self.name+".top")
 
 	@property
-	def observables_fn(self):
-		return(self.dir+"/"+self.name+"_observables.txt")
-
-	@property
 	def convergence_log_fn(self):
 		return(self.dir+"/"+self.name+"_convergence.log")
 
@@ -220,14 +245,6 @@ class Node(object):
 	def mdrun_log_fn(self):
 		return(self.dir+"/md.log")
 
-	@property
-	def children(self):
-		return [n for n in self.pool.where("hasattr('parent')") if n.parent == self]
-		
-	@property
-	def parent(self):
-		return( self.__dict__["persistent"].get("parent", None) )
-	
 	@property
 	def has_convergence_log(self):
 		return path.exists(self.convergence_log_fn)
@@ -246,11 +263,11 @@ class Node(object):
 
 	@property
 	def has_restraints(self):
-		return(self.persistent.has_key("restraints"))
+		return(hasattr(self, "restraints") and len(self.restraints)>0)
 
 	@property
 	def has_internals(self):
-		return(self.persistent.has_key("internals"))
+		return(hasattr(self, "internals"))
 	
 	@property
 	def trajectory(self):
@@ -260,20 +277,6 @@ class Node(object):
 			traceback.print_exc()
 			raise(Exception("Could not load trajectory"))
 		
-	@property
-	def penalty_potential(self):
-		self.read_trajectory()
-		return(self._penalty_potential_cache)
-	
-	@property
-	def phi_values(self):
-		self.read_trajectory()
-		return(self._phi_values_cache)
-	
-	@property
-	def frameweights(self):
-		return(self.trajectory.frameweights)
-	
 	
 	def read_trajectory(self):
 		if(not path.exists(self.trr_fn)):
@@ -309,6 +312,35 @@ class Node(object):
 		self.__dict__["_trajectory_cache"] = trajectory
 		self.__dict__["_trajectory_cache_time"] = path.getmtime(self.trr_fn)
 		return(self._trajectory_cache)
-
+	
+	@property
+	def penalty_potential(self):
+		self.read_trajectory()
+		return(self._penalty_potential_cache)
+	
+	@property
+	def phi_values(self):
+		self.read_trajectory()
+		return(self._phi_values_cache)
+	
+	@property
+	def frameweights(self):
+		return(self.trajectory.frameweights)
+		
+	
+	#---------------------------------------------------------------------------	
+	# some conjugate state information
+	@property
+	def isa_partition(self):
+		"""Indicates that this node belongs to the partioning of the internal coordinate space."""
+		return(
+			(self.has_restraints and self.state != 'refined') 
+			or self.state=='creating-a-partition' ) # used by zgf_create_node.calc_theta()
+	
+	@property
+	def is_sampled(self):
+		"""Indicates that this node is finished with sampling""" 
+		return self.state in ("converged", "not-converged", "refined")
+	
 #===============================================================================
 #EOF

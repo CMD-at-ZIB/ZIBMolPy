@@ -193,7 +193,8 @@ class DistPlotManager(object):
 			axes1.bar(left, height, width, **plotargs)
 			
 		# Restraint-, Phi- and Phi-Potential Plot
-		for n in self.board.pool.where("state != 'refined'"):
+		#for n in self.board.pool.where("state != 'refined'"):
+		for n in self.board.pool.where("has_restraints"):
 			if(n != self.board.selected_node): continue
 			#node_value = n.internals.getcoord(current_coord)
 			if(self.cb_restraint.get_active()):

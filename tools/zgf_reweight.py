@@ -81,7 +81,7 @@ sys.modules[__name__].__doc__ += options_desc.epytext() # for epydoc
 
 def is_applicable():
 	pool = Pool()
-	return( len(pool) > 1  and len(pool.where("state in ('converged', 'not-converged', 'refined')")) == len(pool) )
+	return( len(pool) > 1  and len(pool.where("is_sampled")) == len(pool) )
 
 
 
@@ -94,9 +94,10 @@ def main():
 	
 	pool = Pool()
 
-	not_reweightable = "state not in ('refined','converged')"
+	#not_reweightable = "state not in ('refined','converged')"
+	not_reweightable = "isa_partition and state!='converged'"
 	if options.ignore_convergence:
-		not_reweightable = "state not in ('refined','converged','not-converged')"
+		not_reweightable = "isa_partition and state not in ('converged','not-converged')"
 
 	if pool.where(not_reweightable):
 		print "Pool can not be reweighted due to the following nodes:"		
@@ -104,7 +105,7 @@ def main():
 			print "Node %s with state %s."%(bad_guy.name, bad_guy.state)
 		sys.exit("Aborting.")
 		
-	active_nodes = pool.where("state != 'refined'")
+	active_nodes = pool.where("isa_partition")
 	assert(len(active_nodes) == len(active_nodes.multilock())) # make sure we lock ALL nodes
 
 	for n in active_nodes:
