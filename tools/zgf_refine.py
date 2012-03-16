@@ -48,7 +48,7 @@ sys.modules[__name__].__doc__ += options_desc.epytext() # for epydoc
 
 def is_applicable():
 	pool = Pool()
-	return(len(pool.where("state in ('converged', 'not-converged')")) > 0)
+	return(len(pool.where("isa_partition and is_sampled")) > 0)
 
 	
 #===============================================================================
@@ -60,7 +60,7 @@ def main(argv=None):
 	assert(not(options.refine_all and options.extend_all)) 
 	
 	pool = Pool()
-	needy_nodes = pool.where("state in ('converged', 'not-converged')").multilock()
+	needy_nodes = pool.where("isa_partition and is_sampled").multilock()
 	
 	# 1. Trying to detect fake convergence
 	for n in pool.where("state == 'converged'"):

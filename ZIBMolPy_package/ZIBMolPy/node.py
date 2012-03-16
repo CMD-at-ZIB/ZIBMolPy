@@ -217,11 +217,6 @@ class Node(object):
 	def children(self):
 		return [n for n in self.pool if n.parent == self]
 	
-	# some conjugate state information
-	@property
-	def is_extended(self):
-		return((self.state == 'mdrun-able') and (self.extensions_counter > 0) and not path.exists(self.lock_fn))
-
 	@property
 	def tpr_fn(self):
 		return(self.dir+"/run.tpr")
@@ -268,7 +263,7 @@ class Node(object):
 
 	@property
 	def has_restraints(self):
-		return(hasattr(self, "restraints"))
+		return(hasattr(self, "restraints") and len(self.restraints)>0)
 
 	@property
 	def has_internals(self):
@@ -331,5 +326,21 @@ class Node(object):
 	@property
 	def frameweights(self):
 		return(self.trajectory.frameweights)
+		
+	
+	#---------------------------------------------------------------------------	
+	# some conjugate state information
+	@property
+	def isa_partition(self):
+		"""Indicates that this node belongs to the partioning of the internal coordinate space."""
+		return(
+			(self.has_restraints and self.state != 'refined') 
+			or self.state=='creating-a-partition' ) # used by zgf_create_node.calc_theta()
+	
+	@property
+	def is_sampled(self):
+		"""Indicates that this node is finished with sampling""" 
+		return self.state in ("converged", "not-converged", "refined")
+	
 #===============================================================================
 #EOF

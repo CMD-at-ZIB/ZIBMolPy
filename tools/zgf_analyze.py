@@ -62,7 +62,7 @@ sys.modules[__name__].__doc__ += options_desc.epytext() # for epydoc
 
 def is_applicable():
 	pool = Pool()
-	return( len(pool.where("'weight_direct' in obs")) > 0 and len(pool.where("state != 'refined' and 'weight_direct' not in obs")) == 0 )
+	return( len(pool.where("'weight_direct' in obs")) > 0 and len(pool.where("isa_partition and 'weight_direct' not in obs")) == 0 )
 
 #===============================================================================
 def main():
@@ -71,7 +71,7 @@ def main():
 	zgf_cleanup.main()
 	
 	pool = Pool()
-	active_nodes = pool.where("state != 'refined'")
+	active_nodes = pool.where("isa_partition")
 	
 	assert(len(active_nodes) == len(active_nodes.multilock())) # make sure we lock ALL nodes
 

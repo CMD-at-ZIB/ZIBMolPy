@@ -123,7 +123,7 @@ def main(argv=None):
 		n = Node()
 		n.parent_frame_num = i
 		n.parent = parent
-		n.state = "creating" # will be set to "created" at end of script
+		n.state = "creating-a-partition" # will be set to "created" at end of script
 		n.extensions_counter = 0
 		n.extensions_max = options.ext_max
 		n.extensions_length = options.ext_length
@@ -154,7 +154,7 @@ def main(argv=None):
 	else:
 		raise(Exception("Method unkown: "+options.methodphifit))
 
-	for n in pool.where("state == 'creating'"):
+	for n in pool.where("state == 'creating-a-partition'"):
 		n.state = "created"
 		n.save()
 		print "saving " +str(n)
@@ -254,7 +254,7 @@ def mknodes_all(parent):
 #==========================================================================
 def calc_alpha_theta(pool):
 	# calculate theta and alpha
-	active_nodes = pool.where("state != 'refined'")
+	active_nodes = pool.where("isa_partition")
 	theta = calc_theta(active_nodes)
 	assert(theta[1] > 0.00001) #TODO: apparently fails sometimes
 	alpha = -np.log( EPSILON2/len(active_nodes) ) / (3.0*theta[1]*theta[1]) # using theta_median
@@ -291,8 +291,7 @@ def get_force_constant(node):
 def do_phifit_leastsq(pool):
 	from scipy.optimize import leastsq
 	
-	#active_nodes = pool.where("state != 'refined'")
-	new_nodes = pool.where("state == 'creating'")
+	new_nodes = pool.where("state == 'creating-a-partition'")
 		
 	for n in new_nodes:
 		n.restraints = []
@@ -345,7 +344,7 @@ def do_phifit_leastsq(pool):
 	
 #==========================================================================
 def do_phifit_harmonic(pool):
-	new_nodes = pool.where("state == 'creating'")
+	new_nodes = pool.where("state == 'creating-a-partition'")
 	for n in new_nodes:
 		n.restraints = []
 		for c in pool.converter:
@@ -364,8 +363,7 @@ def do_phifit_harmonic(pool):
 				raise(Exception("Unkown Coordinate-Type"))
 #==========================================================================
 def do_phifit_switch(pool, frames_int):
-	#active_nodes = pool.where("state != 'refined'")
-	new_nodes = pool.where("state == 'creating'")
+	new_nodes = pool.where("state == 'creating-a-partition'")
 	
 	for n in new_nodes:
 		n.restraints = []

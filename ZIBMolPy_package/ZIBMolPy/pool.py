@@ -183,6 +183,15 @@ class Pool(NodeList):
 	def filename(self):
 		return("pool-desc.txt")
 	
+
+	@property
+	def mtime(self):
+		return(self._mtime)
+	
+	@property
+	def mtime_nodes(self):
+		return(self._mtime_nodes)
+	
 	#---------------------------------------------------------------------------
 	@property
 	def converter(self): #TODO maybe cache instance

@@ -253,7 +253,7 @@ class Statusbar(gtk.Statusbar):
 	
 
 	def update(self):
-		if(not self.board.pool):
+		if(len(self.board.pool)==0):
 			return
 		
 		msg_parts = []
@@ -265,13 +265,13 @@ class Statusbar(gtk.Statusbar):
 		n_active = len(self.board.pool)-n_refined
 		if(n_active > 0):
 			size_msg += "+%d"%n_active
-		n_needy = len(self.board.pool.where("state != 'converged'"))-n_refined
+		n_needy = len(self.board.pool.where("state != 'converged'")) - n_refined
 		if(n_needy > 0):
 			size_msg += "(%d)"%n_needy
 
 		msg_parts.append(size_msg)
 	
-		if(self.board.pool.alpha):
+		if(self.board.pool.alpha!=None):
 			msg_parts.append("α=%.2f"%self.board.pool.alpha)
 		
 		mdp = read_mdp_file(self.board.pool.mdp_fn)
@@ -283,7 +283,7 @@ class Statusbar(gtk.Statusbar):
 			if(not hasattr(n,"extensions_max")):
 				continue #this is probably the root-node
 			expected_exts = n.extensions_max/2.0 #how many extension do we expect?
-			if n.state in ("converged", "refined", "not-converged"):
+			if n.is_sampled:
 				t_used += t_default + n.extensions_length * n.extensions_counter
 			elif(n.extensions_counter == 0):
 				t_left += t_default +  n.extensions_length * expected_exts 
@@ -291,7 +291,6 @@ class Statusbar(gtk.Statusbar):
 				t_used += t_default + n.extensions_length * n.extensions_counter
 				t_left +=  n.extensions_length * max(1, expected_exts - n.extensions_counter)
 		
-		#n_done = len(self.board.pool.where('state in ("converged", "refined", "not-converged")'))
 		msg_parts.append("time-used=%d ps"%t_used)
 		msg_parts.append("time-left (est.)=%d ps"%t_left)
 		ctx = self.get_context_id("foobar")
@@ -819,7 +818,7 @@ class CoordinateList(gtk.TreeView):
 #===============================================================================
 class NodeList(gtk.TreeView):
 	def __init__(self, board):
-		liststore = gtk.ListStore(str, str, str, str, bool, str, str, bool, bool, bool)
+		liststore = gtk.ListStore(str, str, str, bool, str, bool, str, str, bool, bool, bool)
 		gtk.TreeView.__init__(self, liststore)
 		self.board = board
 		self.board.listeners.append(self.update)
@@ -833,7 +832,7 @@ class NodeList(gtk.TreeView):
 		
 		renderer2 = gtk.CellRendererToggle()
 		renderer2.connect('toggled', self.on_toggled_convlog)
-		
+				
 		renderer3 = gtk.CellRendererToggle()
 		renderer3.connect('toggled', self.on_toggled_weightlog)
 		
@@ -843,15 +842,18 @@ class NodeList(gtk.TreeView):
 		renderer5 = gtk.CellRendererToggle()
 		renderer5.connect('toggled', self.on_toggled_mdlog)
 		
+		renderer6 = gtk.CellRendererToggle()
+				
 		self.append_column(gtk.TreeViewColumn("Name", renderer1, text=1))
 		self.append_column(gtk.TreeViewColumn("State", renderer1, text=2))
-		self.append_column(gtk.TreeViewColumn("Extension", renderer1, text=3))
-		self.append_column(gtk.TreeViewColumn("ConvLog", renderer2, active=4))
-		self.append_column(gtk.TreeViewColumn("Weight (dir.)", renderer1, text=5))
-		self.append_column(gtk.TreeViewColumn("Weight (corr.)", renderer1, text=6))
-		self.append_column(gtk.TreeViewColumn("WeightLog", renderer3, active=7))
-		self.append_column(gtk.TreeViewColumn("Trajectory", renderer4, active=8))
-		self.append_column(gtk.TreeViewColumn("MDLog", renderer5, active=9))
+		self.append_column(gtk.TreeViewColumn("Restrained", renderer6, active=3))
+		self.append_column(gtk.TreeViewColumn("Extension", renderer1, text=4))
+		self.append_column(gtk.TreeViewColumn("ConvLog", renderer2, active=5))
+		self.append_column(gtk.TreeViewColumn("Weight (dir.)", renderer1, text=6))
+		self.append_column(gtk.TreeViewColumn("Weight (corr.)", renderer1, text=7))
+		self.append_column(gtk.TreeViewColumn("WeightLog", renderer3, active=8))
+		self.append_column(gtk.TreeViewColumn("Trajectory", renderer4, active=9))
+		self.append_column(gtk.TreeViewColumn("MDLog", renderer5, active=10))
 		self.append_column(gtk.TreeViewColumn("")) # placeholder
 						 
 
@@ -938,7 +940,7 @@ class NodeList(gtk.TreeView):
 			if('weight_corrected' in n.obs):
 				weight_corrected = "%1.10f"%n.obs.weight_corrected
 				
-			row = [color, n.name, n.state, ext_txt, n.has_convergence_log, weight_direct, weight_corrected, n.has_reweighting_log, n.has_trajectory, n.has_mdrun_log]
+			row = [color, n.name, n.state, n.has_restraints, ext_txt, n.has_convergence_log, weight_direct, weight_corrected, n.has_reweighting_log, n.has_trajectory, n.has_mdrun_log]
 			
 			# Updating the entire list, without clearing it. 
 			# This preserves the selection and the up/down-keys still work :-)

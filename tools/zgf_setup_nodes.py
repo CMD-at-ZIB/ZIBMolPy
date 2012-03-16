@@ -29,6 +29,7 @@ from tempfile import mktemp
 from subprocess import Popen, PIPE
 from math import degrees
 import numpy as np
+import shutil
 
 options_desc = OptionsList()
 
@@ -96,6 +97,11 @@ def extract_frames(pool):
 #===============================================================================
 def generate_topology(pool):
 	for n in pool.where("state == 'created'"):
+		
+		if(not n.has_restraints):
+			shutil.copyfile(pool.top_fn, n.top_fn)
+			continue
+		
 		# load unmodified topology
 		top = topology.Topology(pool.top_fn)
 		

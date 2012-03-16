@@ -210,12 +210,6 @@ def main():
 		print("ERROR: A pool already exists here.")
 		sys.exit(1)
 	
-	node0 = Node()
-	node0.state = "refined"
-	node0.save() # also creates the node directory ... needed for symlink
-	os.symlink(os.path.relpath(options.presampling, node0.dir), node0.trr_fn)
-	os.symlink(os.path.relpath(options.molecule, node0.dir), node0.pdb_fn)
-	
 	pool.int_fn = options.internals
 	pool.mdp_fn = options.grompp
 	pool.top_fn = options.topology
@@ -224,9 +218,18 @@ def main():
 	pool.gr_threshold = options.gr_threshold
 	pool.gr_chains = options.gr_chains
 	pool.alpha = None
+	pool.save() # save pool for the first time...
+
+	# ... then we can save the first node...
+	node0 = Node()
+	node0.state = "refined"	
+	node0.save() # also creates the node directory ... needed for symlink
+	os.symlink(os.path.relpath(options.presampling, node0.dir), node0.trr_fn)
+	os.symlink(os.path.relpath(options.molecule, node0.dir), node0.pdb_fn)
+	
 	pool.root_name = node0.name
-	pool.save()
-		
+	pool.save() #... now we have to save the pool again.
+	
 	if(not path.exists("analysis")):
 		os.mkdir("analysis")
 	
