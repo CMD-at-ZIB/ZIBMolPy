@@ -9,7 +9,7 @@ if [ ! -d $LINKDEST ] ; then
 	exit 1
 fi
 
-cd tools/
+cd ../tools/
 
 for file in *.py;
 do
@@ -17,6 +17,12 @@ do
 	if [ -f $file ] ; then
 		# get name without extension
 		name=${file%\.*}
+
+		if [ -e $LINKDEST/$name ] ; then
+			# remove old link
+			rm $LINKDEST/$name
+		fi
+
 		echo "Making link for "${name}" ..."
 		ln -s $PWD/$file $LINKDEST/$name
 	fi
