@@ -5,8 +5,7 @@
 LINKDEST=${1%\/}
 
 if [ ! -d $LINKDEST ] ; then
-	echo $LINKDEST" is not a directory."
-	exit 1
+	mkdir $LINKDEST
 fi
 
 cd ../tools/
