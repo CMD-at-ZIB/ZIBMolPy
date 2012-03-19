@@ -1,9 +1,9 @@
 <xml>
-<run>rm -rvf pool-desc.txt nodes analysis tmp_*.trr node_preview_from_*.pdb</run>
+<run>rm -rvf pool-desc.txt nodes analysis tmp_*.trr node_preview_from_*.pdb *fixed.mdp</run>
 
-<run>zgf_create_pool.py -C 2 -G 3 -p topol.top</run>
+<run>zgf_create_pool -C 2 -G 3 -p topol.top</run>
 
-<run>zgf_create_nodes.py -E 0 -K 10 -s 123</run>
+<run>zgf_create_nodes -E 0 -K 10 -s 123</run>
 <match-stdout>
 k-means iteration  0 - Progress: 0.0896295
 k-means iteration  1 - Progress: 0.0154582
@@ -29,7 +29,7 @@ theta_mean: 0.560648, theta_median: 0.553292
 alpha (from theta_median): 10.028711
 </match-stdout>
 
-<run>zgf_setup_nodes.py</run>
+<run>zgf_setup_nodes</run>
 <match-stdout>
 node0001: pdb vs internals deviation: 5.96e-05
 node0002: pdb vs internals deviation: 9.10e-05
@@ -43,9 +43,9 @@ node0009: pdb vs internals deviation: 8.97e-05
 node0010: pdb vs internals deviation: 4.94e-05
 </match-stdout>
 
-<run>zgf_grompp.py</run>
+<run>zgf_grompp</run>
 
-<run>zgf_mdrun.py -sr</run>
+<run>zgf_mdrun -sr</run>
 <match-stdout>
 ('whole vs. pbc diff: ', 3.6823497029381258e-08)
 W_chain_vars [  1.44092569e-04   1.36058363e-04   4.68852575e-05   1.41847103e-05
@@ -117,7 +117,7 @@ B_total_var [  9.12208725e-06   7.66627636e-07   2.24167947e-04   2.15937489e-05
    2.06888362e-05   2.54070947e-05   2.64419126e-03   2.35966826e-03]
 </match-stdout>
 
-<run>zgf_reweight.py -c</run>
+<run>zgf_reweight -c</run>
 <match-stdout>
 dis_diff:  4.5118621923e-07
 </match-stdout>
@@ -155,7 +155,7 @@ dis_diff:  4.78347545839e-07
   energy region (=weighted V standard deviation): 43.519589 [kJ/mol]
   evaluation region (=conjugate variance): 0.002555
   number of refpoints: 7
-Thermodynamic weights calculated by method 'entropy' (ignore-sol=True):
+Thermodynamic weights calculated by method 'entropy' (sol-energy=False):
   node0002 with A: 2827.181962 [kJ/mol] and weight: 0.999991
   node0003 with A: 2856.075922 [kJ/mol] and weight: 0.000009
   node0001 with A: 2865.949692 [kJ/mol] and weight: 0.000000
@@ -168,7 +168,7 @@ Thermodynamic weights calculated by method 'entropy' (ignore-sol=True):
   node0010 with A: 2977.945185 [kJ/mol] and weight: 0.000000
 </match-stdout>
 
-<run>zgf_analyze.py -c</run>
+<run>zgf_analyze -c</run>
 <match-stdout>
 ### Node weights after symmetrization of S matrix:
 node0001: initial weight: 0.000000, corrected weight: 0.273978, weight change: 0.273977
@@ -217,7 +217,7 @@ cluster weights (calculated twice for checking):
    2.03855515e-03   9.97014299e-01]
 </match-stdout>
 
-<run>zgf_extract_conformations.py</run>
+<run>zgf_extract_conformations</run>
 <match-stdout>
 ### Extraction summary ###
 node threshold: 0.5, frame threshold: 0.5

@@ -64,14 +64,14 @@ def generate_mdp(pool):
 	mdp = read_mdp_file(pool.mdp_fn)
 	dt = float(mdp['dt'])
 	orig_mdp = open(pool.mdp_fn).read()
-	orig_mdp = re.sub("\nnsteps", "\n; zgf_setup_nodes: commeted-out the following line\n; nsteps", orig_mdp)
+	orig_mdp = re.sub("\nnsteps", "\n; zgf_setup_nodes: commented-out the following line\n; nsteps", orig_mdp)
 	
 	for n in pool.where("state == 'created'"):
 		print("Writting: "+n.mdp_fn)
 		nsteps = int(n.sampling_length / dt)
 		f = open(n.mdp_fn, "w")
 		f.write(orig_mdp)
-		f.write("\n;zgf_setup_nodes: possibly overwritting previous nsteps entry\n") 
+		f.write("\n;zgf_setup_nodes: possibly overwriting previous nsteps entry\n") 
 		f.write("nsteps = %d\n"%nsteps)
 		f.close()
 

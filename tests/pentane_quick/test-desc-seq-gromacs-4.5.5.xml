@@ -1,9 +1,9 @@
 <xml>
-<run>rm -rvf pool-desc.txt nodes analysis tmp_*.trr tmp_*.xtc node_preview_from_*.pdb</run>
+<run>rm -rvf pool-desc.txt nodes analysis tmp_*.trr node_preview_from_*.pdb *fixed.mdp</run>
 
-<run>zgf_create_pool.py -C 2 -G 3 -p topol-4.5.5.top</run>
+<run>zgf_create_pool -C 2 -G 3 -p topol-4.5.5.top</run>
 
-<run>zgf_create_nodes.py -E 2 -L 1 -l 1 -K 3 -s 123</run>
+<run>zgf_create_nodes -E 2 -L 1 -l 1 -K 3 -s 123</run>
 <match-stdout>
 Discretization overview:
 - Variance per int of presampling trajectory:
@@ -19,16 +19,16 @@ theta_mean: 2.639225, theta_median: 2.609401
 alpha (from theta_median): 0.391952
 </match-stdout>
 
-<run>zgf_setup_nodes.py</run>
+<run>zgf_setup_nodes</run>
 <match-stdout>
 node0001: pdb vs internals deviation: 5.95e-08
 node0002: pdb vs internals deviation: 2.30e-08
 node0003: pdb vs internals deviation: 4.10e-08
 </match-stdout>
 
-<run>zgf_grompp.py</run>
+<run>zgf_grompp</run>
 
-<run>zgf_cleanup.py</run>
+<run>zgf_cleanup</run>
 <match-stdout>
 Node node0000 is refined and not locked.
 Node node0001 is mdrun-able and not locked.
@@ -36,7 +36,7 @@ Node node0002 is mdrun-able and not locked.
 Node node0003 is mdrun-able and not locked.
 </match-stdout>
 
-<run>zgf_mdrun.py -sr</run>
+<run>zgf_mdrun -sr</run>
 <match-stdout>
 W_chain_vars [ 0.00562354  0.00706181]
 B_total_var [ 0.00393747  0.00240733]
@@ -50,7 +50,7 @@ W_chain_vars [ 0.0646591   0.09646735]
 B_total_var [ 0.04459261  0.23297915]
 </match-stdout>
 
-<run>zgf_cleanup.py</run>
+<run>zgf_cleanup</run>
 <match-stdout>
 Node node0000 is refined and not locked.
 Node node0001 is converged and not locked.
@@ -58,7 +58,7 @@ Node node0002 is converged and not locked.
 Node node0003 is converged and not locked.
 </match-stdout>
 
-<run>zgf_reweight.py -c</run>
+<run>zgf_reweight -c</run>
 <match-stdout>
   unweighted mean V: 87.5072236 [kJ/mol], without penalty potential
   phi-weighted mean V: 88.8413144468 [kJ/mol], without penalty potential
@@ -67,13 +67,13 @@ Node node0003 is converged and not locked.
   evaluation region (=conjugate variance): 0.117987
   number of refpoints: 3
 WARNING: No nearpoints found for refpoint 1! (node0003)
-Thermodynamic weights calculated by method 'entropy' (ignore-sol=True):
+Thermodynamic weights calculated by method 'entropy' (sol-energy=False):
   node0003 with A: 85.740766 [kJ/mol] and weight: 0.999988
   node0002 with A: 113.915155 [kJ/mol] and weight: 0.000012
   node0001 with A: 129.778020 [kJ/mol] and weight: 0.000000
 </match-stdout>
 
-<run>zgf_analyze.py -c</run>
+<run>zgf_analyze -c</run>
 <match-stdout>
 ### Node weights after symmetrization of S matrix:
 node0001: initial weight: 0.000000, corrected weight: 0.412048, weight change: 0.412048
@@ -96,7 +96,7 @@ cluster weights (calculated twice for checking):
 [ 0.47695285  0.52304704]
 </match-stdout>
 
-<run>zgf_extract_conformations.py</run>
+<run>zgf_extract_conformations</run>
 <match-stdout>
 ### Extraction summary ###
 node threshold: 0.5, frame threshold: 0.5

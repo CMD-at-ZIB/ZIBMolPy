@@ -70,7 +70,7 @@ CRITICAL_FRAME_WEIGHT = 5.0
 
 
 options_desc = OptionsList([
-	Option("s", "ignore-sol", "bool", "ignore SOL energy contribution (recommended)", default=True),
+	Option("s", "sol-energy", "bool", "include SOL energy contribution", default=False),
 	Option("c", "ignore-convergence", "bool", "reweight despite not-converged", default=False),
 	Option("m", "method", "choice", "reweighting method", choices=("entropy", "direct", "presampling")),
 	Option("t", "presamp-temp", "float", "presampling temp", default=1000),
@@ -110,7 +110,7 @@ def main():
 
 	for n in active_nodes:
 		check_restraint_energy(n)
-	
+
 	# find out about number of energygrps
 	mdp_file = gromacs.read_mdp_file(pool.mdp_fn)
 	energygrps = [str(egrp) for egrp in re.findall('[\S]+', mdp_file["energygrps"])]
@@ -119,17 +119,17 @@ def main():
 		moi_energies = False # Gromacs energies are named differently when there are less than two energygrps :(
 
 	if(options.method == "direct"): 
-		reweight_direct(active_nodes, moi_energies, options.ignore_sol, options.save_refpoints)
+		reweight_direct(active_nodes, moi_energies, options.sol_energy, options.save_refpoints)
 	elif(options.method == "entropy"):
-		reweight_entropy(active_nodes, moi_energies, options.ignore_sol, options.save_refpoints)
+		reweight_entropy(active_nodes, moi_energies, options.sol_energy, options.save_refpoints)
 	elif(options.method == "presampling"):
-		reweight_presampling(active_nodes, options.presamp_temp, moi_energies, options.ignore_sol)
+		reweight_presampling(active_nodes, options.presamp_temp, moi_energies, options.sol_energy)
 	else:
 		raise(Exception("Method unkown: "+options.method))
 	
 	weight_sum = np.sum([n.tmp['weight'] for n in active_nodes])
 	
-	print "Thermodynamic weights calculated by method '%s' (ignore-sol=%s):"%(options.method, options.ignore_sol)
+	print "Thermodynamic weights calculated by method '%s' (sol-energy=%s):"%(options.method, options.sol_energy)
 	for n in active_nodes:
 		n.obs.weight_direct = n.tmp['weight'] / weight_sum
 		if(options.method == "direct"):
@@ -144,14 +144,14 @@ def main():
 
 
 #===============================================================================
-def reweight_direct(nodes, moi_energies, ignore_sol, save_ref=False):
+def reweight_direct(nodes, moi_energies, sol_energy, save_ref=False):
 	print "Direct free energy reweighting: see Klimm, Bujotzek, Weber 2011"
 	
 	beta = nodes[0].pool.thermo_beta
 	
 	for n in nodes:
 		# get potential V and substract penalty potential
-		energies = load_energies(n, with_penalty=False, with_sol=not(ignore_sol), with_moi_energies=moi_energies)
+		energies = load_energies(n, with_penalty=False, with_sol=sol_energy, with_moi_energies=moi_energies)
 
 		frame_weights = n.frameweights
 		phi_values = n.phi_values
@@ -204,7 +204,7 @@ def reweight_direct(nodes, moi_energies, ignore_sol, save_ref=False):
 
 
 #===============================================================================
-def reweight_entropy(nodes, moi_energies, ignore_sol, save_ref=False):
+def reweight_entropy(nodes, moi_energies, sol_energy, save_ref=False):
 	print "Entropy reweighting: see Klimm, Bujotzek, Weber 2011"
 	
 	# calculate variance of internal coordinates
@@ -220,7 +220,7 @@ def reweight_entropy(nodes, moi_energies, ignore_sol, save_ref=False):
 		output("======= Starting node reweighting %s"%datetime.now())
 		
 		# get potential V and substract penalty potential
-		energies = load_energies(n, with_penalty=False, with_sol=not(ignore_sol), with_moi_energies=moi_energies)
+		energies = load_energies(n, with_penalty=False, with_sol=sol_energy, with_moi_energies=moi_energies)
 
 		frame_weights = n.frameweights
 		phi_values = n.phi_values
@@ -272,7 +272,7 @@ def reweight_entropy(nodes, moi_energies, ignore_sol, save_ref=False):
 	
 
 #===============================================================================
-def reweight_presampling(nodes, presamp_temp, moi_energies, ignore_sol):
+def reweight_presampling(nodes, presamp_temp, moi_energies, sol_energy):
 	print "Presampling analysis reweighting: see formula 18 in Fackeldey, Durmaz, Weber 2011"
 	
 	# presampling data
@@ -293,7 +293,7 @@ def reweight_presampling(nodes, presamp_temp, moi_energies, ignore_sol):
 		output("======= Starting node reweighting %s"%datetime.now())
 		
 		# get potential V and substract penalty potential
-		energies = load_energies(n, with_penalty=False, with_sol=not(ignore_sol), with_moi_energies=moi_energies)
+		energies = load_energies(n, with_penalty=False, with_sol=sol_energy, with_moi_energies=moi_energies)
 
 		frame_weights = n.frameweights
 		phi_values = n.phi_values
@@ -351,6 +351,7 @@ def load_energies(node, with_penalty=True, with_sol=True, with_moi_energies=True
 	
 	xvg_fn = mktemp(suffix=".xvg", dir=node.dir)
 	cmd = ["g_energy", "-dp", "-f", node.dir+"/ener.edr", "-o", xvg_fn, "-sum"]
+
 	print("Calling: "+(" ".join(cmd)))
 	p = Popen(cmd, stdin=PIPE)
 	p.communicate(input=("\n".join(energy_terms)+"\n"))

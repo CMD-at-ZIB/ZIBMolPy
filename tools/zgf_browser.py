@@ -594,7 +594,7 @@ class StartDialog(gtk.Dialog):
 		gtk.Dialog.__init__(self, title=zgf_command)
 		self.command = zgf_command
 		self.resize(350,400)
-		tooltips = gtk.Tooltips()
+		#tooltips = gtk.Tooltips()
 		self.module = __import__(zgf_command)
 		self.entries = {}
 		
@@ -623,7 +623,8 @@ class StartDialog(gtk.Dialog):
 				label.set_width_chars(18)
 				hbox.pack_start(label, expand=False)
 				hbox.pack_start(w, expand=True)
-				tooltips.set_tip(hbox, o.help)
+				#tooltips.set_tip(hbox, o.help)
+				hbox.set_tooltip_text(o.help)
 				self.vbox.pack_start(hbox, expand=False)
 				self.entries[o.long_name] = w
 		
