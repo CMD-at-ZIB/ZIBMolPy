@@ -42,6 +42,7 @@ pylint:
 clean:
 	rm -rvf ZIBMolPy_package/build
 	rm -rvf ./apidocs
+	find . -name "*~" -exec rm -v {} \;
 
 
 .PHONY: all install install-home uninstall docu upload-docu todo pylint clean 
