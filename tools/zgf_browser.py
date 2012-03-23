@@ -33,7 +33,7 @@ from matplotlib.figure import Figure
 from matplotlib.backends.backend_gtkagg import FigureCanvasGTKAgg as FigureCanvas
 
 
-WIKI_URL = "https://wiki.kobv.de/confluence/display/AGCMD/ZIBMolPy"
+WIKI_URL = "https://github.com/CMD-at-ZIB/ZIBMolPy/wiki"
 
 
 #===============================================================================
