@@ -114,7 +114,7 @@ gobject.GInterface --+   |
         <tr>
           <td><span class="summary-sig"><a href="zgf_browser.MyEntry-class.html#__init__" class="summary-sig-name">__init__</a>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">option</span>)</span><br />
-      x.__init__(...) initializes x; see x.__class__.__doc__ for signature</td>
+      x.__init__(...) initializes x; see help(type(x)) for signature</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="zgf_browser-pysrc.html#MyEntry.__init__">source&nbsp;code</a></span>
             
@@ -142,6 +142,7 @@ gobject.GInterface --+   |
       <code>get_alignment</code>,
       <code>get_buffer</code>,
       <code>get_completion</code>,
+      <code>get_current_icon_drag_source</code>,
       <code>get_cursor_hadjustment</code>,
       <code>get_has_frame</code>,
       <code>get_icon_activatable</code>,
@@ -154,6 +155,7 @@ gobject.GInterface --+   |
       <code>get_icon_storage_type</code>,
       <code>get_icon_tooltip_markup</code>,
       <code>get_icon_tooltip_text</code>,
+      <code>get_icon_window</code>,
       <code>get_inner_border</code>,
       <code>get_invisible_char</code>,
       <code>get_layout</code>,
@@ -164,11 +166,14 @@ gobject.GInterface --+   |
       <code>get_progress_pulse_step</code>,
       <code>get_text</code>,
       <code>get_text_length</code>,
+      <code>get_text_window</code>,
       <code>get_visibility</code>,
       <code>get_width_chars</code>,
+      <code>im_context_filter_keypress</code>,
       <code>layout_index_to_text_index</code>,
       <code>prepend_text</code>,
       <code>progress_pulse</code>,
+      <code>reset_im_context</code>,
       <code>set_activates_default</code>,
       <code>set_alignment</code>,
       <code>set_buffer</code>,
@@ -177,6 +182,7 @@ gobject.GInterface --+   |
       <code>set_editable</code>,
       <code>set_has_frame</code>,
       <code>set_icon_activatable</code>,
+      <code>set_icon_drag_source</code>,
       <code>set_icon_from_gicon</code>,
       <code>set_icon_from_icon_name</code>,
       <code>set_icon_from_pixbuf</code>,
@@ -324,6 +330,7 @@ gobject.GInterface --+   |
       <code>get_extension_events</code>,
       <code>get_has_tooltip</code>,
       <code>get_has_window</code>,
+      <code>get_mapped</code>,
       <code>get_modifier_style</code>,
       <code>get_name</code>,
       <code>get_no_show_all</code>,
@@ -331,7 +338,9 @@ gobject.GInterface --+   |
       <code>get_parent</code>,
       <code>get_parent_window</code>,
       <code>get_pointer</code>,
+      <code>get_realized</code>,
       <code>get_receives_default</code>,
+      <code>get_requisition</code>,
       <code>get_root_window</code>,
       <code>get_screen</code>,
       <code>get_sensitive</code>,
@@ -354,6 +363,7 @@ gobject.GInterface --+   |
       <code>has_default</code>,
       <code>has_focus</code>,
       <code>has_grab</code>,
+      <code>has_rc_style</code>,
       <code>has_screen</code>,
       <code>hide</code>,
       <code>hide_all</code>,
@@ -402,8 +412,10 @@ gobject.GInterface --+   |
       <code>selection_owner_set</code>,
       <code>selection_remove_all</code>,
       <code>send_expose</code>,
+      <code>send_focus_change</code>,
       <code>set_accel_path</code>,
       <code>set_activate_signal</code>,
+      <code>set_allocation</code>,
       <code>set_app_paintable</code>,
       <code>set_can_default</code>,
       <code>set_can_focus</code>,
@@ -416,10 +428,12 @@ gobject.GInterface --+   |
       <code>set_extension_events</code>,
       <code>set_has_tooltip</code>,
       <code>set_has_window</code>,
+      <code>set_mapped</code>,
       <code>set_name</code>,
       <code>set_no_show_all</code>,
       <code>set_parent</code>,
       <code>set_parent_window</code>,
+      <code>set_realized</code>,
       <code>set_receives_default</code>,
       <code>set_redraw_on_allocate</code>,
       <code>set_scroll_adjustments</code>,
@@ -441,6 +455,7 @@ gobject.GInterface --+   |
       <code>show_now</code>,
       <code>size_allocate</code>,
       <code>size_request</code>,
+      <code>style_attach</code>,
       <code>style_get_property</code>,
       <code>thaw_child_notify</code>,
       <code>translate_coordinates</code>,
@@ -458,13 +473,18 @@ gobject.GInterface --+   |
       <code>unset_flags</code>
       </p>
     <p class="indent-wrapped-lines"><b>Inherited from <code><i>unreachable</i>.GObject</code></b>:
-      <code>__cmp__</code>,
       <code>__copy__</code>,
       <code>__deepcopy__</code>,
       <code>__delattr__</code>,
+      <code>__eq__</code>,
       <code>__gdoc__</code>,
+      <code>__ge__</code>,
       <code>__gobject_init__</code>,
+      <code>__gt__</code>,
       <code>__hash__</code>,
+      <code>__le__</code>,
+      <code>__lt__</code>,
+      <code>__ne__</code>,
       <code>__new__</code>,
       <code>__repr__</code>,
       <code>__setattr__</code>,
@@ -623,8 +643,7 @@ gobject.GInterface --+   |
     </td>
   </tr></table>
   
-  <p>x.__init__(...) initializes x; see x.__class__.__doc__ for 
-  signature</p>
+  <p>x.__init__(...) initializes x; see help(type(x)) for signature</p>
   <dl class="fields">
     <dt>Overrides:
         object.__init__
@@ -665,7 +684,7 @@ gobject.GInterface --+   |
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Tue Mar 13 16:13:27 2012
+    Generated by Epydoc 3.0.1 on Fri Mar 23 16:45:51 2012
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

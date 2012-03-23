@@ -3,7 +3,7 @@
           "DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-  <title>ZIBMolPy.io.topology.Topology</title>
+  <title>zgf_create_unrestrained_nodes</title>
   <link rel="stylesheet" href="epydoc.css" type="text/css" />
   <script type="text/javascript" src="epydoc.js"></script>
 </head>
@@ -42,10 +42,7 @@
   <tr valign="top">
     <td width="100%">
       <span class="breadcrumbs">
-        <a href="ZIBMolPy-module.html">Package&nbsp;ZIBMolPy</a> ::
-        <a href="ZIBMolPy.io-module.html">Package&nbsp;io</a> ::
-        <a href="ZIBMolPy.io.topology-module.html">Module&nbsp;topology</a> ::
-        Class&nbsp;Topology
+        Module&nbsp;zgf_create_unrestrained_nodes
       </span>
     </td>
     <td>
@@ -53,28 +50,45 @@
         <!-- hide/show private -->
         <tr><td align="right"><span class="options"
             >[<a href="frames.html" target="_top">frames</a
-            >]&nbsp;|&nbsp;<a href="ZIBMolPy.io.topology.Topology-class.html"
+            >]&nbsp;|&nbsp;<a href="zgf_create_unrestrained_nodes-module.html"
             target="_top">no&nbsp;frames</a>]</span></td></tr>
       </table>
     </td>
   </tr>
 </table>
-<!-- ==================== CLASS DESCRIPTION ==================== -->
-<h1 class="epydoc">Class Topology</h1><p class="nomargin-top"><span class="codelink"><a href="ZIBMolPy.io.topology-pysrc.html#Topology">source&nbsp;code</a></span></p>
-<pre class="base-tree">
-object --+
-         |
-        <strong class="uidshort">Topology</strong>
+<!-- ==================== MODULE DESCRIPTION ==================== -->
+<h1 class="epydoc">Module zgf_create_unrestrained_nodes</h1><p class="nomargin-top"><span class="codelink"><a href="zgf_create_unrestrained_nodes-pysrc.html">source&nbsp;code</a></span></p>
+<h1 class="heading">Options</h1>
+    <ul>
+      <li>
+        <b>numnodes</b>:
+<pre class="literalblock">
+ default: 4
+ help: number of nodes to create
+ short_name: K
+ datatype: int
+ min_value: 1
+ long_name: numnodes
 </pre>
+      </li>
+      <li>
+        <b>parent-node</b>:
+<pre class="literalblock">
+ help: parent-node
+ short_name: p
+ datatype: node
+ long_name: parent-node
+</pre>
+      </li>
+    </ul>
 
-<hr />
-<!-- ==================== INSTANCE METHODS ==================== -->
-<a name="section-InstanceMethods"></a>
+<!-- ==================== FUNCTIONS ==================== -->
+<a name="section-Functions"></a>
 <table class="summary" border="1" cellpadding="3"
        cellspacing="0" width="100%" bgcolor="white">
 <tr bgcolor="#70b0f0" class="table-header">
   <td align="left" colspan="2" class="table-header">
-    <span class="table-header">Instance Methods</span></td>
+    <span class="table-header">Functions</span></td>
 </tr>
 <tr>
     <td width="15%" align="right" valign="top" class="summary">
@@ -82,9 +96,9 @@ object --+
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="write"></a><span class="summary-sig-name">write</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td><span class="summary-sig"><a name="is_applicable"></a><span class="summary-sig-name">is_applicable</span>()</span></td>
           <td align="right" valign="top">
-            <span class="codelink"><a href="ZIBMolPy.io.topology-pysrc.html#Topology.write">source&nbsp;code</a></span>
+            <span class="codelink"><a href="zgf_create_unrestrained_nodes-pysrc.html#is_applicable">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -98,11 +112,9 @@ object --+
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="ZIBMolPy.io.topology.Topology-class.html#__init__" class="summary-sig-name">__init__</a>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">rawdata</span>)</span><br />
-      x.__init__(...) initializes x; see help(type(x)) for signature</td>
+          <td><span class="summary-sig"><a name="main"></a><span class="summary-sig-name">main</span>(<span class="summary-sig-arg">argv</span>=<span class="summary-sig-default">None</span>)</span></td>
           <td align="right" valign="top">
-            <span class="codelink"><a href="ZIBMolPy.io.topology-pysrc.html#Topology.__init__">source&nbsp;code</a></span>
+            <span class="codelink"><a href="zgf_create_unrestrained_nodes-pysrc.html#main">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -110,72 +122,83 @@ object --+
       
     </td>
   </tr>
-  <tr>
-    <td colspan="2" class="summary">
-    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
-      <code>__delattr__</code>,
-      <code>__format__</code>,
-      <code>__getattribute__</code>,
-      <code>__hash__</code>,
-      <code>__new__</code>,
-      <code>__reduce__</code>,
-      <code>__reduce_ex__</code>,
-      <code>__repr__</code>,
-      <code>__setattr__</code>,
-      <code>__sizeof__</code>,
-      <code>__str__</code>,
-      <code>__subclasshook__</code>
-      </p>
-    </td>
-  </tr>
 </table>
-<!-- ==================== PROPERTIES ==================== -->
-<a name="section-Properties"></a>
+<!-- ==================== VARIABLES ==================== -->
+<a name="section-Variables"></a>
 <table class="summary" border="1" cellpadding="3"
        cellspacing="0" width="100%" bgcolor="white">
 <tr bgcolor="#70b0f0" class="table-header">
   <td align="left" colspan="2" class="table-header">
-    <span class="table-header">Properties</span></td>
+    <span class="table-header">Variables</span></td>
 </tr>
-  <tr>
-    <td colspan="2" class="summary">
-    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
-      <code>__class__</code>
-      </p>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="EPSILON2"></a><span class="summary-name">EPSILON2</span> = <code title="0.001">0.001</code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="PLATEAU_THRESHOLD"></a><span class="summary-name">PLATEAU_THRESHOLD</span> = <code title="0.02">0.02</code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="PLATEAU_BREAK"></a><span class="summary-name">PLATEAU_BREAK</span> = <code title="0.0349065850399">0.0349065850399</code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="THE_BIG_NUMBER"></a><span class="summary-name">THE_BIG_NUMBER</span> = <code title="99999.0">99999.0</code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="zgf_create_unrestrained_nodes-module.html#options_desc" class="summary-name">options_desc</a> = <code title="[&lt;ZIBMolPy.ui.Option numnodes&gt;, &lt;ZIBMolPy.ui.Option parent-node&gt;]">[&lt;ZIBMolPy.ui.Option numnodes&gt;, &lt;ZIBMolPy.ui.Op<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="__package__"></a><span class="summary-name">__package__</span> = <code title="None">None</code><br />
+      hash(x)
     </td>
   </tr>
 </table>
-<!-- ==================== METHOD DETAILS ==================== -->
-<a name="section-MethodDetails"></a>
+<!-- ==================== VARIABLES DETAILS ==================== -->
+<a name="section-VariablesDetails"></a>
 <table class="details" border="1" cellpadding="3"
        cellspacing="0" width="100%" bgcolor="white">
 <tr bgcolor="#70b0f0" class="table-header">
   <td align="left" colspan="2" class="table-header">
-    <span class="table-header">Method Details</span></td>
+    <span class="table-header">Variables Details</span></td>
 </tr>
 </table>
-<a name="__init__"></a>
+<a name="options_desc"></a>
 <div>
 <table class="details" border="1" cellpadding="3"
        cellspacing="0" width="100%" bgcolor="white">
 <tr><td>
-  <table width="100%" cellpadding="0" cellspacing="0" border="0">
-  <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">__init__</span>(<span class="sig-arg">self</span>,
-        <span class="sig-arg">rawdata</span>)</span>
-    <br /><em class="fname">(Constructor)</em>
-  </h3>
-  </td><td align="right" valign="top"
-    ><span class="codelink"><a href="ZIBMolPy.io.topology-pysrc.html#Topology.__init__">source&nbsp;code</a></span>&nbsp;
-    </td>
-  </tr></table>
+  <h3 class="epydoc">options_desc</h3>
   
-  <p>x.__init__(...) initializes x; see help(type(x)) for signature</p>
   <dl class="fields">
-    <dt>Overrides:
-        object.__init__
-        <dd><em class="note">(inherited documentation)</em></dd>
-    </dt>
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+[&lt;ZIBMolPy.ui.Option numnodes&gt;, &lt;ZIBMolPy.ui.Option parent-node&gt;]
+</pre></td></tr></table>
+</dd>
   </dl>
 </td></tr></table>
 </div>
