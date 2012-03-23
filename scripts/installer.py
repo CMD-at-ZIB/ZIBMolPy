@@ -35,7 +35,9 @@ def main():
 	
 #===============================================================================
 def do_install(prefix="/"):
-	assert(prefix[-1] == "/")
+	if(prefix[-1] != "/"):
+		prefix += "/"
+	
 		
 	log = open(LOG_FILENAME, "a")
 
@@ -43,7 +45,7 @@ def do_install(prefix="/"):
 		log.write(dirname+"\n")
 		if(not path.exists(dirname)):
 			print("Creating dir: "+dirname)
-			os.makedirs(dirname)
+			os.mkdir(dirname) #not using os.makedirs, to get seperate log-entries
 	
 	def copyfile(fn_src, fn_dest):
 		log.write(fn_dest+"\n")
@@ -51,10 +53,12 @@ def do_install(prefix="/"):
 		shutil.copy(fn_src, fn_dest)
 		
 	# create destination dirs
-	dir_bin = prefix + "bin/"
+	dir_bin = prefix + "bin/" 
 	dir_share = prefix + "usr/share/zibmolpy/"
-	mkdir(dir_bin)
-	mkdir(dir_share)
+	mkdir(prefix + "bin")
+	mkdir(prefix + "usr")
+	mkdir(prefix + "usr/share")
+	mkdir(prefix + "usr/share/zibmolpy")
 		
 	# copy test-cases
 	for root, dirs, files in os.walk('tests'):

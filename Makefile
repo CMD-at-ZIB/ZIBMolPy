@@ -3,6 +3,7 @@
 all:
 	@echo "make install - Install on local system"
 	@echo "make install-home - Install for this user"
+	@echo "make uninstall - Remove ZIBMolPy from system"
 	@echo "make clean - Get rid of scratch and byte files"
 	@echo "make docu - Generate API documentation"
 	@echo "make upload-docu - Upload API-docu to webserver"
@@ -22,6 +23,9 @@ install-home:
 install:
 	./scripts/installer.py install
 
+uninstall:
+	./scripts/installer.py uninstall
+
 clean:
 	rm -rvf ZIBMolPy_package/build
 	rm -rvf ./apidocs
@@ -33,5 +37,5 @@ pylint:
 	cd tools; pylint --rcfile=../scripts/pylintrc `find ../ZIBMolPy_package/ZIBMolPy/ -name \*.py` ./zgf_*.py 
 
 	
-.PHONY: all docu upload-docu install install-home clean todo pylint 
+.PHONY: all docu upload-docu install install-home uninstall clean todo pylint 
 #EOF
