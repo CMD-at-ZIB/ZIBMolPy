@@ -51,7 +51,7 @@ Frame weights
 from ZIBMolPy.constants import AVOGADRO, BOLTZMANN
 from ZIBMolPy.restraint import DihedralRestraint, DistanceRestraint
 from ZIBMolPy.ui import Option, OptionsList
-from ZIBMolPy.utils import get_phi
+from ZIBMolPy.phi import get_phi
 from ZIBMolPy.pool import Pool
 from ZIBMolPy import gromacs
 import zgf_cleanup

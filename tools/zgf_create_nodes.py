@@ -31,7 +31,7 @@ Discretization parameters
 """
 
 from ZIBMolPy.internals import DihedralCoordinate, LinearCoordinate
-from ZIBMolPy.utils import get_phi_contrib, get_phi_contrib_potential
+from ZIBMolPy.phi import get_phi_contrib, get_phi_contrib_potential
 from ZIBMolPy.algorithms import kmeans
 from ZIBMolPy.pool import Pool
 from ZIBMolPy.node import Node

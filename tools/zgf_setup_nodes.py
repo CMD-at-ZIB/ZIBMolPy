@@ -71,7 +71,7 @@ def generate_mdp(pool):
 		nsteps = int(n.sampling_length / dt)
 		f = open(n.mdp_fn, "w")
 		f.write(orig_mdp)
-		f.write("\n;zgf_setup_nodes: possibly overwriting previous nsteps entry\n") 
+		f.write("\n; zgf_setup_nodes:\n") 
 		f.write("nsteps = %d\n"%nsteps)
 		f.close()
 

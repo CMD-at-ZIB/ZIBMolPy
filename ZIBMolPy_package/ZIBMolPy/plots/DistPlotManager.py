@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import gtk
-from ZIBMolPy.utils import get_phi_contrib, get_phi_contrib_potential
+from ZIBMolPy.phi import get_phi_contrib, get_phi_contrib_potential
 import numpy as np
 import os
 
