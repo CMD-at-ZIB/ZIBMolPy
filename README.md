@@ -21,11 +21,17 @@ This software package is released under the LGPL 3.0, see LICENSE file.
 Screenshots
 -----------
 
-<center>
 ![ZIBgridfree Browser](https://github.com/CMD-at-ZIB/ZIBMolPy/raw/develop/docu/mini_screen01.png)
+
+ZIBgridfree Browser, the graphical user interface of ZIBgridfree.
+
 ![ZIBgridfree Browser](https://github.com/CMD-at-ZIB/ZIBMolPy/raw/develop/docu/mini_screen02.png)
+
+Monitor the distribution of your internal coordinates as it is sampled.
+
 ![ZIBgridfree Browser](https://github.com/CMD-at-ZIB/ZIBMolPy/raw/develop/docu/mini_screen03.png)
-</center>
+
+Analyze thermodynamics and identify metastable conformations.
 
 Installation
 ------------
@@ -49,7 +55,7 @@ You have to install a bunch of packages. On Ubuntu/Debian you can simply type:
 
 #### System-wide installation
 
-Simply run: <br />
+Run: <br />
 `sudo make install`
 
 #### Installation into home directory
@@ -57,16 +63,18 @@ Simply run: <br />
 1. Run <br />
 `make install-home`
 
-2. Add the following lines to your .bashrc: <br />
-`export PYTHONPATH=$PYTHONPATH:~/libXX/pythonX.X/site-packages/` <br />
+2. Add the following lines to your `.bashrc`: <br />
+`export PYTHONPATH=$PYTHONPATH:~/lib/pythonX.X/site-packages/` <br />
 `export PATH=$PATH:~/bin/`
 
-#### Installation using prefix
+#### Installation into custom location
 
 1. Run <br />
 `make prefix=~/my_favorite_location install`
 
-2. Don't forget to set `PATH` and `PYTHONPATH` accordingly.
+2. Add the following lines to your `.bashrc`: <br />
+`export PYTHONPATH=$PYTHONPATH:~/my_favorite_location/lib/pythonX.X/site-packages/` <br />
+`export PATH=$PATH:~/my_favorite_location/bin/`
 
 Testing
 -------
@@ -76,18 +84,18 @@ You can run some tests to make sure everything is working as intended.
 1. Go into the tests/ directory, which is located either in <br />
 `/usr/share/zibmolpy/tests`
 or <br />
-`~/usr/share/zibmolpy/tests`, or different, if you installed ZIBMolPy using prefix.
+`~/usr/share/zibmolpy/tests`, or according to your own prefix.
 
 2. Choose one of the tests cases. The pentane_quick test takes the least amount of time to run.
 
-3. Depending on your gromacs version run either <br />
+3. Depending on your Gromacs version run either <br />
 `zgf_test test-desc-seq-gromacs-4.0.7.xml` <br />
 or <br />
 `zgf_test test-desc-seq-gromacs-4.5.5.xml`
 
-4. You can take a look at the results by starting zgf_browser.
+4. You can take a look at the results by using zgf_browser.
 
-If the tests fail due to differences in numerical values, you may be using a different Gromacs version.
+If tests fail due to differences in numerical values, you may be using a different version of Gromacs.
 
 Documentation
 -------------
