@@ -3,22 +3,12 @@
 
 """ """ #TODO
 
-from ZIBMolPy.internals import DihedralCoordinate, LinearCoordinate
-from ZIBMolPy.utils import get_phi_contrib, get_phi_contrib_potential
-from ZIBMolPy.algorithms import kmeans
+
 from ZIBMolPy.pool import Pool
 from ZIBMolPy.node import Node
-from ZIBMolPy.restraint import DihedralRestraint, DistanceRestraint
 from ZIBMolPy.ui import userinput, Option, OptionsList
-from ZIBMolPy.io.trr import TrrFile
-import zgf_cleanup
 
 import sys
-import os
-from pprint import pformat
-from datetime import datetime
-from tempfile import mktemp
-from subprocess import Popen, PIPE
 import numpy as np
 
 

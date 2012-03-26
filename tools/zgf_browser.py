@@ -33,7 +33,7 @@ from matplotlib.figure import Figure
 from matplotlib.backends.backend_gtkagg import FigureCanvasGTKAgg as FigureCanvas
 
 
-WIKI_URL = "https://wiki.kobv.de/confluence/display/AGCMD/ZIBMolPy"
+WIKI_URL = "https://github.com/CMD-at-ZIB/ZIBMolPy/wiki"
 
 
 #===============================================================================
@@ -312,8 +312,8 @@ class Menubar(gtk.MenuBar):
 		self.accel_group = accel_group
 		
 		self.tool_buttons = []
-		all_tools = [path.basename(fn) for fn in glob(path.dirname(sys.argv[0])+"/zgf_*")]
-
+		all_tools = [path.basename(fn)[:-3] for fn in glob(path.dirname(sys.argv[0])+"/zgf_*.py")]
+		 
 		PIPELINE_TOOLS = ("zgf_create_pool", "zgf_create_nodes", "zgf_setup_nodes", "zgf_grompp", "zgf_mdrun", "zgf_refine", "zgf_reweight", "zgf_analyze")
 		other_tools = sorted([t for t in all_tools if t not in PIPELINE_TOOLS and t!="zgf_browser"])
 		self.mk_tools_menu(PIPELINE_TOOLS, "Pipeline", accelerate=True)

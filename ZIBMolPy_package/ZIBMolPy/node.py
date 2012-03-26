@@ -11,6 +11,7 @@ import socket
 import subprocess
 import time
 from ZIBMolPy import utils
+from ZIBMolPy.phi import get_phi
 
 #needed to eval node0042_desc.txt!!!
 from ZIBMolPy.internals import InternalArray
@@ -215,7 +216,7 @@ class Node(object):
 	#---------------------------------------------------------------------------
 	@property
 	def children(self):
-		return [n for n in self.pool if n.parent == self]
+		return(self.pool.where("parent!=None and parent.name=='%s'"%self.name))
 	
 	@property
 	def tpr_fn(self):
@@ -298,7 +299,7 @@ class Node(object):
 		print("done.")
 								
 		if(self.has_internals and self.has_restraints):
-			phi_values = utils.get_phi(frames_int, self)
+			phi_values = get_phi(frames_int, self)
 			penalty_potential = np.zeros(frames_int.n_frames)
 			for (r, c) in zip(self.restraints, self.pool.converter):
 				penalty_potential += r.energy(frames_int[:,c])

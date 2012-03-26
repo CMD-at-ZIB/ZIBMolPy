@@ -41,7 +41,8 @@ Symmetrization error threshold
 
 from os import path
 import sys
-from ZIBMolPy.utils import get_phi_num, get_phi_denom, register_file_dependency
+from ZIBMolPy.utils import register_file_dependency
+from ZIBMolPy.phi import get_phi_num, get_phi_denom
 from ZIBMolPy.pool import Pool
 from ZIBMolPy.algorithms import cluster_by_isa, orthogonalize, symmetrize
 from ZIBMolPy.ui import userinput, Option, OptionsList
