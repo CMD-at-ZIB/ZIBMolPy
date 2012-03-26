@@ -18,6 +18,15 @@ License
 
 This software package is released under the LGPL 3.0, see LICENSE file.
 
+Screenshots
+-----------
+
+<center>
+![ZIBgridfree Browser](https://github.com/CMD-at-ZIB/ZIBMolPy/raw/develop/docu/mini_screen01.png)
+![ZIBgridfree Browser](https://github.com/CMD-at-ZIB/ZIBMolPy/raw/develop/docu/mini_screen02.png)
+![ZIBgridfree Browser](https://github.com/CMD-at-ZIB/ZIBMolPy/raw/develop/docu/mini_screen03.png)
+</center>
+
 Installation
 ------------
 
@@ -48,9 +57,16 @@ Simply run: <br />
 1. Run <br />
 `make install-home`
 
-2. Add the following lines to your .bashrc:
+2. Add the following lines to your .bashrc: <br />
 `export PYTHONPATH=$PYTHONPATH:~/libXX/pythonX.X/site-packages/` <br />
 `export PATH=$PATH:~/bin/`
+
+#### Installation using prefix
+
+1. Run <br />
+`make prefix=~/my_favorite_location install`
+
+2. Don't forget to set `PATH` and `PYTHONPATH` accordingly.
 
 Testing
 -------
@@ -60,9 +76,9 @@ You can run some tests to make sure everything is working as intended.
 1. Go into the tests/ directory, which is located either in <br />
 `/usr/share/zibmolpy/tests`
 or <br />
-`~/share/zibmolpy/tests`.
+`~/usr/share/zibmolpy/tests`, or different, if you installed ZIBMolPy using prefix.
 
-2. Chose one of the tests cases. The pentane_quick test takes the least amount of time to run.
+2. Choose one of the tests cases. The pentane_quick test takes the least amount of time to run.
 
 3. Depending on your gromacs version run either <br />
 `zgf_test test-desc-seq-gromacs-4.0.7.xml` <br />
