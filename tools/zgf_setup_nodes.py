@@ -67,7 +67,7 @@ def generate_mdp(pool):
 	orig_mdp = re.sub("\nnsteps", "\n; zgf_setup_nodes: commented-out the following line\n; nsteps", orig_mdp)
 	
 	for n in pool.where("state == 'created'"):
-		print("Writting: "+n.mdp_fn)
+		print("Writing: "+n.mdp_fn)
 		nsteps = int(n.sampling_length / dt)
 		f = open(n.mdp_fn, "w")
 		f.write(orig_mdp)

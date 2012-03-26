@@ -97,7 +97,7 @@ def main():
 	joblines += ["date"]
 	joblines += ["cd $PBS_O_WORKDIR"]
 	
-	zgfmdrun_call = "zgf_mdrun.py --np=%d"%(options.nodes*options.ppn / options.subdivide)
+	zgfmdrun_call = "zgf_mdrun --np=%d"%(options.nodes*options.ppn / options.subdivide)
 	# forward options to zgf_mdrun
 	for o in zgf_mdrun.options_desc:
 		if(o.long_name in FORWARDED_ZGF_MDRUN_OPTIONS):
