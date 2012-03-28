@@ -28,6 +28,7 @@ uninstall:
 docu:
 #	use python-modules from source - not the ones installed on the system
 	@export PYTHONPATH=./ZIBMolPy_package/:$(PYTHONPATH); epydoc --conf=./scripts/epydoc.conf
+	./scripts/epydoc_postprocessing.py
 	
 upload-docu:
 	./scripts/upload_docu.sh	
