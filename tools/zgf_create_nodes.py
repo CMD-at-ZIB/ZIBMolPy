@@ -86,7 +86,7 @@ def is_applicable():
 def main(argv=None):
 	if(argv==None): 
 		argv = sys.argv
-		options = options_desc.parse_args(argv)[0]
+	options = options_desc.parse_args(argv)[0]
 	
 	print("Options:\n%s\n"%pformat(eval(str(options))))
 

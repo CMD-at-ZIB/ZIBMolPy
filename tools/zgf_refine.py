@@ -41,8 +41,8 @@ options_desc = OptionsList([
 # reuse some options from zgf_create_nodes
 FORWARDED_ZGF_CREATE_NODES_OPTIONS = ("numnodes", "methodnodes", "methodalphas", "methodphifit", "random-seed")
 for x in FORWARDED_ZGF_CREATE_NODES_OPTIONS:
-	options_desc.append(copy(zgf_create_nodes.options_desc[x])) #need copy to savely...
-options_desc["numnodes"].default = 2 # ... change default values.
+	options_desc.append(copy(zgf_create_nodes.options_desc[x])) # need copy to safely ...
+options_desc["numnodes"].default = 2 # ... change default values
 
 sys.modules[__name__].__doc__ += options_desc.epytext() # for epydoc
 
@@ -52,6 +52,7 @@ def is_applicable():
 
 	
 #===============================================================================
+# This method is also called from zgf_mdrun
 def main(argv=None):
 	if(argv==None):
 		argv = sys.argv
