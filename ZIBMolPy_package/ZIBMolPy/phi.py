@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
 r"""
-Each node has a position $\vec q_i$ in the internal coordinate space.
+Everything related to the nodes' phi-function $\phi_i(\vec x)$.
 
+Each node $i$ has a phi-function $\phi_i(\vec x)$, which determines for each
+position $\vec x$ the membership to that node.
 
-To each node belongs a phi-function $\phi_i(\vec x)$, which determines for each
-position $\vec x$ the membership to the node $i$.
 The phi-functions partition the internal coordinate space. For all $\vec x$
 holds the following condition:
 \[  \sum_i \phi_i(\vec x) = 1 \]
@@ -17,7 +17,7 @@ a normalisation-factor:
 This numerator is defined as:
 \[ \chi_i(\vec x) = \exp(- \alpha \operatorname{dist}(\vec x, \vec q_i)) \]
 
-The nodes' positions $\vec q_i$ are stored in internal-attribute of each L{Node}-object.
+The node's position $\vec q_i$ is stored in the internal-attribute of the L{Node}-object.
 The $\alpha$-value is stored in the L{Pool}.
 The dist-function depends on the type of coordinates used.	
 For details look at L{InternalCoordinate.sub}.
