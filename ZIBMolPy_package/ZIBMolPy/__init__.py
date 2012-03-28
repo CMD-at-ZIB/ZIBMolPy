@@ -25,7 +25,7 @@ Testing:
 	- L{zgf_test}
 
 
-@group base: internals, pool, node, restraint
+@group base: internals, pool, node, restraint, phi
 @group helpers: algorithms, constants, gromacs, ui, utils, topology, io
 @group browser: plots
 """
