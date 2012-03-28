@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>ZIBMolPy.phi</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+	
+	<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        displayMath: [['$$', '$$'], ["\\[", "\\]"]]
+      }
+    });
+    </script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+	</head>
+	
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="ZIBMolPy-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://wiki.kobv.de/confluence/display/AGCMD/ZIBMolPy">ZIBMolPy</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="ZIBMolPy-module.html">Package&nbsp;ZIBMolPy</a> ::
+        Module&nbsp;phi
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="ZIBMolPy.phi-pysrc.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="ZIBMolPy.phi-module.html">Module ZIBMolPy.phi</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno">  1</tt>  <tt class="py-line"><tt class="py-comment"># -*- coding: utf-8 -*-</tt> </tt>
+<a name="L2"></a><tt class="py-lineno">  2</tt>  <tt class="py-line"> </tt>
+<a name="L3"></a><tt class="py-lineno">  3</tt>  <tt class="py-line"><tt class="py-docstring">r"""</tt> </tt>
+<a name="L4"></a><tt class="py-lineno">  4</tt>  <tt class="py-line"><tt class="py-docstring">Everything related to the nodes' phi-function $\phi_i(\vec x)$.</tt> </tt>
+<a name="L5"></a><tt class="py-lineno">  5</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L6"></a><tt class="py-lineno">  6</tt>  <tt class="py-line"><tt class="py-docstring">Each node $i$ has a phi-function $\phi_i(\vec x)$, which determines for each</tt> </tt>
+<a name="L7"></a><tt class="py-lineno">  7</tt>  <tt class="py-line"><tt class="py-docstring">position $\vec x$ the membership to that node.</tt> </tt>
+<a name="L8"></a><tt class="py-lineno">  8</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L9"></a><tt class="py-lineno">  9</tt>  <tt class="py-line"><tt class="py-docstring">The phi-functions partition the internal coordinate space. For all $\vec x$</tt> </tt>
+<a name="L10"></a><tt class="py-lineno"> 10</tt>  <tt class="py-line"><tt class="py-docstring">holds the following condition:</tt> </tt>
+<a name="L11"></a><tt class="py-lineno"> 11</tt>  <tt class="py-line"><tt class="py-docstring">\[  \sum_i \phi_i(\vec x) = 1 \]</tt> </tt>
+<a name="L12"></a><tt class="py-lineno"> 12</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L13"></a><tt class="py-lineno"> 13</tt>  <tt class="py-line"><tt class="py-docstring">The phi-function can be written as a node-dependend numerator $\chi_i(\vec x)$ divided by</tt> </tt>
+<a name="L14"></a><tt class="py-lineno"> 14</tt>  <tt class="py-line"><tt class="py-docstring">a normalisation-factor:</tt> </tt>
+<a name="L15"></a><tt class="py-lineno"> 15</tt>  <tt class="py-line"><tt class="py-docstring">\[ \phi_i(\vec x) = \frac{\chi_i(\vec x)}{\sum_j \chi_j(\vec x)} \]</tt> </tt>
+<a name="L16"></a><tt class="py-lineno"> 16</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L17"></a><tt class="py-lineno"> 17</tt>  <tt class="py-line"><tt class="py-docstring">This numerator is defined as:</tt> </tt>
+<a name="L18"></a><tt class="py-lineno"> 18</tt>  <tt class="py-line"><tt class="py-docstring">\[ \chi_i(\vec x) = \exp(- \alpha \operatorname{dist}(\vec x, \vec q_i)) \]</tt> </tt>
+<a name="L19"></a><tt class="py-lineno"> 19</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L20"></a><tt class="py-lineno"> 20</tt>  <tt class="py-line"><tt class="py-docstring">The node's position $\vec q_i$ is stored in the internal-attribute of the L{Node}-object.</tt> </tt>
+<a name="L21"></a><tt class="py-lineno"> 21</tt>  <tt class="py-line"><tt class="py-docstring">The $\alpha$-value is stored in the L{Pool}.</tt> </tt>
+<a name="L22"></a><tt class="py-lineno"> 22</tt>  <tt class="py-line"><tt class="py-docstring">The dist-function depends on the type of coordinates used.      </tt> </tt>
+<a name="L23"></a><tt class="py-lineno"> 23</tt>  <tt class="py-line"><tt class="py-docstring">For details look at L{InternalCoordinate.sub}.</tt> </tt>
+<a name="L24"></a><tt class="py-lineno"> 24</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L25"></a><tt class="py-lineno"> 25</tt>  <tt class="py-line"><tt class="py-docstring">Please note, that not all nodes contained in the pool participate in the partition</tt> </tt>
+<a name="L26"></a><tt class="py-lineno"> 26</tt>  <tt class="py-line"><tt class="py-docstring">of the internal coordinate space.</tt> </tt>
+<a name="L27"></a><tt class="py-lineno"> 27</tt>  <tt class="py-line"><tt class="py-docstring">If a node participates in the partition is determined by the property L{Node.isa_partition}.  </tt> </tt>
+<a name="L28"></a><tt class="py-lineno"> 28</tt>  <tt class="py-line"><tt class="py-docstring">"""</tt>      </tt>
+<a name="L29"></a><tt class="py-lineno"> 29</tt>  <tt class="py-line"> </tt>
+<a name="L30"></a><tt class="py-lineno"> 30</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">numpy</tt> <tt class="py-keyword">as</tt> <tt class="py-name">np</tt> </tt>
+<a name="L31"></a><tt class="py-lineno"> 31</tt>  <tt class="py-line"> </tt>
+<a name="L32"></a><tt class="py-lineno"> 32</tt>  <tt class="py-line"><tt class="py-comment">#===============================================================================</tt> </tt>
+<a name="get_phi_contrib"></a><div id="get_phi_contrib-def"><a name="L33"></a><tt class="py-lineno"> 33</tt> <a class="py-toggle" href="#" id="get_phi_contrib-toggle" onclick="return toggle('get_phi_contrib');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="ZIBMolPy.phi-module.html#get_phi_contrib">get_phi_contrib</a><tt class="py-op">(</tt><tt class="py-param">x</tt><tt class="py-op">,</tt> <tt class="py-param">node_i</tt><tt class="py-op">,</tt> <tt class="py-param">coord</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="get_phi_contrib-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="get_phi_contrib-expanded"><a name="L34"></a><tt class="py-lineno"> 34</tt>  <tt class="py-line">        <tt class="py-name">all_nodes</tt> <tt class="py-op">=</tt> <tt class="py-name">node_i</tt><tt class="py-op">.</tt><tt id="link-0" class="py-name" targets="Variable ZIBMolPy.node.Node.pool=ZIBMolPy.node.Node-class.html#pool,Module ZIBMolPy.pool=ZIBMolPy.pool-module.html"><a title="ZIBMolPy.node.Node.pool
+ZIBMolPy.pool" class="py-name" href="#" onclick="return doclink('link-0', 'pool', 'link-0');">pool</a></tt><tt class="py-op">.</tt><tt id="link-1" class="py-name" targets="Method ZIBMolPy.pool.NodeList.where()=ZIBMolPy.pool.NodeList-class.html#where"><a title="ZIBMolPy.pool.NodeList.where" class="py-name" href="#" onclick="return doclink('link-1', 'where', 'link-1');">where</a></tt><tt class="py-op">(</tt><tt class="py-string">"isa_partition"</tt><tt class="py-op">)</tt> </tt>
+<a name="L35"></a><tt class="py-lineno"> 35</tt>  <tt class="py-line">        <tt class="py-name">other_nums</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt> <tt id="link-2" class="py-name" targets="Function ZIBMolPy.phi.get_phi_num_contrib()=ZIBMolPy.phi-module.html#get_phi_num_contrib"><a title="ZIBMolPy.phi.get_phi_num_contrib" class="py-name" href="#" onclick="return doclink('link-2', 'get_phi_num_contrib', 'link-2');">get_phi_num_contrib</a></tt><tt class="py-op">(</tt><tt id="link-3" class="py-name" targets="Variable zgf_refine.x=zgf_refine-module.html#x,Variable zgf_submit_job_HLRN.x=zgf_submit_job_HLRN-module.html#x"><a title="zgf_refine.x
+zgf_submit_job_HLRN.x" class="py-name" href="#" onclick="return doclink('link-3', 'x', 'link-3');">x</a></tt><tt class="py-op">,</tt> <tt class="py-name">node_i</tt><tt class="py-op">,</tt> <tt class="py-name">n</tt><tt class="py-op">,</tt> <tt class="py-name">coord</tt><tt class="py-op">)</tt> <tt class="py-keyword">for</tt> <tt class="py-name">n</tt> <tt class="py-keyword">in</tt> <tt class="py-name">all_nodes</tt> <tt class="py-op">]</tt> </tt>
+<a name="L36"></a><tt class="py-lineno"> 36</tt>  <tt class="py-line">        <tt class="py-name">denom</tt> <tt class="py-op">=</tt> <tt class="py-name">np</tt><tt class="py-op">.</tt><tt class="py-name">sum</tt><tt class="py-op">(</tt><tt class="py-name">other_nums</tt><tt class="py-op">,</tt> <tt class="py-name">axis</tt><tt class="py-op">=</tt><tt class="py-number">0</tt><tt class="py-op">)</tt> </tt>
+<a name="L37"></a><tt class="py-lineno"> 37</tt>  <tt class="py-line">        <tt class="py-name">num</tt> <tt class="py-op">=</tt> <tt id="link-4" class="py-name"><a title="ZIBMolPy.phi.get_phi_num_contrib" class="py-name" href="#" onclick="return doclink('link-4', 'get_phi_num_contrib', 'link-2');">get_phi_num_contrib</a></tt><tt class="py-op">(</tt><tt id="link-5" class="py-name"><a title="zgf_refine.x
+zgf_submit_job_HLRN.x" class="py-name" href="#" onclick="return doclink('link-5', 'x', 'link-3');">x</a></tt><tt class="py-op">,</tt> <tt class="py-name">node_i</tt><tt class="py-op">,</tt> <tt class="py-name">node_i</tt><tt class="py-op">,</tt> <tt class="py-name">coord</tt><tt class="py-op">)</tt> </tt>
+<a name="L38"></a><tt class="py-lineno"> 38</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt><tt class="py-op">(</tt> <tt class="py-name">num</tt> <tt class="py-op">/</tt> <tt class="py-name">denom</tt> <tt class="py-op">)</tt> </tt>
+</div><a name="L39"></a><tt class="py-lineno"> 39</tt>  <tt class="py-line">         </tt>
+<a name="get_phi_num_contrib"></a><div id="get_phi_num_contrib-def"><a name="L40"></a><tt class="py-lineno"> 40</tt> <a class="py-toggle" href="#" id="get_phi_num_contrib-toggle" onclick="return toggle('get_phi_num_contrib');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="ZIBMolPy.phi-module.html#get_phi_num_contrib">get_phi_num_contrib</a><tt class="py-op">(</tt><tt class="py-param">x</tt><tt class="py-op">,</tt> <tt class="py-param">ref_node</tt><tt class="py-op">,</tt> <tt class="py-param">node_i</tt><tt class="py-op">,</tt> <tt class="py-param">coord</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="get_phi_num_contrib-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="get_phi_num_contrib-expanded"><a name="L41"></a><tt class="py-lineno"> 41</tt>  <tt class="py-line">        <tt class="py-comment">#TODO: implement InternalArray.__setslice__ and use norm2() instead</tt> </tt>
+<a name="L42"></a><tt class="py-lineno"> 42</tt>  <tt class="py-line">        <tt class="py-docstring">r""" Takes all values from ref_node.internals except for coordinate coord. \</tt> </tt>
+<a name="L43"></a><tt class="py-lineno"> 43</tt>  <tt class="py-line"><tt class="py-docstring">                There it uses the values x. """</tt>          </tt>
+<a name="L44"></a><tt class="py-lineno"> 44</tt>  <tt class="py-line">        <tt class="py-comment"># #calc normal diff</tt> </tt>
+<a name="L45"></a><tt class="py-lineno"> 45</tt>  <tt class="py-line">        <tt class="py-comment"># diffs = (ref_node.internals - node_i.internals).array</tt> </tt>
+<a name="L46"></a><tt class="py-lineno"> 46</tt>  <tt class="py-line">        <tt class="py-comment"># #ignore results for coordinate coord</tt> </tt>
+<a name="L47"></a><tt class="py-lineno"> 47</tt>  <tt class="py-line">        <tt class="py-comment"># print diffs.shape</tt> </tt>
+<a name="L48"></a><tt class="py-lineno"> 48</tt>  <tt class="py-line">        <tt class="py-comment"># diffs[coord.index] = 0 #this will be counted in diff2</tt> </tt>
+<a name="L49"></a><tt class="py-lineno"> 49</tt>  <tt class="py-line">        <tt class="py-comment"># diff1 = np.sum(np.square(diffs))</tt> </tt>
+<a name="L50"></a><tt class="py-lineno"> 50</tt>  <tt class="py-line">        <tt class="py-comment"># </tt> </tt>
+<a name="L51"></a><tt class="py-lineno"> 51</tt>  <tt class="py-line">         </tt>
+<a name="L52"></a><tt class="py-lineno"> 52</tt>  <tt class="py-line">        <tt class="py-name">diffs</tt> <tt class="py-op">=</tt> <tt class="py-name">ref_node</tt><tt class="py-op">.</tt><tt id="link-6" class="py-name" targets="Module ZIBMolPy.internals=ZIBMolPy.internals-module.html,Variable ZIBMolPy.pool.NodeList.internals=ZIBMolPy.pool.NodeList-class.html#internals"><a title="ZIBMolPy.internals
+ZIBMolPy.pool.NodeList.internals" class="py-name" href="#" onclick="return doclink('link-6', 'internals', 'link-6');">internals</a></tt> <tt class="py-op">-</tt> <tt class="py-name">node_i</tt><tt class="py-op">.</tt><tt id="link-7" class="py-name"><a title="ZIBMolPy.internals
+ZIBMolPy.pool.NodeList.internals" class="py-name" href="#" onclick="return doclink('link-7', 'internals', 'link-6');">internals</a></tt> </tt>
+<a name="L53"></a><tt class="py-lineno"> 53</tt>  <tt class="py-line">        <tt class="py-name">diffs</tt><tt class="py-op">[</tt><tt class="py-op">:</tt><tt class="py-op">,</tt> <tt class="py-name">coord</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-number">0</tt>  <tt class="py-comment">#this will be counted in diff2</tt> </tt>
+<a name="L54"></a><tt class="py-lineno"> 54</tt>  <tt class="py-line">        <tt class="py-name">diff1</tt> <tt class="py-op">=</tt> <tt class="py-name">diffs</tt><tt class="py-op">.</tt><tt id="link-8" class="py-name" targets="Method ZIBMolPy.internals.InternalArray.norm2()=ZIBMolPy.internals.InternalArray-class.html#norm2"><a title="ZIBMolPy.internals.InternalArray.norm2" class="py-name" href="#" onclick="return doclink('link-8', 'norm2', 'link-8');">norm2</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L55"></a><tt class="py-lineno"> 55</tt>  <tt class="py-line">         </tt>
+<a name="L56"></a><tt class="py-lineno"> 56</tt>  <tt class="py-line">        <tt class="py-comment">#calc result for coodinate coord</tt> </tt>
+<a name="L57"></a><tt class="py-lineno"> 57</tt>  <tt class="py-line">        <tt class="py-name">diff2</tt> <tt class="py-op">=</tt> <tt class="py-name">np</tt><tt class="py-op">.</tt><tt id="link-9" class="py-name" targets="Method ZIBMolPy.internals.InternalArray.square()=ZIBMolPy.internals.InternalArray-class.html#square"><a title="ZIBMolPy.internals.InternalArray.square" class="py-name" href="#" onclick="return doclink('link-9', 'square', 'link-9');">square</a></tt><tt class="py-op">(</tt><tt class="py-name">coord</tt><tt class="py-op">.</tt><tt id="link-10" class="py-name" targets="Static Method ZIBMolPy.internals.DihedralCoordinate.sub()=ZIBMolPy.internals.DihedralCoordinate-class.html#sub,Static Method ZIBMolPy.internals.LinearCoordinate.sub()=ZIBMolPy.internals.LinearCoordinate-class.html#sub"><a title="ZIBMolPy.internals.DihedralCoordinate.sub
+ZIBMolPy.internals.LinearCoordinate.sub" class="py-name" href="#" onclick="return doclink('link-10', 'sub', 'link-10');">sub</a></tt><tt class="py-op">(</tt><tt id="link-11" class="py-name"><a title="zgf_refine.x
+zgf_submit_job_HLRN.x" class="py-name" href="#" onclick="return doclink('link-11', 'x', 'link-3');">x</a></tt><tt class="py-op">,</tt> <tt class="py-name">node_i</tt><tt class="py-op">.</tt><tt id="link-12" class="py-name"><a title="ZIBMolPy.internals
+ZIBMolPy.pool.NodeList.internals" class="py-name" href="#" onclick="return doclink('link-12', 'internals', 'link-6');">internals</a></tt><tt class="py-op">.</tt><tt id="link-13" class="py-name" targets="Method ZIBMolPy.internals.InternalArray.getcoord()=ZIBMolPy.internals.InternalArray-class.html#getcoord"><a title="ZIBMolPy.internals.InternalArray.getcoord" class="py-name" href="#" onclick="return doclink('link-13', 'getcoord', 'link-13');">getcoord</a></tt><tt class="py-op">(</tt><tt class="py-name">coord</tt><tt class="py-op">)</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L58"></a><tt class="py-lineno"> 58</tt>  <tt class="py-line">        <tt class="py-comment">#add those two and take advantage of broadcasting</tt> </tt>
+<a name="L59"></a><tt class="py-lineno"> 59</tt>  <tt class="py-line">        <tt class="py-name">diff12</tt> <tt class="py-op">=</tt> <tt class="py-name">diff1</tt> <tt class="py-op">+</tt> <tt class="py-name">diff2</tt> <tt class="py-comment">#using broadcasting</tt> </tt>
+<a name="L60"></a><tt class="py-lineno"> 60</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt><tt class="py-op">(</tt> <tt class="py-name">np</tt><tt class="py-op">.</tt><tt class="py-name">exp</tt><tt class="py-op">(</tt> <tt class="py-op">-</tt><tt class="py-name">node_i</tt><tt class="py-op">.</tt><tt id="link-14" class="py-name"><a title="ZIBMolPy.node.Node.pool
+ZIBMolPy.pool" class="py-name" href="#" onclick="return doclink('link-14', 'pool', 'link-0');">pool</a></tt><tt class="py-op">.</tt><tt class="py-name">alpha</tt> <tt class="py-op">*</tt> <tt class="py-name">diff12</tt> <tt class="py-op">)</tt> <tt class="py-op">)</tt> </tt>
+</div><a name="L61"></a><tt class="py-lineno"> 61</tt>  <tt class="py-line"> </tt>
+<a name="L62"></a><tt class="py-lineno"> 62</tt>  <tt class="py-line"> </tt>
+<a name="L63"></a><tt class="py-lineno"> 63</tt>  <tt class="py-line"><tt class="py-comment">#===============================================================================</tt> </tt>
+<a name="get_phi_contrib_potential"></a><div id="get_phi_contrib_potential-def"><a name="L64"></a><tt class="py-lineno"> 64</tt> <a class="py-toggle" href="#" id="get_phi_contrib_potential-toggle" onclick="return toggle('get_phi_contrib_potential');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="ZIBMolPy.phi-module.html#get_phi_contrib_potential">get_phi_contrib_potential</a><tt class="py-op">(</tt><tt class="py-param">x</tt><tt class="py-op">,</tt> <tt class="py-param">node_i</tt><tt class="py-op">,</tt> <tt class="py-param">coord</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="get_phi_contrib_potential-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="get_phi_contrib_potential-expanded"><a name="L65"></a><tt class="py-lineno"> 65</tt>  <tt class="py-line"><tt class="py-comment">#       r""" Calculates $\frac{-1}{\beta \log( getphicontrib(x, node_i, coord) )}$,</tt> </tt>
+<a name="L66"></a><tt class="py-lineno"> 66</tt>  <tt class="py-line"><tt class="py-comment">#       where $\beta$ is L{Pool.thermo_beta} """</tt> </tt>
+<a name="L67"></a><tt class="py-lineno"> 67</tt>  <tt class="py-line">         </tt>
+<a name="L68"></a><tt class="py-lineno"> 68</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt><tt class="py-op">(</tt> <tt class="py-op">-</tt><tt class="py-number">1</tt><tt class="py-op">/</tt><tt class="py-name">node_i</tt><tt class="py-op">.</tt><tt id="link-15" class="py-name"><a title="ZIBMolPy.node.Node.pool
+ZIBMolPy.pool" class="py-name" href="#" onclick="return doclink('link-15', 'pool', 'link-0');">pool</a></tt><tt class="py-op">.</tt><tt id="link-16" class="py-name" targets="Variable ZIBMolPy.pool.Pool.thermo_beta=ZIBMolPy.pool.Pool-class.html#thermo_beta"><a title="ZIBMolPy.pool.Pool.thermo_beta" class="py-name" href="#" onclick="return doclink('link-16', 'thermo_beta', 'link-16');">thermo_beta</a></tt><tt class="py-op">*</tt><tt class="py-name">np</tt><tt class="py-op">.</tt><tt class="py-name">log</tt><tt class="py-op">(</tt> <tt id="link-17" class="py-name" targets="Function ZIBMolPy.phi.get_phi_contrib()=ZIBMolPy.phi-module.html#get_phi_contrib"><a title="ZIBMolPy.phi.get_phi_contrib" class="py-name" href="#" onclick="return doclink('link-17', 'get_phi_contrib', 'link-17');">get_phi_contrib</a></tt><tt class="py-op">(</tt><tt id="link-18" class="py-name"><a title="zgf_refine.x
+zgf_submit_job_HLRN.x" class="py-name" href="#" onclick="return doclink('link-18', 'x', 'link-3');">x</a></tt><tt class="py-op">,</tt> <tt class="py-name">node_i</tt><tt class="py-op">,</tt> <tt class="py-name">coord</tt><tt class="py-op">)</tt> <tt class="py-op">)</tt> <tt class="py-op">)</tt> </tt>
+</div><a name="L69"></a><tt class="py-lineno"> 69</tt>  <tt class="py-line"> </tt>
+<a name="L70"></a><tt class="py-lineno"> 70</tt>  <tt class="py-line"> </tt>
+<a name="L71"></a><tt class="py-lineno"> 71</tt>  <tt class="py-line"><tt class="py-comment">#===============================================================================</tt> </tt>
+<a name="get_phi"></a><div id="get_phi-def"><a name="L72"></a><tt class="py-lineno"> 72</tt> <a class="py-toggle" href="#" id="get_phi-toggle" onclick="return toggle('get_phi');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="ZIBMolPy.phi-module.html#get_phi">get_phi</a><tt class="py-op">(</tt><tt class="py-param">x</tt><tt class="py-op">,</tt> <tt class="py-param">node_i</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="get_phi-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="get_phi-expanded"><a name="L73"></a><tt class="py-lineno"> 73</tt>  <tt class="py-line">        <tt class="py-docstring">r""" Calculates the phi-function $\phi_i(\vec x)$ of node_i at the positions given by x.</tt> </tt>
+<a name="L74"></a><tt class="py-lineno"> 74</tt>  <tt class="py-line"><tt class="py-docstring">        </tt> </tt>
+<a name="L75"></a><tt class="py-lineno"> 75</tt>  <tt class="py-line"><tt class="py-docstring">        The participating nodes are found via L{Node.isa_partition}"""</tt>   </tt>
+<a name="L76"></a><tt class="py-lineno"> 76</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt><tt class="py-op">(</tt> <tt id="link-19" class="py-name" targets="Function ZIBMolPy.phi.get_phi_num()=ZIBMolPy.phi-module.html#get_phi_num"><a title="ZIBMolPy.phi.get_phi_num" class="py-name" href="#" onclick="return doclink('link-19', 'get_phi_num', 'link-19');">get_phi_num</a></tt><tt class="py-op">(</tt><tt id="link-20" class="py-name"><a title="zgf_refine.x
+zgf_submit_job_HLRN.x" class="py-name" href="#" onclick="return doclink('link-20', 'x', 'link-3');">x</a></tt><tt class="py-op">,</tt> <tt class="py-name">node_i</tt><tt class="py-op">)</tt> <tt class="py-op">/</tt> <tt id="link-21" class="py-name" targets="Function ZIBMolPy.phi.get_phi_denom()=ZIBMolPy.phi-module.html#get_phi_denom"><a title="ZIBMolPy.phi.get_phi_denom" class="py-name" href="#" onclick="return doclink('link-21', 'get_phi_denom', 'link-21');">get_phi_denom</a></tt><tt class="py-op">(</tt> <tt id="link-22" class="py-name"><a title="zgf_refine.x
+zgf_submit_job_HLRN.x" class="py-name" href="#" onclick="return doclink('link-22', 'x', 'link-3');">x</a></tt><tt class="py-op">,</tt> <tt class="py-name">node_i</tt><tt class="py-op">.</tt><tt id="link-23" class="py-name"><a title="ZIBMolPy.node.Node.pool
+ZIBMolPy.pool" class="py-name" href="#" onclick="return doclink('link-23', 'pool', 'link-0');">pool</a></tt><tt class="py-op">.</tt><tt id="link-24" class="py-name"><a title="ZIBMolPy.pool.NodeList.where" class="py-name" href="#" onclick="return doclink('link-24', 'where', 'link-1');">where</a></tt><tt class="py-op">(</tt><tt class="py-string">"isa_partition"</tt><tt class="py-op">)</tt> <tt class="py-op">)</tt> <tt class="py-op">)</tt> </tt>
+</div><a name="L77"></a><tt class="py-lineno"> 77</tt>  <tt class="py-line">         </tt>
+<a name="L78"></a><tt class="py-lineno"> 78</tt>  <tt class="py-line"> </tt>
+<a name="get_phi_num"></a><div id="get_phi_num-def"><a name="L79"></a><tt class="py-lineno"> 79</tt> <a class="py-toggle" href="#" id="get_phi_num-toggle" onclick="return toggle('get_phi_num');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="ZIBMolPy.phi-module.html#get_phi_num">get_phi_num</a><tt class="py-op">(</tt><tt class="py-param">x</tt><tt class="py-op">,</tt> <tt class="py-param">node_i</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="get_phi_num-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="get_phi_num-expanded"><a name="L80"></a><tt class="py-lineno"> 80</tt>  <tt class="py-line">        <tt class="py-docstring">r""" Calculates the numerator $\chi_i(\vec x)$ of the phi-function of node_i at the positions given by x. """</tt>  </tt>
+<a name="L81"></a><tt class="py-lineno"> 81</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt><tt class="py-op">(</tt> <tt class="py-name">np</tt><tt class="py-op">.</tt><tt class="py-name">exp</tt><tt class="py-op">(</tt><tt class="py-op">-</tt><tt class="py-name">node_i</tt><tt class="py-op">.</tt><tt id="link-25" class="py-name"><a title="ZIBMolPy.node.Node.pool
+ZIBMolPy.pool" class="py-name" href="#" onclick="return doclink('link-25', 'pool', 'link-0');">pool</a></tt><tt class="py-op">.</tt><tt class="py-name">alpha</tt><tt class="py-op">*</tt><tt class="py-op">(</tt> <tt class="py-op">(</tt><tt id="link-26" class="py-name"><a title="zgf_refine.x
+zgf_submit_job_HLRN.x" class="py-name" href="#" onclick="return doclink('link-26', 'x', 'link-3');">x</a></tt> <tt class="py-op">-</tt> <tt class="py-name">node_i</tt><tt class="py-op">.</tt><tt id="link-27" class="py-name"><a title="ZIBMolPy.internals
+ZIBMolPy.pool.NodeList.internals" class="py-name" href="#" onclick="return doclink('link-27', 'internals', 'link-6');">internals</a></tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt id="link-28" class="py-name"><a title="ZIBMolPy.internals.InternalArray.norm2" class="py-name" href="#" onclick="return doclink('link-28', 'norm2', 'link-8');">norm2</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> <tt class="py-op">)</tt> <tt class="py-op">)</tt> <tt class="py-op">)</tt> </tt>
+</div><a name="L82"></a><tt class="py-lineno"> 82</tt>  <tt class="py-line"> </tt>
+<a name="L83"></a><tt class="py-lineno"> 83</tt>  <tt class="py-line"> </tt>
+<a name="get_phi_denom"></a><div id="get_phi_denom-def"><a name="L84"></a><tt class="py-lineno"> 84</tt> <a class="py-toggle" href="#" id="get_phi_denom-toggle" onclick="return toggle('get_phi_denom');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="ZIBMolPy.phi-module.html#get_phi_denom">get_phi_denom</a><tt class="py-op">(</tt><tt class="py-param">x</tt><tt class="py-op">,</tt> <tt class="py-param">nodes</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="get_phi_denom-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="get_phi_denom-expanded"><a name="L85"></a><tt class="py-lineno"> 85</tt>  <tt class="py-line">        <tt class="py-docstring">r""" Calculates the denominator $\sum_i \chi_i(\vec x)$ of the phi-function.</tt> </tt>
+<a name="L86"></a><tt class="py-lineno"> 86</tt>  <tt class="py-line"><tt class="py-docstring">        </tt> </tt>
+<a name="L87"></a><tt class="py-lineno"> 87</tt>  <tt class="py-line"><tt class="py-docstring">        This is the sum over the numerators of the given nodes at the positions given by x. """</tt> </tt>
+<a name="L88"></a><tt class="py-lineno"> 88</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt><tt class="py-op">(</tt> <tt class="py-name">np</tt><tt class="py-op">.</tt><tt class="py-name">sum</tt><tt class="py-op">(</tt> <tt id="link-29" class="py-name"><a title="ZIBMolPy.phi.get_phi_num" class="py-name" href="#" onclick="return doclink('link-29', 'get_phi_num', 'link-19');">get_phi_num</a></tt><tt class="py-op">(</tt><tt id="link-30" class="py-name"><a title="zgf_refine.x
+zgf_submit_job_HLRN.x" class="py-name" href="#" onclick="return doclink('link-30', 'x', 'link-3');">x</a></tt><tt class="py-op">,</tt> <tt id="link-31" class="py-name" targets="Module ZIBMolPy.node=ZIBMolPy.node-module.html"><a title="ZIBMolPy.node" class="py-name" href="#" onclick="return doclink('link-31', 'node', 'link-31');">node</a></tt><tt class="py-op">)</tt> <tt class="py-keyword">for</tt> <tt id="link-32" class="py-name"><a title="ZIBMolPy.node" class="py-name" href="#" onclick="return doclink('link-32', 'node', 'link-31');">node</a></tt> <tt class="py-keyword">in</tt> <tt class="py-name">nodes</tt><tt class="py-op">)</tt> <tt class="py-op">)</tt> </tt>
+</div><a name="L89"></a><tt class="py-lineno"> 89</tt>  <tt class="py-line"> </tt>
+<a name="L90"></a><tt class="py-lineno"> 90</tt>  <tt class="py-line"> </tt>
+<a name="L91"></a><tt class="py-lineno"> 91</tt>  <tt class="py-line"><tt class="py-comment">#===============================================================================</tt> </tt>
+<a name="get_phi_potential"></a><div id="get_phi_potential-def"><a name="L92"></a><tt class="py-lineno"> 92</tt> <a class="py-toggle" href="#" id="get_phi_potential-toggle" onclick="return toggle('get_phi_potential');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="ZIBMolPy.phi-module.html#get_phi_potential">get_phi_potential</a><tt class="py-op">(</tt><tt class="py-param">x</tt><tt class="py-op">,</tt> <tt class="py-param">node_i</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="get_phi_potential-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="get_phi_potential-expanded"><a name="L93"></a><tt class="py-lineno"> 93</tt>  <tt class="py-line">        <tt class="py-docstring">r""" Calculates $\left(-\beta \log \phi_i(\vec x)\right)^{-1}$,</tt> </tt>
+<a name="L94"></a><tt class="py-lineno"> 94</tt>  <tt class="py-line"><tt class="py-docstring">        where $\beta$ is L{Pool.thermo_beta} """</tt> </tt>
+<a name="L95"></a><tt class="py-lineno"> 95</tt>  <tt class="py-line">         </tt>
+<a name="L96"></a><tt class="py-lineno"> 96</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt><tt class="py-op">(</tt> <tt class="py-op">-</tt><tt class="py-number">1</tt><tt class="py-op">/</tt><tt class="py-name">node_i</tt><tt class="py-op">.</tt><tt id="link-33" class="py-name"><a title="ZIBMolPy.node.Node.pool
+ZIBMolPy.pool" class="py-name" href="#" onclick="return doclink('link-33', 'pool', 'link-0');">pool</a></tt><tt class="py-op">.</tt><tt id="link-34" class="py-name"><a title="ZIBMolPy.pool.Pool.thermo_beta" class="py-name" href="#" onclick="return doclink('link-34', 'thermo_beta', 'link-16');">thermo_beta</a></tt><tt class="py-op">*</tt><tt class="py-name">np</tt><tt class="py-op">.</tt><tt class="py-name">log</tt><tt class="py-op">(</tt> <tt id="link-35" class="py-name" targets="Function ZIBMolPy.phi.get_phi()=ZIBMolPy.phi-module.html#get_phi"><a title="ZIBMolPy.phi.get_phi" class="py-name" href="#" onclick="return doclink('link-35', 'get_phi', 'link-35');">get_phi</a></tt><tt class="py-op">(</tt><tt id="link-36" class="py-name"><a title="zgf_refine.x
+zgf_submit_job_HLRN.x" class="py-name" href="#" onclick="return doclink('link-36', 'x', 'link-3');">x</a></tt><tt class="py-op">,</tt> <tt class="py-name">node_i</tt><tt class="py-op">)</tt> <tt class="py-op">)</tt> <tt class="py-op">)</tt> </tt>
+</div><a name="L97"></a><tt class="py-lineno"> 97</tt>  <tt class="py-line"> </tt>
+<a name="L98"></a><tt class="py-lineno"> 98</tt>  <tt class="py-line"><tt class="py-comment">#EOF</tt> </tt>
+<a name="L99"></a><tt class="py-lineno"> 99</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="ZIBMolPy-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://wiki.kobv.de/confluence/display/AGCMD/ZIBMolPy">ZIBMolPy</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Wed Mar 28 21:05:58 2012
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

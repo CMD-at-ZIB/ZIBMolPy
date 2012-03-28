@@ -6,7 +6,18 @@
   <title>zgf_setup_nodes</title>
   <link rel="stylesheet" href="epydoc.css" type="text/css" />
   <script type="text/javascript" src="epydoc.js"></script>
-</head>
+	
+	<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        displayMath: [['$$', '$$'], ["\\[", "\\]"]]
+      }
+    });
+    </script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+	</head>
+	
 
 <body bgcolor="white" text="black" link="blue" vlink="#204080"
       alink="#204080">
@@ -171,7 +182,7 @@ ZIBMolPy.internals.LinearCoordinate.sub" class="py-name" href="#" onclick="retur
 <a name="L68"></a><tt class="py-lineno"> 68</tt>  <tt class="py-line">         </tt>
 <a name="L69"></a><tt class="py-lineno"> 69</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt class="py-name">n</tt> <tt class="py-keyword">in</tt> <tt id="link-47" class="py-name"><a title="ZIBMolPy.node.Node.pool
 ZIBMolPy.pool" class="py-name" href="#" onclick="return doclink('link-47', 'pool', 'link-5');">pool</a></tt><tt class="py-op">.</tt><tt id="link-48" class="py-name"><a title="ZIBMolPy.pool.NodeList.where" class="py-name" href="#" onclick="return doclink('link-48', 'where', 'link-27');">where</a></tt><tt class="py-op">(</tt><tt class="py-string">"state == 'created'"</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
-<a name="L70"></a><tt class="py-lineno"> 70</tt>  <tt class="py-line">                <tt class="py-keyword">print</tt><tt class="py-op">(</tt><tt class="py-string">"Writting: "</tt><tt class="py-op">+</tt><tt class="py-name">n</tt><tt class="py-op">.</tt><tt id="link-49" class="py-name"><a title="ZIBMolPy.node.Node.mdp_fn" class="py-name" href="#" onclick="return doclink('link-49', 'mdp_fn', 'link-43');">mdp_fn</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L70"></a><tt class="py-lineno"> 70</tt>  <tt class="py-line">                <tt class="py-keyword">print</tt><tt class="py-op">(</tt><tt class="py-string">"Writing: "</tt><tt class="py-op">+</tt><tt class="py-name">n</tt><tt class="py-op">.</tt><tt id="link-49" class="py-name"><a title="ZIBMolPy.node.Node.mdp_fn" class="py-name" href="#" onclick="return doclink('link-49', 'mdp_fn', 'link-43');">mdp_fn</a></tt><tt class="py-op">)</tt> </tt>
 <a name="L71"></a><tt class="py-lineno"> 71</tt>  <tt class="py-line">                <tt class="py-name">nsteps</tt> <tt class="py-op">=</tt> <tt class="py-name">int</tt><tt class="py-op">(</tt><tt class="py-name">n</tt><tt class="py-op">.</tt><tt class="py-name">sampling_length</tt> <tt class="py-op">/</tt> <tt class="py-name">dt</tt><tt class="py-op">)</tt> </tt>
 <a name="L72"></a><tt class="py-lineno"> 72</tt>  <tt class="py-line">                <tt class="py-name">f</tt> <tt class="py-op">=</tt> <tt class="py-name">open</tt><tt class="py-op">(</tt><tt class="py-name">n</tt><tt class="py-op">.</tt><tt id="link-50" class="py-name"><a title="ZIBMolPy.node.Node.mdp_fn" class="py-name" href="#" onclick="return doclink('link-50', 'mdp_fn', 'link-43');">mdp_fn</a></tt><tt class="py-op">,</tt> <tt class="py-string">"w"</tt><tt class="py-op">)</tt> </tt>
 <a name="L73"></a><tt class="py-lineno"> 73</tt>  <tt class="py-line">                <tt class="py-name">f</tt><tt class="py-op">.</tt><tt id="link-51" class="py-name" targets="Method ZIBMolPy.io.topology.Moleculetype.write()=ZIBMolPy.io.topology.Moleculetype-class.html#write,Method ZIBMolPy.io.topology.Section.write()=ZIBMolPy.io.topology.Section-class.html#write,Method ZIBMolPy.io.topology.Topology.write()=ZIBMolPy.io.topology.Topology-class.html#write,Method ZIBMolPy.topology.Topology.write()=ZIBMolPy.topology.Topology-class.html#write"><a title="ZIBMolPy.io.topology.Moleculetype.write
@@ -181,7 +192,7 @@ ZIBMolPy.topology.Topology.write" class="py-name" href="#" onclick="return docli
 <a name="L74"></a><tt class="py-lineno"> 74</tt>  <tt class="py-line">                <tt class="py-name">f</tt><tt class="py-op">.</tt><tt id="link-52" class="py-name"><a title="ZIBMolPy.io.topology.Moleculetype.write
 ZIBMolPy.io.topology.Section.write
 ZIBMolPy.io.topology.Topology.write
-ZIBMolPy.topology.Topology.write" class="py-name" href="#" onclick="return doclink('link-52', 'write', 'link-51');">write</a></tt><tt class="py-op">(</tt><tt class="py-string">"\n;zgf_setup_nodes: possibly overwriting previous nsteps entry\n"</tt><tt class="py-op">)</tt>  </tt>
+ZIBMolPy.topology.Topology.write" class="py-name" href="#" onclick="return doclink('link-52', 'write', 'link-51');">write</a></tt><tt class="py-op">(</tt><tt class="py-string">"\n; zgf_setup_nodes:\n"</tt><tt class="py-op">)</tt>  </tt>
 <a name="L75"></a><tt class="py-lineno"> 75</tt>  <tt class="py-line">                <tt class="py-name">f</tt><tt class="py-op">.</tt><tt id="link-53" class="py-name"><a title="ZIBMolPy.io.topology.Moleculetype.write
 ZIBMolPy.io.topology.Section.write
 ZIBMolPy.io.topology.Topology.write
@@ -314,7 +325,7 @@ ZIBMolPy.topology.Topology.write" class="py-name" href="#" onclick="return docli
 <a name="L177"></a><tt class="py-lineno">177</tt>  <tt class="py-line"> </tt>
 <a name="L178"></a><tt class="py-lineno">178</tt>  <tt class="py-line"><tt class="py-comment">#===============================================================================</tt> </tt>
 <a name="L179"></a><tt class="py-lineno">179</tt>  <tt class="py-line"><tt class="py-keyword">if</tt><tt class="py-op">(</tt><tt class="py-name">__name__</tt> <tt class="py-op">==</tt> <tt class="py-string">"__main__"</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
-<a name="L180"></a><tt class="py-lineno">180</tt>  <tt class="py-line">        <tt id="link-114" class="py-name" targets="Function zgf_analyze.main()=zgf_analyze-module.html#main,Function zgf_browser.main()=zgf_browser-module.html#main,Function zgf_cleanup.main()=zgf_cleanup-module.html#main,Function zgf_create_nodes.main()=zgf_create_nodes-module.html#main,Function zgf_create_pool.main()=zgf_create_pool-module.html#main,Function zgf_create_rates.main()=zgf_create_rates-module.html#main,Function zgf_create_unrestrained_nodes.main()=zgf_create_unrestrained_nodes-module.html#main,Function zgf_extract_conformations.main()=zgf_extract_conformations-module.html#main,Function zgf_grompp.main()=zgf_grompp-module.html#main,Function zgf_mdrun.main()=zgf_mdrun-module.html#main,Function zgf_refine.main()=zgf_refine-module.html#main,Function zgf_remove_nodes.main()=zgf_remove_nodes-module.html#main,Function zgf_reweight.main()=zgf_reweight-module.html#main,Function zgf_setup_nodes.main()=zgf_setup_nodes-module.html#main,Function zgf_submit_job_HLRN.main()=zgf_submit_job_HLRN-module.html#main,Function zgf_test.main()=zgf_test-module.html#main,Function zgf_upgrade.main()=zgf_upgrade-module.html#main"><a title="zgf_analyze.main
+<a name="L180"></a><tt class="py-lineno">180</tt>  <tt class="py-line">        <tt id="link-114" class="py-name" targets="Function zgf_analyze.main()=zgf_analyze-module.html#main,Function zgf_browser.main()=zgf_browser-module.html#main,Function zgf_cleanup.main()=zgf_cleanup-module.html#main,Function zgf_create_nodes.main()=zgf_create_nodes-module.html#main,Function zgf_create_pool.main()=zgf_create_pool-module.html#main,Function zgf_create_rates.main()=zgf_create_rates-module.html#main,Function zgf_create_unrestrained_nodes.main()=zgf_create_unrestrained_nodes-module.html#main,Function zgf_extract_conformations.main()=zgf_extract_conformations-module.html#main,Function zgf_gauge_times.main()=zgf_gauge_times-module.html#main,Function zgf_grompp.main()=zgf_grompp-module.html#main,Function zgf_mdrun.main()=zgf_mdrun-module.html#main,Function zgf_refine.main()=zgf_refine-module.html#main,Function zgf_remove_nodes.main()=zgf_remove_nodes-module.html#main,Function zgf_reweight.main()=zgf_reweight-module.html#main,Function zgf_setup_nodes.main()=zgf_setup_nodes-module.html#main,Function zgf_submit_job_HLRN.main()=zgf_submit_job_HLRN-module.html#main,Function zgf_test.main()=zgf_test-module.html#main,Function zgf_upgrade.main()=zgf_upgrade-module.html#main"><a title="zgf_analyze.main
 zgf_browser.main
 zgf_cleanup.main
 zgf_create_nodes.main
@@ -322,6 +333,7 @@ zgf_create_pool.main
 zgf_create_rates.main
 zgf_create_unrestrained_nodes.main
 zgf_extract_conformations.main
+zgf_gauge_times.main
 zgf_grompp.main
 zgf_mdrun.main
 zgf_refine.main
@@ -371,7 +383,7 @@ expandto(location.href);
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Fri Mar 23 16:45:53 2012
+    Generated by Epydoc 3.0.1 on Wed Mar 28 21:06:04 2012
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

@@ -6,7 +6,18 @@
   <title>Everything</title>
   <link rel="stylesheet" href="epydoc.css" type="text/css" />
   <script type="text/javascript" src="epydoc.js"></script>
-</head>
+	
+	<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        displayMath: [['$$', '$$'], ["\\[", "\\]"]]
+      }
+    });
+    </script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+	</head>
+	
 
 <body bgcolor="white" text="black" link="blue" vlink="#204080"
       alink="#204080">
@@ -92,7 +103,14 @@
      >ZIBMolPy.io.topology.preprocess</a><br />    <a target="mainFrame" href="ZIBMolPy.io.topology-module.html#resolve_defines"
      >ZIBMolPy.io.topology.resolve_defines</a><br />    <a target="mainFrame" href="ZIBMolPy.io.topology-module.html#resolve_includes"
      >ZIBMolPy.io.topology.resolve_includes</a><br />    <a target="mainFrame" href="ZIBMolPy.node-module.html#my_lock_signature"
-     >ZIBMolPy.node.my_lock_signature</a><br />    <a target="mainFrame" href="ZIBMolPy.ui-module.html#userchoice"
+     >ZIBMolPy.node.my_lock_signature</a><br />    <a target="mainFrame" href="ZIBMolPy.phi-module.html#get_phi"
+     >ZIBMolPy.phi.get_phi</a><br />    <a target="mainFrame" href="ZIBMolPy.phi-module.html#get_phi_contrib"
+     >ZIBMolPy.phi.get_phi_contrib</a><br />    <a target="mainFrame" href="ZIBMolPy.phi-module.html#get_phi_contrib_potential"
+     >ZIBMolPy.phi.get_phi_contrib_potential</a><br />    <a target="mainFrame" href="ZIBMolPy.phi-module.html#get_phi_denom"
+     >ZIBMolPy.phi.get_phi_denom</a><br />    <a target="mainFrame" href="ZIBMolPy.phi-module.html#get_phi_num"
+     >ZIBMolPy.phi.get_phi_num</a><br />    <a target="mainFrame" href="ZIBMolPy.phi-module.html#get_phi_num_contrib"
+     >ZIBMolPy.phi.get_phi_num_contrib</a><br />    <a target="mainFrame" href="ZIBMolPy.phi-module.html#get_phi_potential"
+     >ZIBMolPy.phi.get_phi_potential</a><br />    <a target="mainFrame" href="ZIBMolPy.ui-module.html#userchoice"
      >ZIBMolPy.ui.userchoice</a><br />    <a target="mainFrame" href="ZIBMolPy.ui-module.html#userchoice_gui"
      >ZIBMolPy.ui.userchoice_gui</a><br />    <a target="mainFrame" href="ZIBMolPy.ui-module.html#userinput"
      >ZIBMolPy.ui.userinput</a><br />    <a target="mainFrame" href="ZIBMolPy.ui-module.html#userinput_cli"
@@ -103,14 +121,7 @@
      >ZIBMolPy.utils.check_call</a><br />    <a target="mainFrame" href="ZIBMolPy.utils-module.html#check_call_silent"
      >ZIBMolPy.utils.check_call_silent</a><br />    <a target="mainFrame" href="ZIBMolPy.utils-module.html#dep2fn"
      >ZIBMolPy.utils.dep2fn</a><br />    <a target="mainFrame" href="ZIBMolPy.utils-module.html#fn2dep"
-     >ZIBMolPy.utils.fn2dep</a><br />    <a target="mainFrame" href="ZIBMolPy.utils-module.html#get_phi"
-     >ZIBMolPy.utils.get_phi</a><br />    <a target="mainFrame" href="ZIBMolPy.utils-module.html#get_phi_contrib"
-     >ZIBMolPy.utils.get_phi_contrib</a><br />    <a target="mainFrame" href="ZIBMolPy.utils-module.html#get_phi_contrib_potential"
-     >ZIBMolPy.utils.get_phi_contrib_potential</a><br />    <a target="mainFrame" href="ZIBMolPy.utils-module.html#get_phi_denom"
-     >ZIBMolPy.utils.get_phi_denom</a><br />    <a target="mainFrame" href="ZIBMolPy.utils-module.html#get_phi_num"
-     >ZIBMolPy.utils.get_phi_num</a><br />    <a target="mainFrame" href="ZIBMolPy.utils-module.html#get_phi_num_contrib"
-     >ZIBMolPy.utils.get_phi_num_contrib</a><br />    <a target="mainFrame" href="ZIBMolPy.utils-module.html#get_phi_potential"
-     >ZIBMolPy.utils.get_phi_potential</a><br />    <a target="mainFrame" href="ZIBMolPy.utils-module.html#pformat"
+     >ZIBMolPy.utils.fn2dep</a><br />    <a target="mainFrame" href="ZIBMolPy.utils-module.html#pformat"
      >ZIBMolPy.utils.pformat</a><br />    <a target="mainFrame" href="ZIBMolPy.utils-module.html#register_file_dependency"
      >ZIBMolPy.utils.register_file_dependency</a><br />    <a target="mainFrame" href="ZIBMolPy.utils-module.html#relpath"
      >ZIBMolPy.utils.relpath</a><br />    <a target="mainFrame" href="zgf_analyze-module.html#cache_matrix"
@@ -143,7 +154,9 @@
      >zgf_create_unrestrained_nodes.is_applicable</a><br />    <a target="mainFrame" href="zgf_create_unrestrained_nodes-module.html#main"
      >zgf_create_unrestrained_nodes.main</a><br />    <a target="mainFrame" href="zgf_extract_conformations-module.html#is_applicable"
      >zgf_extract_conformations.is_applicable</a><br />    <a target="mainFrame" href="zgf_extract_conformations-module.html#main"
-     >zgf_extract_conformations.main</a><br />    <a target="mainFrame" href="zgf_grompp-module.html#is_applicable"
+     >zgf_extract_conformations.main</a><br />    <a target="mainFrame" href="zgf_gauge_times-module.html#is_applicable"
+     >zgf_gauge_times.is_applicable</a><br />    <a target="mainFrame" href="zgf_gauge_times-module.html#main"
+     >zgf_gauge_times.main</a><br />    <a target="mainFrame" href="zgf_grompp-module.html#is_applicable"
      >zgf_grompp.is_applicable</a><br />    <a target="mainFrame" href="zgf_grompp-module.html#main"
      >zgf_grompp.main</a><br />    <a target="mainFrame" href="zgf_mdrun-module.html#conv_check_gelman_rubin"
      >zgf_mdrun.conv_check_gelman_rubin</a><br />    <a target="mainFrame" href="zgf_mdrun-module.html#is_applicable"
@@ -198,7 +211,8 @@
      >ZIBMolPy.io.trr.GROMACS_MAGIC</a><br />    <a target="mainFrame" href="ZIBMolPy.io.trr-module.html#VERSION"
      >ZIBMolPy.io.trr.VERSION</a><br />    <a target="mainFrame" href="ZIBMolPy.io.trr-module.html#__package__"
      >ZIBMolPy.io.trr.__package__</a><br />    <a target="mainFrame" href="ZIBMolPy.node-module.html#__package__"
-     >ZIBMolPy.node.__package__</a><br />    <a target="mainFrame" href="ZIBMolPy.plots.CoordPlotManager-module.html#__package__"
+     >ZIBMolPy.node.__package__</a><br />    <a target="mainFrame" href="ZIBMolPy.phi-module.html#__package__"
+     >ZIBMolPy.phi.__package__</a><br />    <a target="mainFrame" href="ZIBMolPy.plots.CoordPlotManager-module.html#__package__"
      >ZIBMolPy.plots.CoordPlotManager.__package__</a><br />    <a target="mainFrame" href="ZIBMolPy.plots.DistPlotManager-module.html#__package__"
      >ZIBMolPy.plots.DistPlotManager.__package__</a><br />    <a target="mainFrame" href="ZIBMolPy.plots.FrameweightPlotManager-module.html#__package__"
      >ZIBMolPy.plots.FrameweightPlotManager.__package__</a><br />    <a target="mainFrame" href="ZIBMolPy.plots.MatrixPlotManager-module.html#__package__"
@@ -236,7 +250,8 @@
      >zgf_create_unrestrained_nodes.__package__</a><br />    <a target="mainFrame" href="zgf_create_unrestrained_nodes-module.html#options_desc"
      >zgf_create_unrestrained_nodes.options_desc</a><br />    <a target="mainFrame" href="zgf_extract_conformations-module.html#__package__"
      >zgf_extract_conformations.__package__</a><br />    <a target="mainFrame" href="zgf_extract_conformations-module.html#options_desc"
-     >zgf_extract_conformations.options_desc</a><br />    <a target="mainFrame" href="zgf_grompp-module.html#__package__"
+     >zgf_extract_conformations.options_desc</a><br />    <a target="mainFrame" href="zgf_gauge_times-module.html#__package__"
+     >zgf_gauge_times.__package__</a><br />    <a target="mainFrame" href="zgf_grompp-module.html#__package__"
      >zgf_grompp.__package__</a><br />    <a target="mainFrame" href="zgf_grompp-module.html#options_desc"
      >zgf_grompp.options_desc</a><br />    <a target="mainFrame" href="zgf_mdrun-module.html#__package__"
      >zgf_mdrun.__package__</a><br />    <a target="mainFrame" href="zgf_mdrun-module.html#options_desc"

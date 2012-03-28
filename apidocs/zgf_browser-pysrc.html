@@ -6,7 +6,18 @@
   <title>zgf_browser</title>
   <link rel="stylesheet" href="epydoc.css" type="text/css" />
   <script type="text/javascript" src="epydoc.js"></script>
-</head>
+	
+	<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        displayMath: [['$$', '$$'], ["\\[", "\\]"]]
+      }
+    });
+    </script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+	</head>
+	
 
 <body bgcolor="white" text="black" link="blue" vlink="#204080"
       alink="#204080">
@@ -94,7 +105,7 @@ ZIBMolPy.pool" class="py-name" href="#" onclick="return doclink('link-3', 'pool'
 <a name="L33"></a><tt class="py-lineno">  33</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">matplotlib</tt><tt class="py-op">.</tt><tt class="py-name">backends</tt><tt class="py-op">.</tt><tt class="py-name">backend_gtkagg</tt> <tt class="py-keyword">import</tt> <tt class="py-name">FigureCanvasGTKAgg</tt> <tt class="py-keyword">as</tt> <tt class="py-name">FigureCanvas</tt> </tt>
 <a name="L34"></a><tt class="py-lineno">  34</tt>  <tt class="py-line"> </tt>
 <a name="L35"></a><tt class="py-lineno">  35</tt>  <tt class="py-line"> </tt>
-<a name="L36"></a><tt class="py-lineno">  36</tt>  <tt class="py-line"><tt id="link-5" class="py-name" targets="Variable zgf_browser.WIKI_URL=zgf_browser-module.html#WIKI_URL"><a title="zgf_browser.WIKI_URL" class="py-name" href="#" onclick="return doclink('link-5', 'WIKI_URL', 'link-5');">WIKI_URL</a></tt> <tt class="py-op">=</tt> <tt class="py-string">"https://wiki.kobv.de/confluence/display/AGCMD/ZIBMolPy"</tt> </tt>
+<a name="L36"></a><tt class="py-lineno">  36</tt>  <tt class="py-line"><tt id="link-5" class="py-name" targets="Variable zgf_browser.WIKI_URL=zgf_browser-module.html#WIKI_URL"><a title="zgf_browser.WIKI_URL" class="py-name" href="#" onclick="return doclink('link-5', 'WIKI_URL', 'link-5');">WIKI_URL</a></tt> <tt class="py-op">=</tt> <tt class="py-string">"https://github.com/CMD-at-ZIB/ZIBMolPy/wiki"</tt> </tt>
 <a name="main"></a><div id="main-def"><a name="L37"></a><tt class="py-lineno">  37</tt>  <tt class="py-line"> </tt>
 <a name="L38"></a><tt class="py-lineno">  38</tt>  <tt class="py-line"> </tt>
 <a name="L39"></a><tt class="py-lineno">  39</tt>  <tt class="py-line"><tt class="py-comment">#===============================================================================</tt> </tt>
@@ -117,7 +128,7 @@ ZIBMolPy.pool" class="py-name" href="#" onclick="return doclink('link-11', 'pool
 <a name="L53"></a><tt class="py-lineno">  53</tt>  <tt class="py-line">        <tt class="py-name">mw</tt> <tt class="py-op">=</tt> <tt id="link-12" class="py-name" targets="Class zgf_browser.MainWindow=zgf_browser.MainWindow-class.html"><a title="zgf_browser.MainWindow" class="py-name" href="#" onclick="return doclink('link-12', 'MainWindow', 'link-12');">MainWindow</a></tt><tt class="py-op">(</tt><tt class="py-name">board</tt><tt class="py-op">)</tt> </tt>
 <a name="L54"></a><tt class="py-lineno">  54</tt>  <tt class="py-line">        <tt class="py-name">mw</tt><tt class="py-op">.</tt><tt class="py-name">show_all</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
 <a name="L55"></a><tt class="py-lineno">  55</tt>  <tt class="py-line">        <tt class="py-keyword">try</tt><tt class="py-op">:</tt> </tt>
-<a name="L56"></a><tt class="py-lineno">  56</tt>  <tt class="py-line">                <tt class="py-name">gtk</tt><tt class="py-op">.</tt><tt id="link-13" class="py-name" targets="Function zgf_analyze.main()=zgf_analyze-module.html#main,Function zgf_browser.main()=zgf_browser-module.html#main,Function zgf_cleanup.main()=zgf_cleanup-module.html#main,Function zgf_create_nodes.main()=zgf_create_nodes-module.html#main,Function zgf_create_pool.main()=zgf_create_pool-module.html#main,Function zgf_create_rates.main()=zgf_create_rates-module.html#main,Function zgf_create_unrestrained_nodes.main()=zgf_create_unrestrained_nodes-module.html#main,Function zgf_extract_conformations.main()=zgf_extract_conformations-module.html#main,Function zgf_grompp.main()=zgf_grompp-module.html#main,Function zgf_mdrun.main()=zgf_mdrun-module.html#main,Function zgf_refine.main()=zgf_refine-module.html#main,Function zgf_remove_nodes.main()=zgf_remove_nodes-module.html#main,Function zgf_reweight.main()=zgf_reweight-module.html#main,Function zgf_setup_nodes.main()=zgf_setup_nodes-module.html#main,Function zgf_submit_job_HLRN.main()=zgf_submit_job_HLRN-module.html#main,Function zgf_test.main()=zgf_test-module.html#main,Function zgf_upgrade.main()=zgf_upgrade-module.html#main"><a title="zgf_analyze.main
+<a name="L56"></a><tt class="py-lineno">  56</tt>  <tt class="py-line">                <tt class="py-name">gtk</tt><tt class="py-op">.</tt><tt id="link-13" class="py-name" targets="Function zgf_analyze.main()=zgf_analyze-module.html#main,Function zgf_browser.main()=zgf_browser-module.html#main,Function zgf_cleanup.main()=zgf_cleanup-module.html#main,Function zgf_create_nodes.main()=zgf_create_nodes-module.html#main,Function zgf_create_pool.main()=zgf_create_pool-module.html#main,Function zgf_create_rates.main()=zgf_create_rates-module.html#main,Function zgf_create_unrestrained_nodes.main()=zgf_create_unrestrained_nodes-module.html#main,Function zgf_extract_conformations.main()=zgf_extract_conformations-module.html#main,Function zgf_gauge_times.main()=zgf_gauge_times-module.html#main,Function zgf_grompp.main()=zgf_grompp-module.html#main,Function zgf_mdrun.main()=zgf_mdrun-module.html#main,Function zgf_refine.main()=zgf_refine-module.html#main,Function zgf_remove_nodes.main()=zgf_remove_nodes-module.html#main,Function zgf_reweight.main()=zgf_reweight-module.html#main,Function zgf_setup_nodes.main()=zgf_setup_nodes-module.html#main,Function zgf_submit_job_HLRN.main()=zgf_submit_job_HLRN-module.html#main,Function zgf_test.main()=zgf_test-module.html#main,Function zgf_upgrade.main()=zgf_upgrade-module.html#main"><a title="zgf_analyze.main
 zgf_browser.main
 zgf_cleanup.main
 zgf_create_nodes.main
@@ -125,6 +136,7 @@ zgf_create_pool.main
 zgf_create_rates.main
 zgf_create_unrestrained_nodes.main
 zgf_extract_conformations.main
+zgf_gauge_times.main
 zgf_grompp.main
 zgf_mdrun.main
 zgf_refine.main
@@ -862,13 +874,14 @@ zgf_browser.RunDialog.run" class="py-name" href="#" onclick="return doclink('lin
 <a name="L445"></a><tt class="py-lineno"> 445</tt>  <tt class="py-line">                         </tt>
 <a name="L446"></a><tt class="py-lineno"> 446</tt>  <tt class="py-line">                        <tt class="py-keyword">if</tt><tt class="py-op">(</tt><tt class="py-name">hasattr</tt><tt class="py-op">(</tt><tt class="py-name">module</tt><tt class="py-op">,</tt> <tt class="py-string">"is_applicable"</tt><tt class="py-op">)</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
 <a name="L447"></a><tt class="py-lineno"> 447</tt>  <tt class="py-line">                                <tt class="py-keyword">try</tt><tt class="py-op">:</tt> </tt>
-<a name="L448"></a><tt class="py-lineno"> 448</tt>  <tt class="py-line">                                        <tt class="py-name">a</tt> <tt class="py-op">=</tt> <tt class="py-name">module</tt><tt class="py-op">.</tt><tt id="link-129" class="py-name" targets="Function zgf_analyze.is_applicable()=zgf_analyze-module.html#is_applicable,Function zgf_cleanup.is_applicable()=zgf_cleanup-module.html#is_applicable,Function zgf_create_nodes.is_applicable()=zgf_create_nodes-module.html#is_applicable,Function zgf_create_pool.is_applicable()=zgf_create_pool-module.html#is_applicable,Function zgf_create_rates.is_applicable()=zgf_create_rates-module.html#is_applicable,Function zgf_create_unrestrained_nodes.is_applicable()=zgf_create_unrestrained_nodes-module.html#is_applicable,Function zgf_extract_conformations.is_applicable()=zgf_extract_conformations-module.html#is_applicable,Function zgf_grompp.is_applicable()=zgf_grompp-module.html#is_applicable,Function zgf_mdrun.is_applicable()=zgf_mdrun-module.html#is_applicable,Function zgf_refine.is_applicable()=zgf_refine-module.html#is_applicable,Function zgf_remove_nodes.is_applicable()=zgf_remove_nodes-module.html#is_applicable,Function zgf_reweight.is_applicable()=zgf_reweight-module.html#is_applicable,Function zgf_setup_nodes.is_applicable()=zgf_setup_nodes-module.html#is_applicable,Function zgf_submit_job_HLRN.is_applicable()=zgf_submit_job_HLRN-module.html#is_applicable,Function zgf_upgrade.is_applicable()=zgf_upgrade-module.html#is_applicable"><a title="zgf_analyze.is_applicable
+<a name="L448"></a><tt class="py-lineno"> 448</tt>  <tt class="py-line">                                        <tt class="py-name">a</tt> <tt class="py-op">=</tt> <tt class="py-name">module</tt><tt class="py-op">.</tt><tt id="link-129" class="py-name" targets="Function zgf_analyze.is_applicable()=zgf_analyze-module.html#is_applicable,Function zgf_cleanup.is_applicable()=zgf_cleanup-module.html#is_applicable,Function zgf_create_nodes.is_applicable()=zgf_create_nodes-module.html#is_applicable,Function zgf_create_pool.is_applicable()=zgf_create_pool-module.html#is_applicable,Function zgf_create_rates.is_applicable()=zgf_create_rates-module.html#is_applicable,Function zgf_create_unrestrained_nodes.is_applicable()=zgf_create_unrestrained_nodes-module.html#is_applicable,Function zgf_extract_conformations.is_applicable()=zgf_extract_conformations-module.html#is_applicable,Function zgf_gauge_times.is_applicable()=zgf_gauge_times-module.html#is_applicable,Function zgf_grompp.is_applicable()=zgf_grompp-module.html#is_applicable,Function zgf_mdrun.is_applicable()=zgf_mdrun-module.html#is_applicable,Function zgf_refine.is_applicable()=zgf_refine-module.html#is_applicable,Function zgf_remove_nodes.is_applicable()=zgf_remove_nodes-module.html#is_applicable,Function zgf_reweight.is_applicable()=zgf_reweight-module.html#is_applicable,Function zgf_setup_nodes.is_applicable()=zgf_setup_nodes-module.html#is_applicable,Function zgf_submit_job_HLRN.is_applicable()=zgf_submit_job_HLRN-module.html#is_applicable,Function zgf_upgrade.is_applicable()=zgf_upgrade-module.html#is_applicable"><a title="zgf_analyze.is_applicable
 zgf_cleanup.is_applicable
 zgf_create_nodes.is_applicable
 zgf_create_pool.is_applicable
 zgf_create_rates.is_applicable
 zgf_create_unrestrained_nodes.is_applicable
 zgf_extract_conformations.is_applicable
+zgf_gauge_times.is_applicable
 zgf_grompp.is_applicable
 zgf_mdrun.is_applicable
 zgf_refine.is_applicable
@@ -3398,6 +3411,7 @@ zgf_create_pool.main
 zgf_create_rates.main
 zgf_create_unrestrained_nodes.main
 zgf_extract_conformations.main
+zgf_gauge_times.main
 zgf_grompp.main
 zgf_mdrun.main
 zgf_refine.main
@@ -3447,7 +3461,7 @@ expandto(location.href);
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Fri Mar 23 16:45:52 2012
+    Generated by Epydoc 3.0.1 on Wed Mar 28 21:06:01 2012
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

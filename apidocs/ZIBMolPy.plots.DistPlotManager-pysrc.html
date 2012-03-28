@@ -6,7 +6,18 @@
   <title>ZIBMolPy.plots.DistPlotManager</title>
   <link rel="stylesheet" href="epydoc.css" type="text/css" />
   <script type="text/javascript" src="epydoc.js"></script>
-</head>
+	
+	<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        displayMath: [['$$', '$$'], ["\\[", "\\]"]]
+      }
+    });
+    </script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+	</head>
+	
 
 <body bgcolor="white" text="black" link="blue" vlink="#204080"
       alink="#204080">
@@ -63,7 +74,7 @@
 <a name="L1"></a><tt class="py-lineno">  1</tt>  <tt class="py-line"><tt class="py-comment"># -*- coding: utf-8 -*-</tt> </tt>
 <a name="L2"></a><tt class="py-lineno">  2</tt>  <tt class="py-line"> </tt>
 <a name="L3"></a><tt class="py-lineno">  3</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">gtk</tt> </tt>
-<a name="L4"></a><tt class="py-lineno">  4</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-0" class="py-name" targets="Package ZIBMolPy=ZIBMolPy-module.html"><a title="ZIBMolPy" class="py-name" href="#" onclick="return doclink('link-0', 'ZIBMolPy', 'link-0');">ZIBMolPy</a></tt><tt class="py-op">.</tt><tt id="link-1" class="py-name" targets="Module ZIBMolPy.utils=ZIBMolPy.utils-module.html"><a title="ZIBMolPy.utils" class="py-name" href="#" onclick="return doclink('link-1', 'utils', 'link-1');">utils</a></tt> <tt class="py-keyword">import</tt> <tt id="link-2" class="py-name" targets="Function ZIBMolPy.utils.get_phi_contrib()=ZIBMolPy.utils-module.html#get_phi_contrib"><a title="ZIBMolPy.utils.get_phi_contrib" class="py-name" href="#" onclick="return doclink('link-2', 'get_phi_contrib', 'link-2');">get_phi_contrib</a></tt><tt class="py-op">,</tt> <tt id="link-3" class="py-name" targets="Function ZIBMolPy.utils.get_phi_contrib_potential()=ZIBMolPy.utils-module.html#get_phi_contrib_potential"><a title="ZIBMolPy.utils.get_phi_contrib_potential" class="py-name" href="#" onclick="return doclink('link-3', 'get_phi_contrib_potential', 'link-3');">get_phi_contrib_potential</a></tt> </tt>
+<a name="L4"></a><tt class="py-lineno">  4</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-0" class="py-name" targets="Package ZIBMolPy=ZIBMolPy-module.html"><a title="ZIBMolPy" class="py-name" href="#" onclick="return doclink('link-0', 'ZIBMolPy', 'link-0');">ZIBMolPy</a></tt><tt class="py-op">.</tt><tt id="link-1" class="py-name" targets="Module ZIBMolPy.phi=ZIBMolPy.phi-module.html"><a title="ZIBMolPy.phi" class="py-name" href="#" onclick="return doclink('link-1', 'phi', 'link-1');">phi</a></tt> <tt class="py-keyword">import</tt> <tt id="link-2" class="py-name" targets="Function ZIBMolPy.phi.get_phi_contrib()=ZIBMolPy.phi-module.html#get_phi_contrib"><a title="ZIBMolPy.phi.get_phi_contrib" class="py-name" href="#" onclick="return doclink('link-2', 'get_phi_contrib', 'link-2');">get_phi_contrib</a></tt><tt class="py-op">,</tt> <tt id="link-3" class="py-name" targets="Function ZIBMolPy.phi.get_phi_contrib_potential()=ZIBMolPy.phi-module.html#get_phi_contrib_potential"><a title="ZIBMolPy.phi.get_phi_contrib_potential" class="py-name" href="#" onclick="return doclink('link-3', 'get_phi_contrib_potential', 'link-3');">get_phi_contrib_potential</a></tt> </tt>
 <a name="L5"></a><tt class="py-lineno">  5</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">numpy</tt> <tt class="py-keyword">as</tt> <tt class="py-name">np</tt> </tt>
 <a name="L6"></a><tt class="py-lineno">  6</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">os</tt> </tt>
 <a name="L7"></a><tt class="py-lineno">  7</tt>  <tt class="py-line"> </tt>
@@ -395,12 +406,12 @@ ZIBMolPy.internals.InternalCoordinate.index" class="py-name" href="#" onclick="r
 ZIBMolPy.internals.InternalCoordinate.label
 ZIBMolPy.internals.LinearCoordinate.label" class="py-name" href="#" onclick="return doclink('link-69', 'label', 'link-6');">label</a></tt><tt class="py-op">=</tt><tt class="py-string">"restraint"</tt><tt class="py-op">,</tt> <tt class="py-op">**</tt><tt class="py-name">plotargs_restraint</tt><tt class="py-op">)</tt> </tt>
 <a name="L204"></a><tt class="py-lineno">204</tt>  <tt class="py-line">                        <tt class="py-keyword">if</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">cb_phi</tt><tt class="py-op">.</tt><tt class="py-name">get_active</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
-<a name="L205"></a><tt class="py-lineno">205</tt>  <tt class="py-line">                                <tt class="py-name">yvalues</tt> <tt class="py-op">=</tt> <tt id="link-70" class="py-name"><a title="ZIBMolPy.utils.get_phi_contrib" class="py-name" href="#" onclick="return doclink('link-70', 'get_phi_contrib', 'link-2');">get_phi_contrib</a></tt><tt class="py-op">(</tt><tt class="py-name">xvalues</tt><tt class="py-op">,</tt> <tt class="py-name">n</tt><tt class="py-op">,</tt> <tt class="py-name">current_coord</tt><tt class="py-op">)</tt>     </tt>
+<a name="L205"></a><tt class="py-lineno">205</tt>  <tt class="py-line">                                <tt class="py-name">yvalues</tt> <tt class="py-op">=</tt> <tt id="link-70" class="py-name"><a title="ZIBMolPy.phi.get_phi_contrib" class="py-name" href="#" onclick="return doclink('link-70', 'get_phi_contrib', 'link-2');">get_phi_contrib</a></tt><tt class="py-op">(</tt><tt class="py-name">xvalues</tt><tt class="py-op">,</tt> <tt class="py-name">n</tt><tt class="py-op">,</tt> <tt class="py-name">current_coord</tt><tt class="py-op">)</tt>     </tt>
 <a name="L206"></a><tt class="py-lineno">206</tt>  <tt class="py-line">                                <tt class="py-name">axes1</tt><tt class="py-op">.</tt><tt class="py-name">plot</tt><tt class="py-op">(</tt><tt class="py-name">scale</tt><tt class="py-op">(</tt><tt class="py-name">xvalues</tt><tt class="py-op">)</tt><tt class="py-op">,</tt> <tt class="py-name">yvalues</tt><tt class="py-op">,</tt> <tt id="link-71" class="py-name"><a title="ZIBMolPy.internals.DihedralCoordinate.label
 ZIBMolPy.internals.InternalCoordinate.label
 ZIBMolPy.internals.LinearCoordinate.label" class="py-name" href="#" onclick="return doclink('link-71', 'label', 'link-6');">label</a></tt><tt class="py-op">=</tt><tt class="py-string">'phi'</tt><tt class="py-op">,</tt> <tt class="py-op">**</tt><tt class="py-name">plotargs_phi</tt><tt class="py-op">)</tt> </tt>
 <a name="L207"></a><tt class="py-lineno">207</tt>  <tt class="py-line">                        <tt class="py-keyword">if</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">cb_phi_potential</tt><tt class="py-op">.</tt><tt class="py-name">get_active</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
-<a name="L208"></a><tt class="py-lineno">208</tt>  <tt class="py-line">                                <tt class="py-name">yvalues</tt> <tt class="py-op">=</tt> <tt id="link-72" class="py-name"><a title="ZIBMolPy.utils.get_phi_contrib_potential" class="py-name" href="#" onclick="return doclink('link-72', 'get_phi_contrib_potential', 'link-3');">get_phi_contrib_potential</a></tt><tt class="py-op">(</tt><tt class="py-name">xvalues</tt><tt class="py-op">,</tt> <tt class="py-name">n</tt><tt class="py-op">,</tt> <tt class="py-name">current_coord</tt><tt class="py-op">)</tt> </tt>
+<a name="L208"></a><tt class="py-lineno">208</tt>  <tt class="py-line">                                <tt class="py-name">yvalues</tt> <tt class="py-op">=</tt> <tt id="link-72" class="py-name"><a title="ZIBMolPy.phi.get_phi_contrib_potential" class="py-name" href="#" onclick="return doclink('link-72', 'get_phi_contrib_potential', 'link-3');">get_phi_contrib_potential</a></tt><tt class="py-op">(</tt><tt class="py-name">xvalues</tt><tt class="py-op">,</tt> <tt class="py-name">n</tt><tt class="py-op">,</tt> <tt class="py-name">current_coord</tt><tt class="py-op">)</tt> </tt>
 <a name="L209"></a><tt class="py-lineno">209</tt>  <tt class="py-line">                                <tt class="py-name">axes2</tt><tt class="py-op">.</tt><tt class="py-name">plot</tt><tt class="py-op">(</tt><tt class="py-name">scale</tt><tt class="py-op">(</tt><tt class="py-name">xvalues</tt><tt class="py-op">)</tt><tt class="py-op">,</tt> <tt class="py-name">yvalues</tt><tt class="py-op">,</tt> <tt id="link-73" class="py-name"><a title="ZIBMolPy.internals.DihedralCoordinate.label
 ZIBMolPy.internals.InternalCoordinate.label
 ZIBMolPy.internals.LinearCoordinate.label" class="py-name" href="#" onclick="return doclink('link-73', 'label', 'link-6');">label</a></tt><tt class="py-op">=</tt><tt class="py-string">"phi potential"</tt><tt class="py-op">,</tt> <tt class="py-op">**</tt><tt class="py-name">plotargs_phipotential</tt><tt class="py-op">)</tt> </tt>
@@ -560,7 +571,7 @@ expandto(location.href);
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Fri Mar 23 16:45:54 2012
+    Generated by Epydoc 3.0.1 on Wed Mar 28 21:06:06 2012
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

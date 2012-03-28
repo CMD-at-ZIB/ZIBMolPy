@@ -6,7 +6,18 @@
   <title>ZIBMolPy.utils</title>
   <link rel="stylesheet" href="epydoc.css" type="text/css" />
   <script type="text/javascript" src="epydoc.js"></script>
-</head>
+	
+	<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        displayMath: [['$$', '$$'], ["\\[", "\\]"]]
+      }
+    });
+    </script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+	</head>
+	
 
 <body bgcolor="white" text="black" link="blue" vlink="#204080"
       alink="#204080">
@@ -96,131 +107,6 @@
       Selfmade version of subprocess.check_call for python 2.4</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="ZIBMolPy.utils-pysrc.html#check_call">source&nbsp;code</a></span>
-            
-          </td>
-        </tr>
-      </table>
-      
-    </td>
-  </tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-      <table width="100%" cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td><span class="summary-sig"><a name="get_phi_contrib"></a><span class="summary-sig-name">get_phi_contrib</span>(<span class="summary-sig-arg">x</span>,
-        <span class="summary-sig-arg">curr_node</span>,
-        <span class="summary-sig-arg">coord</span>)</span></td>
-          <td align="right" valign="top">
-            <span class="codelink"><a href="ZIBMolPy.utils-pysrc.html#get_phi_contrib">source&nbsp;code</a></span>
-            
-          </td>
-        </tr>
-      </table>
-      
-    </td>
-  </tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-      <table width="100%" cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td><span class="summary-sig"><a href="ZIBMolPy.utils-module.html#get_phi_num_contrib" class="summary-sig-name">get_phi_num_contrib</a>(<span class="summary-sig-arg">x</span>,
-        <span class="summary-sig-arg">ref_node</span>,
-        <span class="summary-sig-arg">curr_node</span>,
-        <span class="summary-sig-arg">coord</span>)</span><br />
-      Takes all values from ref_node.internals except for coordinate coord.</td>
-          <td align="right" valign="top">
-            <span class="codelink"><a href="ZIBMolPy.utils-pysrc.html#get_phi_num_contrib">source&nbsp;code</a></span>
-            
-          </td>
-        </tr>
-      </table>
-      
-    </td>
-  </tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-      <table width="100%" cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td><span class="summary-sig"><a name="get_phi_contrib_potential"></a><span class="summary-sig-name">get_phi_contrib_potential</span>(<span class="summary-sig-arg">x</span>,
-        <span class="summary-sig-arg">curr_node</span>,
-        <span class="summary-sig-arg">coord</span>)</span></td>
-          <td align="right" valign="top">
-            <span class="codelink"><a href="ZIBMolPy.utils-pysrc.html#get_phi_contrib_potential">source&nbsp;code</a></span>
-            
-          </td>
-        </tr>
-      </table>
-      
-    </td>
-  </tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-      <table width="100%" cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td><span class="summary-sig"><a name="get_phi"></a><span class="summary-sig-name">get_phi</span>(<span class="summary-sig-arg">frames</span>,
-        <span class="summary-sig-arg">curr_node</span>)</span><br />
-      Considers only active nodes (state!='refined')</td>
-          <td align="right" valign="top">
-            <span class="codelink"><a href="ZIBMolPy.utils-pysrc.html#get_phi">source&nbsp;code</a></span>
-            
-          </td>
-        </tr>
-      </table>
-      
-    </td>
-  </tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-      <table width="100%" cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td><span class="summary-sig"><a name="get_phi_num"></a><span class="summary-sig-name">get_phi_num</span>(<span class="summary-sig-arg">frames</span>,
-        <span class="summary-sig-arg">curr_node</span>)</span></td>
-          <td align="right" valign="top">
-            <span class="codelink"><a href="ZIBMolPy.utils-pysrc.html#get_phi_num">source&nbsp;code</a></span>
-            
-          </td>
-        </tr>
-      </table>
-      
-    </td>
-  </tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-      <table width="100%" cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td><span class="summary-sig"><a name="get_phi_denom"></a><span class="summary-sig-name">get_phi_denom</span>(<span class="summary-sig-arg">frames</span>,
-        <span class="summary-sig-arg">nodes</span>)</span></td>
-          <td align="right" valign="top">
-            <span class="codelink"><a href="ZIBMolPy.utils-pysrc.html#get_phi_denom">source&nbsp;code</a></span>
-            
-          </td>
-        </tr>
-      </table>
-      
-    </td>
-  </tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-      <table width="100%" cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td><span class="summary-sig"><a name="get_phi_potential"></a><span class="summary-sig-name">get_phi_potential</span>(<span class="summary-sig-arg">frames</span>,
-        <span class="summary-sig-arg">curr_node</span>)</span></td>
-          <td align="right" valign="top">
-            <span class="codelink"><a href="ZIBMolPy.utils-pysrc.html#get_phi_potential">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -373,29 +259,6 @@
     <span class="table-header">Function Details</span></td>
 </tr>
 </table>
-<a name="get_phi_num_contrib"></a>
-<div>
-<table class="details" border="1" cellpadding="3"
-       cellspacing="0" width="100%" bgcolor="white">
-<tr><td>
-  <table width="100%" cellpadding="0" cellspacing="0" border="0">
-  <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">get_phi_num_contrib</span>(<span class="sig-arg">x</span>,
-        <span class="sig-arg">ref_node</span>,
-        <span class="sig-arg">curr_node</span>,
-        <span class="sig-arg">coord</span>)</span>
-  </h3>
-  </td><td align="right" valign="top"
-    ><span class="codelink"><a href="ZIBMolPy.utils-pysrc.html#get_phi_num_contrib">source&nbsp;code</a></span>&nbsp;
-    </td>
-  </tr></table>
-  
-  <p>Takes all values from ref_node.internals except for coordinate coord.
-  There it uses the values x.</p>
-  <dl class="fields">
-  </dl>
-</td></tr></table>
-</div>
 <a name="relpath"></a>
 <div>
 <table class="details" border="1" cellpadding="3"
@@ -450,7 +313,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Fri Mar 23 16:45:50 2012
+    Generated by Epydoc 3.0.1 on Wed Mar 28 21:05:51 2012
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

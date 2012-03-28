@@ -6,7 +6,18 @@
   <title>zgf_refine</title>
   <link rel="stylesheet" href="epydoc.css" type="text/css" />
   <script type="text/javascript" src="epydoc.js"></script>
-</head>
+	
+	<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        displayMath: [['$$', '$$'], ["\\[", "\\]"]]
+      }
+    });
+    </script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+	</head>
+	
 
 <body bgcolor="white" text="black" link="blue" vlink="#204080"
       alink="#204080">
@@ -146,7 +157,7 @@ zgf_reweight.options_desc
 zgf_setup_nodes.options_desc
 zgf_submit_job_HLRN.options_desc
 zgf_upgrade.options_desc" class="py-name" href="#" onclick="return doclink('link-29', 'options_desc', 'link-18');">options_desc</a></tt><tt class="py-op">[</tt><tt id="link-30" class="py-name"><a title="zgf_refine.x
-zgf_submit_job_HLRN.x" class="py-name" href="#" onclick="return doclink('link-30', 'x', 'link-23');">x</a></tt><tt class="py-op">]</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> <tt class="py-comment">#need copy to savely...</tt> </tt>
+zgf_submit_job_HLRN.x" class="py-name" href="#" onclick="return doclink('link-30', 'x', 'link-23');">x</a></tt><tt class="py-op">]</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> <tt class="py-comment"># need copy to safely ...</tt> </tt>
 <a name="L45"></a><tt class="py-lineno"> 45</tt>  <tt class="py-line"><tt id="link-31" class="py-name"><a title="zgf_analyze.options_desc
 zgf_cleanup.options_desc
 zgf_create_nodes.options_desc
@@ -161,7 +172,7 @@ zgf_remove_nodes.options_desc
 zgf_reweight.options_desc
 zgf_setup_nodes.options_desc
 zgf_submit_job_HLRN.options_desc
-zgf_upgrade.options_desc" class="py-name" href="#" onclick="return doclink('link-31', 'options_desc', 'link-18');">options_desc</a></tt><tt class="py-op">[</tt><tt class="py-string">"numnodes"</tt><tt class="py-op">]</tt><tt class="py-op">.</tt><tt class="py-name">default</tt> <tt class="py-op">=</tt> <tt class="py-number">2</tt> <tt class="py-comment"># ... change default values.</tt> </tt>
+zgf_upgrade.options_desc" class="py-name" href="#" onclick="return doclink('link-31', 'options_desc', 'link-18');">options_desc</a></tt><tt class="py-op">[</tt><tt class="py-string">"numnodes"</tt><tt class="py-op">]</tt><tt class="py-op">.</tt><tt class="py-name">default</tt> <tt class="py-op">=</tt> <tt class="py-number">2</tt> <tt class="py-comment"># ... change default values</tt> </tt>
 <a name="L46"></a><tt class="py-lineno"> 46</tt>  <tt class="py-line"> </tt>
 <a name="L47"></a><tt class="py-lineno"> 47</tt>  <tt class="py-line"><tt class="py-name">sys</tt><tt class="py-op">.</tt><tt class="py-name">modules</tt><tt class="py-op">[</tt><tt class="py-name">__name__</tt><tt class="py-op">]</tt><tt class="py-op">.</tt><tt class="py-name">__doc__</tt> <tt class="py-op">+=</tt> <tt id="link-32" class="py-name"><a title="zgf_analyze.options_desc
 zgf_cleanup.options_desc
@@ -187,10 +198,11 @@ ZIBMolPy.pool" class="py-name" href="#" onclick="return doclink('link-36', 'pool
 </div><a name="L52"></a><tt class="py-lineno"> 52</tt>  <tt class="py-line"> </tt>
 <a name="L53"></a><tt class="py-lineno"> 53</tt>  <tt class="py-line">         </tt>
 <a name="L54"></a><tt class="py-lineno"> 54</tt>  <tt class="py-line"><tt class="py-comment">#===============================================================================</tt> </tt>
-<a name="main"></a><div id="main-def"><a name="L55"></a><tt class="py-lineno"> 55</tt> <a class="py-toggle" href="#" id="main-toggle" onclick="return toggle('main');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="zgf_refine-module.html#main">main</a><tt class="py-op">(</tt><tt class="py-param">argv</tt><tt class="py-op">=</tt><tt class="py-name">None</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
-</div><div id="main-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="main-expanded"><a name="L56"></a><tt class="py-lineno"> 56</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt><tt class="py-op">(</tt><tt class="py-name">argv</tt><tt class="py-op">==</tt><tt class="py-name">None</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
-<a name="L57"></a><tt class="py-lineno"> 57</tt>  <tt class="py-line">                <tt class="py-name">argv</tt> <tt class="py-op">=</tt> <tt class="py-name">sys</tt><tt class="py-op">.</tt><tt class="py-name">argv</tt> </tt>
-<a name="L58"></a><tt class="py-lineno"> 58</tt>  <tt class="py-line">        <tt class="py-name">options</tt> <tt class="py-op">=</tt> <tt id="link-38" class="py-name"><a title="zgf_analyze.options_desc
+<a name="L55"></a><tt class="py-lineno"> 55</tt>  <tt class="py-line"><tt class="py-comment"># This method is also called from zgf_mdrun</tt> </tt>
+<a name="main"></a><div id="main-def"><a name="L56"></a><tt class="py-lineno"> 56</tt> <a class="py-toggle" href="#" id="main-toggle" onclick="return toggle('main');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="zgf_refine-module.html#main">main</a><tt class="py-op">(</tt><tt class="py-param">argv</tt><tt class="py-op">=</tt><tt class="py-name">None</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="main-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="main-expanded"><a name="L57"></a><tt class="py-lineno"> 57</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt><tt class="py-op">(</tt><tt class="py-name">argv</tt><tt class="py-op">==</tt><tt class="py-name">None</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L58"></a><tt class="py-lineno"> 58</tt>  <tt class="py-line">                <tt class="py-name">argv</tt> <tt class="py-op">=</tt> <tt class="py-name">sys</tt><tt class="py-op">.</tt><tt class="py-name">argv</tt> </tt>
+<a name="L59"></a><tt class="py-lineno"> 59</tt>  <tt class="py-line">        <tt class="py-name">options</tt> <tt class="py-op">=</tt> <tt id="link-38" class="py-name"><a title="zgf_analyze.options_desc
 zgf_cleanup.options_desc
 zgf_create_nodes.options_desc
 zgf_create_pool.options_desc
@@ -205,43 +217,43 @@ zgf_reweight.options_desc
 zgf_setup_nodes.options_desc
 zgf_submit_job_HLRN.options_desc
 zgf_upgrade.options_desc" class="py-name" href="#" onclick="return doclink('link-38', 'options_desc', 'link-18');">options_desc</a></tt><tt class="py-op">.</tt><tt id="link-39" class="py-name" targets="Method ZIBMolPy.ui.OptionsList.parse_args()=ZIBMolPy.ui.OptionsList-class.html#parse_args"><a title="ZIBMolPy.ui.OptionsList.parse_args" class="py-name" href="#" onclick="return doclink('link-39', 'parse_args', 'link-39');">parse_args</a></tt><tt class="py-op">(</tt><tt class="py-name">argv</tt><tt class="py-op">)</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt> </tt>
-<a name="L59"></a><tt class="py-lineno"> 59</tt>  <tt class="py-line"> </tt>
-<a name="L60"></a><tt class="py-lineno"> 60</tt>  <tt class="py-line">        <tt class="py-keyword">assert</tt><tt class="py-op">(</tt><tt class="py-keyword">not</tt><tt class="py-op">(</tt><tt class="py-name">options</tt><tt class="py-op">.</tt><tt class="py-name">refine_all</tt> <tt class="py-keyword">and</tt> <tt class="py-name">options</tt><tt class="py-op">.</tt><tt class="py-name">extend_all</tt><tt class="py-op">)</tt><tt class="py-op">)</tt>  </tt>
-<a name="L61"></a><tt class="py-lineno"> 61</tt>  <tt class="py-line">         </tt>
-<a name="L62"></a><tt class="py-lineno"> 62</tt>  <tt class="py-line">        <tt id="link-40" class="py-name"><a title="ZIBMolPy.node.Node.pool
+<a name="L60"></a><tt class="py-lineno"> 60</tt>  <tt class="py-line"> </tt>
+<a name="L61"></a><tt class="py-lineno"> 61</tt>  <tt class="py-line">        <tt class="py-keyword">assert</tt><tt class="py-op">(</tt><tt class="py-keyword">not</tt><tt class="py-op">(</tt><tt class="py-name">options</tt><tt class="py-op">.</tt><tt class="py-name">refine_all</tt> <tt class="py-keyword">and</tt> <tt class="py-name">options</tt><tt class="py-op">.</tt><tt class="py-name">extend_all</tt><tt class="py-op">)</tt><tt class="py-op">)</tt>  </tt>
+<a name="L62"></a><tt class="py-lineno"> 62</tt>  <tt class="py-line">         </tt>
+<a name="L63"></a><tt class="py-lineno"> 63</tt>  <tt class="py-line">        <tt id="link-40" class="py-name"><a title="ZIBMolPy.node.Node.pool
 ZIBMolPy.pool" class="py-name" href="#" onclick="return doclink('link-40', 'pool', 'link-10');">pool</a></tt> <tt class="py-op">=</tt> <tt id="link-41" class="py-name"><a title="ZIBMolPy.pool.Pool" class="py-name" href="#" onclick="return doclink('link-41', 'Pool', 'link-11');">Pool</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
-<a name="L63"></a><tt class="py-lineno"> 63</tt>  <tt class="py-line">        <tt class="py-name">needy_nodes</tt> <tt class="py-op">=</tt> <tt id="link-42" class="py-name"><a title="ZIBMolPy.node.Node.pool
+<a name="L64"></a><tt class="py-lineno"> 64</tt>  <tt class="py-line">        <tt class="py-name">needy_nodes</tt> <tt class="py-op">=</tt> <tt id="link-42" class="py-name"><a title="ZIBMolPy.node.Node.pool
 ZIBMolPy.pool" class="py-name" href="#" onclick="return doclink('link-42', 'pool', 'link-10');">pool</a></tt><tt class="py-op">.</tt><tt id="link-43" class="py-name"><a title="ZIBMolPy.pool.NodeList.where" class="py-name" href="#" onclick="return doclink('link-43', 'where', 'link-37');">where</a></tt><tt class="py-op">(</tt><tt class="py-string">"isa_partition and is_sampled"</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt id="link-44" class="py-name" targets="Method ZIBMolPy.pool.NodeList.multilock()=ZIBMolPy.pool.NodeList-class.html#multilock"><a title="ZIBMolPy.pool.NodeList.multilock" class="py-name" href="#" onclick="return doclink('link-44', 'multilock', 'link-44');">multilock</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
-<a name="L64"></a><tt class="py-lineno"> 64</tt>  <tt class="py-line">         </tt>
-<a name="L65"></a><tt class="py-lineno"> 65</tt>  <tt class="py-line">        <tt class="py-comment"># 1. Trying to detect fake convergence</tt> </tt>
-<a name="L66"></a><tt class="py-lineno"> 66</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt class="py-name">n</tt> <tt class="py-keyword">in</tt> <tt id="link-45" class="py-name"><a title="ZIBMolPy.node.Node.pool
+<a name="L65"></a><tt class="py-lineno"> 65</tt>  <tt class="py-line">         </tt>
+<a name="L66"></a><tt class="py-lineno"> 66</tt>  <tt class="py-line">        <tt class="py-comment"># 1. Trying to detect fake convergence</tt> </tt>
+<a name="L67"></a><tt class="py-lineno"> 67</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt class="py-name">n</tt> <tt class="py-keyword">in</tt> <tt id="link-45" class="py-name"><a title="ZIBMolPy.node.Node.pool
 ZIBMolPy.pool" class="py-name" href="#" onclick="return doclink('link-45', 'pool', 'link-10');">pool</a></tt><tt class="py-op">.</tt><tt id="link-46" class="py-name"><a title="ZIBMolPy.pool.NodeList.where" class="py-name" href="#" onclick="return doclink('link-46', 'where', 'link-37');">where</a></tt><tt class="py-op">(</tt><tt class="py-string">"state == 'converged'"</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
-<a name="L67"></a><tt class="py-lineno"> 67</tt>  <tt class="py-line">                <tt class="py-name">means</tt> <tt class="py-op">=</tt> <tt id="link-47" class="py-name"><a title="ZIBMolPy.algorithms.kmeans" class="py-name" href="#" onclick="return doclink('link-47', 'kmeans', 'link-8');">kmeans</a></tt><tt class="py-op">(</tt><tt class="py-name">n</tt><tt class="py-op">.</tt><tt id="link-48" class="py-name" targets="Variable ZIBMolPy.node.Node.trajectory=ZIBMolPy.node.Node-class.html#trajectory"><a title="ZIBMolPy.node.Node.trajectory" class="py-name" href="#" onclick="return doclink('link-48', 'trajectory', 'link-48');">trajectory</a></tt><tt class="py-op">,</tt> <tt class="py-name">k</tt><tt class="py-op">=</tt><tt class="py-number">2</tt><tt class="py-op">)</tt> </tt>
-<a name="L68"></a><tt class="py-lineno"> 68</tt>  <tt class="py-line">                <tt class="py-name">d</tt> <tt class="py-op">=</tt> <tt class="py-op">(</tt><tt class="py-name">means</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt> <tt class="py-op">-</tt> <tt class="py-name">means</tt><tt class="py-op">[</tt><tt class="py-number">1</tt><tt class="py-op">]</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt id="link-49" class="py-name" targets="Method ZIBMolPy.internals.InternalArray.norm2()=ZIBMolPy.internals.InternalArray-class.html#norm2"><a title="ZIBMolPy.internals.InternalArray.norm2" class="py-name" href="#" onclick="return doclink('link-49', 'norm2', 'link-49');">norm2</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
-<a name="L69"></a><tt class="py-lineno"> 69</tt>  <tt class="py-line">                <tt class="py-keyword">if</tt><tt class="py-op">(</tt><tt class="py-name">d</tt> <tt class="py-op">&gt;</tt> <tt class="py-number">2.0</tt> <tt class="py-keyword">and</tt> <tt class="py-op">(</tt><tt class="py-name">options</tt><tt class="py-op">.</tt><tt class="py-name">refine_all</tt> <tt class="py-keyword">or</tt> <tt id="link-50" class="py-name"><a title="ZIBMolPy.ui.userinput" class="py-name" href="#" onclick="return doclink('link-50', 'userinput', 'link-2');">userinput</a></tt><tt class="py-op">(</tt><tt class="py-string">"%s has converged but appears to have a bimodal distribution.\nDo you want to refine?"</tt><tt class="py-op">%</tt><tt class="py-name">n</tt><tt class="py-op">.</tt><tt id="link-51" class="py-name" targets="Variable ZIBMolPy.node.Node.name=ZIBMolPy.node.Node-class.html#name,Method ZIBMolPy.topology.Moleculetype.name()=ZIBMolPy.topology.Moleculetype-class.html#name"><a title="ZIBMolPy.node.Node.name
+<a name="L68"></a><tt class="py-lineno"> 68</tt>  <tt class="py-line">                <tt class="py-name">means</tt> <tt class="py-op">=</tt> <tt id="link-47" class="py-name"><a title="ZIBMolPy.algorithms.kmeans" class="py-name" href="#" onclick="return doclink('link-47', 'kmeans', 'link-8');">kmeans</a></tt><tt class="py-op">(</tt><tt class="py-name">n</tt><tt class="py-op">.</tt><tt id="link-48" class="py-name" targets="Variable ZIBMolPy.node.Node.trajectory=ZIBMolPy.node.Node-class.html#trajectory"><a title="ZIBMolPy.node.Node.trajectory" class="py-name" href="#" onclick="return doclink('link-48', 'trajectory', 'link-48');">trajectory</a></tt><tt class="py-op">,</tt> <tt class="py-name">k</tt><tt class="py-op">=</tt><tt class="py-number">2</tt><tt class="py-op">)</tt> </tt>
+<a name="L69"></a><tt class="py-lineno"> 69</tt>  <tt class="py-line">                <tt class="py-name">d</tt> <tt class="py-op">=</tt> <tt class="py-op">(</tt><tt class="py-name">means</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt> <tt class="py-op">-</tt> <tt class="py-name">means</tt><tt class="py-op">[</tt><tt class="py-number">1</tt><tt class="py-op">]</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt id="link-49" class="py-name" targets="Method ZIBMolPy.internals.InternalArray.norm2()=ZIBMolPy.internals.InternalArray-class.html#norm2"><a title="ZIBMolPy.internals.InternalArray.norm2" class="py-name" href="#" onclick="return doclink('link-49', 'norm2', 'link-49');">norm2</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L70"></a><tt class="py-lineno"> 70</tt>  <tt class="py-line">                <tt class="py-keyword">if</tt><tt class="py-op">(</tt><tt class="py-name">d</tt> <tt class="py-op">&gt;</tt> <tt class="py-number">2.0</tt> <tt class="py-keyword">and</tt> <tt class="py-op">(</tt><tt class="py-name">options</tt><tt class="py-op">.</tt><tt class="py-name">refine_all</tt> <tt class="py-keyword">or</tt> <tt id="link-50" class="py-name"><a title="ZIBMolPy.ui.userinput" class="py-name" href="#" onclick="return doclink('link-50', 'userinput', 'link-2');">userinput</a></tt><tt class="py-op">(</tt><tt class="py-string">"%s has converged but appears to have a bimodal distribution.\nDo you want to refine?"</tt><tt class="py-op">%</tt><tt class="py-name">n</tt><tt class="py-op">.</tt><tt id="link-51" class="py-name" targets="Variable ZIBMolPy.node.Node.name=ZIBMolPy.node.Node-class.html#name,Method ZIBMolPy.topology.Moleculetype.name()=ZIBMolPy.topology.Moleculetype-class.html#name"><a title="ZIBMolPy.node.Node.name
 ZIBMolPy.topology.Moleculetype.name" class="py-name" href="#" onclick="return doclink('link-51', 'name', 'link-51');">name</a></tt><tt class="py-op">,</tt> <tt class="py-string">"bool"</tt><tt class="py-op">)</tt><tt class="py-op">)</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> <tt class="py-comment">#TODO decide upon threshold (per coordinate?)</tt> </tt>
-<a name="L70"></a><tt class="py-lineno"> 70</tt>  <tt class="py-line">                        <tt id="link-52" class="py-name" targets="Function zgf_refine.refine()=zgf_refine-module.html#refine"><a title="zgf_refine.refine" class="py-name" href="#" onclick="return doclink('link-52', 'refine', 'link-52');">refine</a></tt><tt class="py-op">(</tt><tt class="py-name">n</tt><tt class="py-op">,</tt> <tt class="py-name">options</tt><tt class="py-op">)</tt> </tt>
-<a name="L71"></a><tt class="py-lineno"> 71</tt>  <tt class="py-line">         </tt>
-<a name="L72"></a><tt class="py-lineno"> 72</tt>  <tt class="py-line">        <tt class="py-comment"># 2. Dealing with not-converged nodes</tt> </tt>
-<a name="L73"></a><tt class="py-lineno"> 73</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt class="py-name">n</tt> <tt class="py-keyword">in</tt> <tt id="link-53" class="py-name"><a title="ZIBMolPy.node.Node.pool
+<a name="L71"></a><tt class="py-lineno"> 71</tt>  <tt class="py-line">                        <tt id="link-52" class="py-name" targets="Function zgf_refine.refine()=zgf_refine-module.html#refine"><a title="zgf_refine.refine" class="py-name" href="#" onclick="return doclink('link-52', 'refine', 'link-52');">refine</a></tt><tt class="py-op">(</tt><tt class="py-name">n</tt><tt class="py-op">,</tt> <tt class="py-name">options</tt><tt class="py-op">)</tt> </tt>
+<a name="L72"></a><tt class="py-lineno"> 72</tt>  <tt class="py-line">         </tt>
+<a name="L73"></a><tt class="py-lineno"> 73</tt>  <tt class="py-line">        <tt class="py-comment"># 2. Dealing with not-converged nodes</tt> </tt>
+<a name="L74"></a><tt class="py-lineno"> 74</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt class="py-name">n</tt> <tt class="py-keyword">in</tt> <tt id="link-53" class="py-name"><a title="ZIBMolPy.node.Node.pool
 ZIBMolPy.pool" class="py-name" href="#" onclick="return doclink('link-53', 'pool', 'link-10');">pool</a></tt><tt class="py-op">.</tt><tt id="link-54" class="py-name"><a title="ZIBMolPy.pool.NodeList.where" class="py-name" href="#" onclick="return doclink('link-54', 'where', 'link-37');">where</a></tt><tt class="py-op">(</tt><tt class="py-string">"state == 'not-converged'"</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
-<a name="L74"></a><tt class="py-lineno"> 74</tt>  <tt class="py-line">                <tt class="py-keyword">if</tt><tt class="py-op">(</tt><tt class="py-keyword">not</tt><tt class="py-op">(</tt><tt class="py-name">options</tt><tt class="py-op">.</tt><tt class="py-name">refine_all</tt> <tt class="py-keyword">or</tt> <tt class="py-name">options</tt><tt class="py-op">.</tt><tt class="py-name">extend_all</tt><tt class="py-op">)</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
-<a name="L75"></a><tt class="py-lineno"> 75</tt>  <tt class="py-line">                        <tt class="py-name">choice</tt> <tt class="py-op">=</tt> <tt id="link-55" class="py-name"><a title="ZIBMolPy.ui.userchoice" class="py-name" href="#" onclick="return doclink('link-55', 'userchoice', 'link-3');">userchoice</a></tt><tt class="py-op">(</tt><tt class="py-string">"%s has not converged. What do you want to do?"</tt><tt class="py-op">%</tt><tt class="py-name">n</tt><tt class="py-op">.</tt><tt id="link-56" class="py-name"><a title="ZIBMolPy.node.Node.name
+<a name="L75"></a><tt class="py-lineno"> 75</tt>  <tt class="py-line">                <tt class="py-keyword">if</tt><tt class="py-op">(</tt><tt class="py-keyword">not</tt><tt class="py-op">(</tt><tt class="py-name">options</tt><tt class="py-op">.</tt><tt class="py-name">refine_all</tt> <tt class="py-keyword">or</tt> <tt class="py-name">options</tt><tt class="py-op">.</tt><tt class="py-name">extend_all</tt><tt class="py-op">)</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L76"></a><tt class="py-lineno"> 76</tt>  <tt class="py-line">                        <tt class="py-name">choice</tt> <tt class="py-op">=</tt> <tt id="link-55" class="py-name"><a title="ZIBMolPy.ui.userchoice" class="py-name" href="#" onclick="return doclink('link-55', 'userchoice', 'link-3');">userchoice</a></tt><tt class="py-op">(</tt><tt class="py-string">"%s has not converged. What do you want to do?"</tt><tt class="py-op">%</tt><tt class="py-name">n</tt><tt class="py-op">.</tt><tt id="link-56" class="py-name"><a title="ZIBMolPy.node.Node.name
 ZIBMolPy.topology.Moleculetype.name" class="py-name" href="#" onclick="return doclink('link-56', 'name', 'link-51');">name</a></tt><tt class="py-op">,</tt> <tt class="py-op">[</tt><tt class="py-string">'_refine'</tt><tt class="py-op">,</tt> <tt class="py-string">'_extend'</tt><tt class="py-op">,</tt> <tt class="py-string">'_ignore'</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
-<a name="L76"></a><tt class="py-lineno"> 76</tt>  <tt class="py-line">                <tt class="py-keyword">if</tt><tt class="py-op">(</tt><tt class="py-name">options</tt><tt class="py-op">.</tt><tt class="py-name">refine_all</tt> <tt class="py-keyword">or</tt> <tt class="py-name">choice</tt><tt class="py-op">==</tt><tt class="py-string">"r"</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
-<a name="L77"></a><tt class="py-lineno"> 77</tt>  <tt class="py-line">                        <tt id="link-57" class="py-name"><a title="zgf_refine.refine" class="py-name" href="#" onclick="return doclink('link-57', 'refine', 'link-52');">refine</a></tt><tt class="py-op">(</tt><tt class="py-name">n</tt><tt class="py-op">,</tt> <tt class="py-name">options</tt><tt class="py-op">)</tt> </tt>
-<a name="L78"></a><tt class="py-lineno"> 78</tt>  <tt class="py-line">                <tt class="py-keyword">elif</tt><tt class="py-op">(</tt><tt class="py-name">options</tt><tt class="py-op">.</tt><tt class="py-name">extend_all</tt> <tt class="py-keyword">or</tt> <tt class="py-name">choice</tt><tt class="py-op">==</tt><tt class="py-string">"e"</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
-<a name="L79"></a><tt class="py-lineno"> 79</tt>  <tt class="py-line">                        <tt id="link-58" class="py-name" targets="Function zgf_refine.extend()=zgf_refine-module.html#extend"><a title="zgf_refine.extend" class="py-name" href="#" onclick="return doclink('link-58', 'extend', 'link-58');">extend</a></tt><tt class="py-op">(</tt><tt class="py-name">n</tt><tt class="py-op">)</tt> </tt>
-<a name="L80"></a><tt class="py-lineno"> 80</tt>  <tt class="py-line">                <tt class="py-keyword">elif</tt><tt class="py-op">(</tt><tt class="py-name">choice</tt><tt class="py-op">==</tt><tt class="py-string">"i"</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
-<a name="L81"></a><tt class="py-lineno"> 81</tt>  <tt class="py-line">                        <tt class="py-keyword">continue</tt> </tt>
-<a name="L82"></a><tt class="py-lineno"> 82</tt>  <tt class="py-line">         </tt>
-<a name="L83"></a><tt class="py-lineno"> 83</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt class="py-name">n</tt> <tt class="py-keyword">in</tt> <tt class="py-name">needy_nodes</tt><tt class="py-op">:</tt> </tt>
-<a name="L84"></a><tt class="py-lineno"> 84</tt>  <tt class="py-line">                <tt class="py-name">n</tt><tt class="py-op">.</tt><tt id="link-59" class="py-name" targets="Method ZIBMolPy.node.Node.save()=ZIBMolPy.node.Node-class.html#save,Method ZIBMolPy.pool.Pool.save()=ZIBMolPy.pool.Pool-class.html#save"><a title="ZIBMolPy.node.Node.save
+<a name="L77"></a><tt class="py-lineno"> 77</tt>  <tt class="py-line">                <tt class="py-keyword">if</tt><tt class="py-op">(</tt><tt class="py-name">options</tt><tt class="py-op">.</tt><tt class="py-name">refine_all</tt> <tt class="py-keyword">or</tt> <tt class="py-name">choice</tt><tt class="py-op">==</tt><tt class="py-string">"r"</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L78"></a><tt class="py-lineno"> 78</tt>  <tt class="py-line">                        <tt id="link-57" class="py-name"><a title="zgf_refine.refine" class="py-name" href="#" onclick="return doclink('link-57', 'refine', 'link-52');">refine</a></tt><tt class="py-op">(</tt><tt class="py-name">n</tt><tt class="py-op">,</tt> <tt class="py-name">options</tt><tt class="py-op">)</tt> </tt>
+<a name="L79"></a><tt class="py-lineno"> 79</tt>  <tt class="py-line">                <tt class="py-keyword">elif</tt><tt class="py-op">(</tt><tt class="py-name">options</tt><tt class="py-op">.</tt><tt class="py-name">extend_all</tt> <tt class="py-keyword">or</tt> <tt class="py-name">choice</tt><tt class="py-op">==</tt><tt class="py-string">"e"</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L80"></a><tt class="py-lineno"> 80</tt>  <tt class="py-line">                        <tt id="link-58" class="py-name" targets="Function zgf_refine.extend()=zgf_refine-module.html#extend"><a title="zgf_refine.extend" class="py-name" href="#" onclick="return doclink('link-58', 'extend', 'link-58');">extend</a></tt><tt class="py-op">(</tt><tt class="py-name">n</tt><tt class="py-op">)</tt> </tt>
+<a name="L81"></a><tt class="py-lineno"> 81</tt>  <tt class="py-line">                <tt class="py-keyword">elif</tt><tt class="py-op">(</tt><tt class="py-name">choice</tt><tt class="py-op">==</tt><tt class="py-string">"i"</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L82"></a><tt class="py-lineno"> 82</tt>  <tt class="py-line">                        <tt class="py-keyword">continue</tt> </tt>
+<a name="L83"></a><tt class="py-lineno"> 83</tt>  <tt class="py-line">         </tt>
+<a name="L84"></a><tt class="py-lineno"> 84</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt class="py-name">n</tt> <tt class="py-keyword">in</tt> <tt class="py-name">needy_nodes</tt><tt class="py-op">:</tt> </tt>
+<a name="L85"></a><tt class="py-lineno"> 85</tt>  <tt class="py-line">                <tt class="py-name">n</tt><tt class="py-op">.</tt><tt id="link-59" class="py-name" targets="Method ZIBMolPy.node.Node.save()=ZIBMolPy.node.Node-class.html#save,Method ZIBMolPy.pool.Pool.save()=ZIBMolPy.pool.Pool-class.html#save"><a title="ZIBMolPy.node.Node.save
 ZIBMolPy.pool.Pool.save" class="py-name" href="#" onclick="return doclink('link-59', 'save', 'link-59');">save</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
-<a name="L85"></a><tt class="py-lineno"> 85</tt>  <tt class="py-line">                <tt class="py-name">n</tt><tt class="py-op">.</tt><tt id="link-60" class="py-name" targets="Method ZIBMolPy.node.Node.unlock()=ZIBMolPy.node.Node-class.html#unlock,Method ZIBMolPy.pool.NodeList.unlock()=ZIBMolPy.pool.NodeList-class.html#unlock"><a title="ZIBMolPy.node.Node.unlock
+<a name="L86"></a><tt class="py-lineno"> 86</tt>  <tt class="py-line">                <tt class="py-name">n</tt><tt class="py-op">.</tt><tt id="link-60" class="py-name" targets="Method ZIBMolPy.node.Node.unlock()=ZIBMolPy.node.Node-class.html#unlock,Method ZIBMolPy.pool.NodeList.unlock()=ZIBMolPy.pool.NodeList-class.html#unlock"><a title="ZIBMolPy.node.Node.unlock
 ZIBMolPy.pool.NodeList.unlock" class="py-name" href="#" onclick="return doclink('link-60', 'unlock', 'link-60');">unlock</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
-<a name="L86"></a><tt class="py-lineno"> 86</tt>  <tt class="py-line">                         </tt>
-<a name="L87"></a><tt class="py-lineno"> 87</tt>  <tt class="py-line">        <tt id="link-61" class="py-name"><a title="zgf_setup_nodes" class="py-name" href="#" onclick="return doclink('link-61', 'zgf_setup_nodes', 'link-13');">zgf_setup_nodes</a></tt><tt class="py-op">.</tt><tt id="link-62" class="py-name" targets="Function zgf_analyze.main()=zgf_analyze-module.html#main,Function zgf_browser.main()=zgf_browser-module.html#main,Function zgf_cleanup.main()=zgf_cleanup-module.html#main,Function zgf_create_nodes.main()=zgf_create_nodes-module.html#main,Function zgf_create_pool.main()=zgf_create_pool-module.html#main,Function zgf_create_rates.main()=zgf_create_rates-module.html#main,Function zgf_create_unrestrained_nodes.main()=zgf_create_unrestrained_nodes-module.html#main,Function zgf_extract_conformations.main()=zgf_extract_conformations-module.html#main,Function zgf_grompp.main()=zgf_grompp-module.html#main,Function zgf_mdrun.main()=zgf_mdrun-module.html#main,Function zgf_refine.main()=zgf_refine-module.html#main,Function zgf_remove_nodes.main()=zgf_remove_nodes-module.html#main,Function zgf_reweight.main()=zgf_reweight-module.html#main,Function zgf_setup_nodes.main()=zgf_setup_nodes-module.html#main,Function zgf_submit_job_HLRN.main()=zgf_submit_job_HLRN-module.html#main,Function zgf_test.main()=zgf_test-module.html#main,Function zgf_upgrade.main()=zgf_upgrade-module.html#main"><a title="zgf_analyze.main
+<a name="L87"></a><tt class="py-lineno"> 87</tt>  <tt class="py-line">                         </tt>
+<a name="L88"></a><tt class="py-lineno"> 88</tt>  <tt class="py-line">        <tt id="link-61" class="py-name"><a title="zgf_setup_nodes" class="py-name" href="#" onclick="return doclink('link-61', 'zgf_setup_nodes', 'link-13');">zgf_setup_nodes</a></tt><tt class="py-op">.</tt><tt id="link-62" class="py-name" targets="Function zgf_analyze.main()=zgf_analyze-module.html#main,Function zgf_browser.main()=zgf_browser-module.html#main,Function zgf_cleanup.main()=zgf_cleanup-module.html#main,Function zgf_create_nodes.main()=zgf_create_nodes-module.html#main,Function zgf_create_pool.main()=zgf_create_pool-module.html#main,Function zgf_create_rates.main()=zgf_create_rates-module.html#main,Function zgf_create_unrestrained_nodes.main()=zgf_create_unrestrained_nodes-module.html#main,Function zgf_extract_conformations.main()=zgf_extract_conformations-module.html#main,Function zgf_gauge_times.main()=zgf_gauge_times-module.html#main,Function zgf_grompp.main()=zgf_grompp-module.html#main,Function zgf_mdrun.main()=zgf_mdrun-module.html#main,Function zgf_refine.main()=zgf_refine-module.html#main,Function zgf_remove_nodes.main()=zgf_remove_nodes-module.html#main,Function zgf_reweight.main()=zgf_reweight-module.html#main,Function zgf_setup_nodes.main()=zgf_setup_nodes-module.html#main,Function zgf_submit_job_HLRN.main()=zgf_submit_job_HLRN-module.html#main,Function zgf_test.main()=zgf_test-module.html#main,Function zgf_upgrade.main()=zgf_upgrade-module.html#main"><a title="zgf_analyze.main
 zgf_browser.main
 zgf_cleanup.main
 zgf_create_nodes.main
@@ -249,6 +261,7 @@ zgf_create_pool.main
 zgf_create_rates.main
 zgf_create_unrestrained_nodes.main
 zgf_extract_conformations.main
+zgf_gauge_times.main
 zgf_grompp.main
 zgf_mdrun.main
 zgf_refine.main
@@ -258,7 +271,7 @@ zgf_setup_nodes.main
 zgf_submit_job_HLRN.main
 zgf_test.main
 zgf_upgrade.main" class="py-name" href="#" onclick="return doclink('link-62', 'main', 'link-62');">main</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
-<a name="L88"></a><tt class="py-lineno"> 88</tt>  <tt class="py-line">        <tt id="link-63" class="py-name"><a title="zgf_grompp" class="py-name" href="#" onclick="return doclink('link-63', 'zgf_grompp', 'link-14');">zgf_grompp</a></tt><tt class="py-op">.</tt><tt id="link-64" class="py-name"><a title="zgf_analyze.main
+<a name="L89"></a><tt class="py-lineno"> 89</tt>  <tt class="py-line">        <tt id="link-63" class="py-name"><a title="zgf_grompp" class="py-name" href="#" onclick="return doclink('link-63', 'zgf_grompp', 'link-14');">zgf_grompp</a></tt><tt class="py-op">.</tt><tt id="link-64" class="py-name"><a title="zgf_analyze.main
 zgf_browser.main
 zgf_cleanup.main
 zgf_create_nodes.main
@@ -266,6 +279,7 @@ zgf_create_pool.main
 zgf_create_rates.main
 zgf_create_unrestrained_nodes.main
 zgf_extract_conformations.main
+zgf_gauge_times.main
 zgf_grompp.main
 zgf_mdrun.main
 zgf_refine.main
@@ -275,7 +289,7 @@ zgf_setup_nodes.main
 zgf_submit_job_HLRN.main
 zgf_test.main
 zgf_upgrade.main" class="py-name" href="#" onclick="return doclink('link-64', 'main', 'link-62');">main</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
-<a name="L89"></a><tt class="py-lineno"> 89</tt>  <tt class="py-line">        <tt id="link-65" class="py-name"><a title="zgf_cleanup" class="py-name" href="#" onclick="return doclink('link-65', 'zgf_cleanup', 'link-15');">zgf_cleanup</a></tt><tt class="py-op">.</tt><tt id="link-66" class="py-name"><a title="zgf_analyze.main
+<a name="L90"></a><tt class="py-lineno"> 90</tt>  <tt class="py-line">        <tt id="link-65" class="py-name"><a title="zgf_cleanup" class="py-name" href="#" onclick="return doclink('link-65', 'zgf_cleanup', 'link-15');">zgf_cleanup</a></tt><tt class="py-op">.</tt><tt id="link-66" class="py-name"><a title="zgf_analyze.main
 zgf_browser.main
 zgf_cleanup.main
 zgf_create_nodes.main
@@ -283,6 +297,7 @@ zgf_create_pool.main
 zgf_create_rates.main
 zgf_create_unrestrained_nodes.main
 zgf_extract_conformations.main
+zgf_gauge_times.main
 zgf_grompp.main
 zgf_mdrun.main
 zgf_refine.main
@@ -292,17 +307,17 @@ zgf_setup_nodes.main
 zgf_submit_job_HLRN.main
 zgf_test.main
 zgf_upgrade.main" class="py-name" href="#" onclick="return doclink('link-66', 'main', 'link-62');">main</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt>       </tt>
-</div><a name="L90"></a><tt class="py-lineno"> 90</tt>  <tt class="py-line"> </tt>
-<a name="L91"></a><tt class="py-lineno"> 91</tt>  <tt class="py-line"> </tt>
-<a name="L92"></a><tt class="py-lineno"> 92</tt>  <tt class="py-line"><tt class="py-comment">#===============================================================================</tt> </tt>
-<a name="refine"></a><div id="refine-def"><a name="L93"></a><tt class="py-lineno"> 93</tt> <a class="py-toggle" href="#" id="refine-toggle" onclick="return toggle('refine');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="zgf_refine-module.html#refine">refine</a><tt class="py-op">(</tt><tt class="py-param">node</tt><tt class="py-op">,</tt> <tt class="py-param">options</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
-</div><div id="refine-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="refine-expanded"><a name="L94"></a><tt class="py-lineno"> 94</tt>  <tt class="py-line">        <tt class="py-keyword">print</tt> <tt class="py-string">"refining node %s..."</tt><tt class="py-op">%</tt><tt id="link-67" class="py-name" targets="Module ZIBMolPy.node=ZIBMolPy.node-module.html"><a title="ZIBMolPy.node" class="py-name" href="#" onclick="return doclink('link-67', 'node', 'link-67');">node</a></tt><tt class="py-op">.</tt><tt id="link-68" class="py-name"><a title="ZIBMolPy.node.Node.name
+</div><a name="L91"></a><tt class="py-lineno"> 91</tt>  <tt class="py-line"> </tt>
+<a name="L92"></a><tt class="py-lineno"> 92</tt>  <tt class="py-line"> </tt>
+<a name="L93"></a><tt class="py-lineno"> 93</tt>  <tt class="py-line"><tt class="py-comment">#===============================================================================</tt> </tt>
+<a name="refine"></a><div id="refine-def"><a name="L94"></a><tt class="py-lineno"> 94</tt> <a class="py-toggle" href="#" id="refine-toggle" onclick="return toggle('refine');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="zgf_refine-module.html#refine">refine</a><tt class="py-op">(</tt><tt class="py-param">node</tt><tt class="py-op">,</tt> <tt class="py-param">options</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="refine-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="refine-expanded"><a name="L95"></a><tt class="py-lineno"> 95</tt>  <tt class="py-line">        <tt class="py-keyword">print</tt> <tt class="py-string">"refining node %s..."</tt><tt class="py-op">%</tt><tt id="link-67" class="py-name" targets="Module ZIBMolPy.node=ZIBMolPy.node-module.html"><a title="ZIBMolPy.node" class="py-name" href="#" onclick="return doclink('link-67', 'node', 'link-67');">node</a></tt><tt class="py-op">.</tt><tt id="link-68" class="py-name"><a title="ZIBMolPy.node.Node.name
 ZIBMolPy.topology.Moleculetype.name" class="py-name" href="#" onclick="return doclink('link-68', 'name', 'link-51');">name</a></tt> </tt>
-<a name="L95"></a><tt class="py-lineno"> 95</tt>  <tt class="py-line">        <tt class="py-name">args</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-string">"-p"</tt><tt class="py-op">,</tt> <tt id="link-69" class="py-name"><a title="ZIBMolPy.node" class="py-name" href="#" onclick="return doclink('link-69', 'node', 'link-67');">node</a></tt><tt class="py-op">.</tt><tt id="link-70" class="py-name"><a title="ZIBMolPy.node.Node.name
+<a name="L96"></a><tt class="py-lineno"> 96</tt>  <tt class="py-line">        <tt class="py-name">args</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-string">"-p"</tt><tt class="py-op">,</tt> <tt id="link-69" class="py-name"><a title="ZIBMolPy.node" class="py-name" href="#" onclick="return doclink('link-69', 'node', 'link-67');">node</a></tt><tt class="py-op">.</tt><tt id="link-70" class="py-name"><a title="ZIBMolPy.node.Node.name
 ZIBMolPy.topology.Moleculetype.name" class="py-name" href="#" onclick="return doclink('link-70', 'name', 'link-51');">name</a></tt> <tt class="py-op">]</tt> </tt>
-<a name="L96"></a><tt class="py-lineno"> 96</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt id="link-71" class="py-name"><a title="zgf_refine.x
+<a name="L97"></a><tt class="py-lineno"> 97</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt id="link-71" class="py-name"><a title="zgf_refine.x
 zgf_submit_job_HLRN.x" class="py-name" href="#" onclick="return doclink('link-71', 'x', 'link-23');">x</a></tt> <tt class="py-keyword">in</tt> <tt id="link-72" class="py-name"><a title="zgf_refine.FORWARDED_ZGF_CREATE_NODES_OPTIONS" class="py-name" href="#" onclick="return doclink('link-72', 'FORWARDED_ZGF_CREATE_NODES_OPTIONS', 'link-22');">FORWARDED_ZGF_CREATE_NODES_OPTIONS</a></tt><tt class="py-op">:</tt> </tt>
-<a name="L97"></a><tt class="py-lineno"> 97</tt>  <tt class="py-line">                <tt class="py-name">args</tt> <tt class="py-op">+=</tt> <tt id="link-73" class="py-name"><a title="zgf_analyze.options_desc
+<a name="L98"></a><tt class="py-lineno"> 98</tt>  <tt class="py-line">                <tt class="py-name">args</tt> <tt class="py-op">+=</tt> <tt id="link-73" class="py-name"><a title="zgf_analyze.options_desc
 zgf_cleanup.options_desc
 zgf_create_nodes.options_desc
 zgf_create_pool.options_desc
@@ -318,7 +333,7 @@ zgf_setup_nodes.options_desc
 zgf_submit_job_HLRN.options_desc
 zgf_upgrade.options_desc" class="py-name" href="#" onclick="return doclink('link-73', 'options_desc', 'link-18');">options_desc</a></tt><tt class="py-op">[</tt><tt id="link-74" class="py-name"><a title="zgf_refine.x
 zgf_submit_job_HLRN.x" class="py-name" href="#" onclick="return doclink('link-74', 'x', 'link-23');">x</a></tt><tt class="py-op">]</tt><tt class="py-op">.</tt><tt id="link-75" class="py-name" targets="Method ZIBMolPy.ui.Option.forward_value()=ZIBMolPy.ui.Option-class.html#forward_value"><a title="ZIBMolPy.ui.Option.forward_value" class="py-name" href="#" onclick="return doclink('link-75', 'forward_value', 'link-75');">forward_value</a></tt><tt class="py-op">(</tt><tt class="py-name">options</tt><tt class="py-op">)</tt> </tt>
-<a name="L98"></a><tt class="py-lineno"> 98</tt>  <tt class="py-line">        <tt id="link-76" class="py-name"><a title="zgf_create_nodes" class="py-name" href="#" onclick="return doclink('link-76', 'zgf_create_nodes', 'link-12');">zgf_create_nodes</a></tt><tt class="py-op">.</tt><tt id="link-77" class="py-name"><a title="zgf_analyze.main
+<a name="L99"></a><tt class="py-lineno"> 99</tt>  <tt class="py-line">        <tt id="link-76" class="py-name"><a title="zgf_create_nodes" class="py-name" href="#" onclick="return doclink('link-76', 'zgf_create_nodes', 'link-12');">zgf_create_nodes</a></tt><tt class="py-op">.</tt><tt id="link-77" class="py-name"><a title="zgf_analyze.main
 zgf_browser.main
 zgf_cleanup.main
 zgf_create_nodes.main
@@ -326,6 +341,7 @@ zgf_create_pool.main
 zgf_create_rates.main
 zgf_create_unrestrained_nodes.main
 zgf_extract_conformations.main
+zgf_gauge_times.main
 zgf_grompp.main
 zgf_mdrun.main
 zgf_refine.main
@@ -335,21 +351,21 @@ zgf_setup_nodes.main
 zgf_submit_job_HLRN.main
 zgf_test.main
 zgf_upgrade.main" class="py-name" href="#" onclick="return doclink('link-77', 'main', 'link-62');">main</a></tt><tt class="py-op">(</tt><tt class="py-name">args</tt><tt class="py-op">)</tt> </tt>
-<a name="L99"></a><tt class="py-lineno"> 99</tt>  <tt class="py-line"> </tt>
-<a name="L100"></a><tt class="py-lineno">100</tt>  <tt class="py-line">        <tt id="link-78" class="py-name"><a title="ZIBMolPy.node" class="py-name" href="#" onclick="return doclink('link-78', 'node', 'link-67');">node</a></tt><tt class="py-op">.</tt><tt class="py-name">state</tt> <tt class="py-op">=</tt> <tt class="py-string">"refined"</tt> </tt>
-</div><a name="L101"></a><tt class="py-lineno">101</tt>  <tt class="py-line">         </tt>
-<a name="L102"></a><tt class="py-lineno">102</tt>  <tt class="py-line">         </tt>
-<a name="L103"></a><tt class="py-lineno">103</tt>  <tt class="py-line"><tt class="py-comment">#===============================================================================</tt> </tt>
-<a name="extend"></a><div id="extend-def"><a name="L104"></a><tt class="py-lineno">104</tt> <a class="py-toggle" href="#" id="extend-toggle" onclick="return toggle('extend');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="zgf_refine-module.html#extend">extend</a><tt class="py-op">(</tt><tt class="py-param">node</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
-</div><div id="extend-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="extend-expanded"><a name="L105"></a><tt class="py-lineno">105</tt>  <tt class="py-line">        <tt class="py-keyword">print</tt> <tt class="py-string">"extending node %s..."</tt><tt class="py-op">%</tt><tt id="link-79" class="py-name"><a title="ZIBMolPy.node" class="py-name" href="#" onclick="return doclink('link-79', 'node', 'link-67');">node</a></tt><tt class="py-op">.</tt><tt id="link-80" class="py-name"><a title="ZIBMolPy.node.Node.name
+<a name="L100"></a><tt class="py-lineno">100</tt>  <tt class="py-line"> </tt>
+<a name="L101"></a><tt class="py-lineno">101</tt>  <tt class="py-line">        <tt id="link-78" class="py-name"><a title="ZIBMolPy.node" class="py-name" href="#" onclick="return doclink('link-78', 'node', 'link-67');">node</a></tt><tt class="py-op">.</tt><tt class="py-name">state</tt> <tt class="py-op">=</tt> <tt class="py-string">"refined"</tt> </tt>
+</div><a name="L102"></a><tt class="py-lineno">102</tt>  <tt class="py-line">         </tt>
+<a name="L103"></a><tt class="py-lineno">103</tt>  <tt class="py-line">         </tt>
+<a name="L104"></a><tt class="py-lineno">104</tt>  <tt class="py-line"><tt class="py-comment">#===============================================================================</tt> </tt>
+<a name="extend"></a><div id="extend-def"><a name="L105"></a><tt class="py-lineno">105</tt> <a class="py-toggle" href="#" id="extend-toggle" onclick="return toggle('extend');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="zgf_refine-module.html#extend">extend</a><tt class="py-op">(</tt><tt class="py-param">node</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="extend-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="extend-expanded"><a name="L106"></a><tt class="py-lineno">106</tt>  <tt class="py-line">        <tt class="py-keyword">print</tt> <tt class="py-string">"extending node %s..."</tt><tt class="py-op">%</tt><tt id="link-79" class="py-name"><a title="ZIBMolPy.node" class="py-name" href="#" onclick="return doclink('link-79', 'node', 'link-67');">node</a></tt><tt class="py-op">.</tt><tt id="link-80" class="py-name"><a title="ZIBMolPy.node.Node.name
 ZIBMolPy.topology.Moleculetype.name" class="py-name" href="#" onclick="return doclink('link-80', 'name', 'link-51');">name</a></tt> </tt>
-<a name="L106"></a><tt class="py-lineno">106</tt>  <tt class="py-line">        <tt id="link-81" class="py-name"><a title="ZIBMolPy.node" class="py-name" href="#" onclick="return doclink('link-81', 'node', 'link-67');">node</a></tt><tt class="py-op">.</tt><tt class="py-name">extensions_counter</tt> <tt class="py-op">+=</tt> <tt class="py-number">1</tt> </tt>
-<a name="L107"></a><tt class="py-lineno">107</tt>  <tt class="py-line">        <tt id="link-82" class="py-name"><a title="ZIBMolPy.node" class="py-name" href="#" onclick="return doclink('link-82', 'node', 'link-67');">node</a></tt><tt class="py-op">.</tt><tt class="py-name">state</tt> <tt class="py-op">=</tt> <tt class="py-string">"mdrun-able"</tt> </tt>
-</div><a name="L108"></a><tt class="py-lineno">108</tt>  <tt class="py-line"> </tt>
-<a name="L109"></a><tt class="py-lineno">109</tt>  <tt class="py-line"> </tt>
-<a name="L110"></a><tt class="py-lineno">110</tt>  <tt class="py-line"><tt class="py-comment">#===============================================================================</tt> </tt>
-<a name="L111"></a><tt class="py-lineno">111</tt>  <tt class="py-line"><tt class="py-keyword">if</tt><tt class="py-op">(</tt><tt class="py-name">__name__</tt> <tt class="py-op">==</tt> <tt class="py-string">"__main__"</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
-<a name="L112"></a><tt class="py-lineno">112</tt>  <tt class="py-line">        <tt id="link-83" class="py-name"><a title="zgf_analyze.main
+<a name="L107"></a><tt class="py-lineno">107</tt>  <tt class="py-line">        <tt id="link-81" class="py-name"><a title="ZIBMolPy.node" class="py-name" href="#" onclick="return doclink('link-81', 'node', 'link-67');">node</a></tt><tt class="py-op">.</tt><tt class="py-name">extensions_counter</tt> <tt class="py-op">+=</tt> <tt class="py-number">1</tt> </tt>
+<a name="L108"></a><tt class="py-lineno">108</tt>  <tt class="py-line">        <tt id="link-82" class="py-name"><a title="ZIBMolPy.node" class="py-name" href="#" onclick="return doclink('link-82', 'node', 'link-67');">node</a></tt><tt class="py-op">.</tt><tt class="py-name">state</tt> <tt class="py-op">=</tt> <tt class="py-string">"mdrun-able"</tt> </tt>
+</div><a name="L109"></a><tt class="py-lineno">109</tt>  <tt class="py-line"> </tt>
+<a name="L110"></a><tt class="py-lineno">110</tt>  <tt class="py-line"> </tt>
+<a name="L111"></a><tt class="py-lineno">111</tt>  <tt class="py-line"><tt class="py-comment">#===============================================================================</tt> </tt>
+<a name="L112"></a><tt class="py-lineno">112</tt>  <tt class="py-line"><tt class="py-keyword">if</tt><tt class="py-op">(</tt><tt class="py-name">__name__</tt> <tt class="py-op">==</tt> <tt class="py-string">"__main__"</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L113"></a><tt class="py-lineno">113</tt>  <tt class="py-line">        <tt id="link-83" class="py-name"><a title="zgf_analyze.main
 zgf_browser.main
 zgf_cleanup.main
 zgf_create_nodes.main
@@ -357,6 +373,7 @@ zgf_create_pool.main
 zgf_create_rates.main
 zgf_create_unrestrained_nodes.main
 zgf_extract_conformations.main
+zgf_gauge_times.main
 zgf_grompp.main
 zgf_mdrun.main
 zgf_refine.main
@@ -366,9 +383,9 @@ zgf_setup_nodes.main
 zgf_submit_job_HLRN.main
 zgf_test.main
 zgf_upgrade.main" class="py-name" href="#" onclick="return doclink('link-83', 'main', 'link-62');">main</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
-<a name="L113"></a><tt class="py-lineno">113</tt>  <tt class="py-line"> </tt>
-<a name="L114"></a><tt class="py-lineno">114</tt>  <tt class="py-line"><tt class="py-comment">#EOF</tt> </tt>
-<a name="L115"></a><tt class="py-lineno">115</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<a name="L114"></a><tt class="py-lineno">114</tt>  <tt class="py-line"> </tt>
+<a name="L115"></a><tt class="py-lineno">115</tt>  <tt class="py-line"><tt class="py-comment">#EOF</tt> </tt>
+<a name="L116"></a><tt class="py-lineno">116</tt>  <tt class="py-line"> </tt><script type="text/javascript">
 <!--
 expandto(location.href);
 // -->
@@ -406,7 +423,7 @@ expandto(location.href);
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Fri Mar 23 16:45:53 2012
+    Generated by Epydoc 3.0.1 on Wed Mar 28 21:06:05 2012
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"
