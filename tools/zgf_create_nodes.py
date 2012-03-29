@@ -314,7 +314,7 @@ def do_phifit_leastsq(pool):
 			
 			#phi_values = get_phi_contrib(all_values, n, active_nodes, c)
 			phi_values = get_phi_contrib(all_values, n, c)
-			phi_potential = get_phi_contrib_potential(all_values, n, c, epsilon=1.0e-40)
+			phi_potential = get_phi_contrib_potential(all_values, n, c)
 			node_value = n.internals.getcoord(c)
 			node_index = np.argmin(np.square(c.sub(all_values, node_value)))
 			#phi_potential -= phi_potential[node_index] # gauge: set phi_potential[node] = 0
