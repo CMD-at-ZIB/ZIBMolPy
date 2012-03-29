@@ -3,21 +3,10 @@
           "DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-  <title>ZIBMolPy.algorithms</title>
+  <title>ZIBMolPy.phi</title>
   <link rel="stylesheet" href="epydoc.css" type="text/css" />
   <script type="text/javascript" src="epydoc.js"></script>
-	
-	<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-      tex2jax: {
-        inlineMath: [['$','$'], ['\\(','\\)']],
-        displayMath: [['$$', '$$'], ["\\[", "\\]"]]
-      }
-    });
-    </script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-	</head>
-	
+</head>
 
 <body bgcolor="white" text="black" link="blue" vlink="#204080"
       alink="#204080">
@@ -54,7 +43,7 @@
     <td width="100%">
       <span class="breadcrumbs">
         <a href="ZIBMolPy-module.html">Package&nbsp;ZIBMolPy</a> ::
-        Module&nbsp;algorithms
+        Module&nbsp;phi
       </span>
     </td>
     <td>
@@ -62,14 +51,16 @@
         <!-- hide/show private -->
         <tr><td align="right"><span class="options"
             >[<a href="frames.html" target="_top">frames</a
-            >]&nbsp;|&nbsp;<a href="ZIBMolPy.algorithms-module.html"
+            >]&nbsp;|&nbsp;<a href="ZIBMolPy.phi-module.html"
             target="_top">no&nbsp;frames</a>]</span></td></tr>
       </table>
     </td>
   </tr>
 </table>
 <!-- ==================== MODULE DESCRIPTION ==================== -->
-<h1 class="epydoc">Module algorithms</h1><p class="nomargin-top"><span class="codelink"><a href="ZIBMolPy.algorithms-pysrc.html">source&nbsp;code</a></span></p>
+<h1 class="epydoc">Module phi</h1><p class="nomargin-top"><span class="codelink"><a href="ZIBMolPy.phi-pysrc.html">source&nbsp;code</a></span></p>
+TEST
+
 <!-- ==================== FUNCTIONS ==================== -->
 <a name="section-Functions"></a>
 <table class="summary" border="1" cellpadding="3"
@@ -84,14 +75,12 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="ZIBMolPy.algorithms-module.html#kmeans" class="summary-sig-name">kmeans</a>(<span class="summary-sig-arg">frames</span>,
-        <span class="summary-sig-arg">k</span>,
-        <span class="summary-sig-arg">threshold</span>=<span class="summary-sig-default">0.0001</span>,
-        <span class="summary-sig-arg">max_iterations</span>=<span class="summary-sig-default">50</span>,
-        <span class="summary-sig-arg">fixed_clusters</span>=<span class="summary-sig-default">None</span>)</span><br />
-      Centroids for new cluster centers are calculated by mean_weighted.</td>
+          <td><span class="summary-sig"><a href="ZIBMolPy.phi-module.html#get_phi_contrib" class="summary-sig-name">get_phi_contrib</a>(<span class="summary-sig-arg">x</span>,
+        <span class="summary-sig-arg">curr_node</span>,
+        <span class="summary-sig-arg">coord</span>)</span><br />
+      trajalal</td>
           <td align="right" valign="top">
-            <span class="codelink"><a href="ZIBMolPy.algorithms-pysrc.html#kmeans">source&nbsp;code</a></span>
+            <span class="codelink"><a href="ZIBMolPy.phi-pysrc.html#get_phi_contrib">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -105,12 +94,13 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="gelman_rubin"></a><span class="summary-sig-name">gelman_rubin</span>(<span class="summary-sig-arg">frames</span>,
-        <span class="summary-sig-arg">n_chains</span>,
-        <span class="summary-sig-arg">threshold</span>,
-        <span class="summary-sig-arg">log</span>=<span class="summary-sig-default">sys.stdout</span>)</span></td>
+          <td><span class="summary-sig"><a name="get_phi_num_contrib"></a><span class="summary-sig-name">get_phi_num_contrib</span>(<span class="summary-sig-arg">x</span>,
+        <span class="summary-sig-arg">ref_node</span>,
+        <span class="summary-sig-arg">curr_node</span>,
+        <span class="summary-sig-arg">coord</span>)</span><br />
+      Takes all values from ref_node.internals except for coordinate coord.          There it uses the values x.</td>
           <td align="right" valign="top">
-            <span class="codelink"><a href="ZIBMolPy.algorithms-pysrc.html#gelman_rubin">source&nbsp;code</a></span>
+            <span class="codelink"><a href="ZIBMolPy.phi-pysrc.html#get_phi_num_contrib">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -124,10 +114,11 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="cluster_by_isa"></a><span class="summary-sig-name">cluster_by_isa</span>(<span class="summary-sig-arg">eigenvectors</span>,
-        <span class="summary-sig-arg">n_clusters</span>)</span></td>
+          <td><span class="summary-sig"><a name="get_phi_contrib_potential"></a><span class="summary-sig-name">get_phi_contrib_potential</span>(<span class="summary-sig-arg">x</span>,
+        <span class="summary-sig-arg">curr_node</span>,
+        <span class="summary-sig-arg">coord</span>)</span></td>
           <td align="right" valign="top">
-            <span class="codelink"><a href="ZIBMolPy.algorithms-pysrc.html#cluster_by_isa">source&nbsp;code</a></span>
+            <span class="codelink"><a href="ZIBMolPy.phi-pysrc.html#get_phi_contrib_potential">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -141,12 +132,11 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="symmetrize"></a><span class="summary-sig-name">symmetrize</span>(<span class="summary-sig-arg">matrix</span>,
-        <span class="summary-sig-arg">weights</span>,
-        <span class="summary-sig-arg">correct_weights</span>=<span class="summary-sig-default">False</span>,
-        <span class="summary-sig-arg">error</span>=<span class="summary-sig-default">0.01</span>)</span></td>
+          <td><span class="summary-sig"><a name="get_phi"></a><span class="summary-sig-name">get_phi</span>(<span class="summary-sig-arg">frames</span>,
+        <span class="summary-sig-arg">curr_node</span>)</span><br />
+      Considers only active nodes (isa_partition)</td>
           <td align="right" valign="top">
-            <span class="codelink"><a href="ZIBMolPy.algorithms-pysrc.html#symmetrize">source&nbsp;code</a></span>
+            <span class="codelink"><a href="ZIBMolPy.phi-pysrc.html#get_phi">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -160,11 +150,45 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="orthogonalize"></a><span class="summary-sig-name">orthogonalize</span>(<span class="summary-sig-arg">eigenvalues</span>,
-        <span class="summary-sig-arg">eigenvectors</span>,
-        <span class="summary-sig-arg">weights</span>)</span></td>
+          <td><span class="summary-sig"><a name="get_phi_num"></a><span class="summary-sig-name">get_phi_num</span>(<span class="summary-sig-arg">frames</span>,
+        <span class="summary-sig-arg">curr_node</span>)</span><br />
+      The numerator of the S{phi}-function.</td>
           <td align="right" valign="top">
-            <span class="codelink"><a href="ZIBMolPy.algorithms-pysrc.html#orthogonalize">source&nbsp;code</a></span>
+            <span class="codelink"><a href="ZIBMolPy.phi-pysrc.html#get_phi_num">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="get_phi_denom"></a><span class="summary-sig-name">get_phi_denom</span>(<span class="summary-sig-arg">frames</span>,
+        <span class="summary-sig-arg">nodes</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="ZIBMolPy.phi-pysrc.html#get_phi_denom">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="get_phi_potential"></a><span class="summary-sig-name">get_phi_potential</span>(<span class="summary-sig-arg">frames</span>,
+        <span class="summary-sig-arg">curr_node</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="ZIBMolPy.phi-pysrc.html#get_phi_potential">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -198,38 +222,26 @@
     <span class="table-header">Function Details</span></td>
 </tr>
 </table>
-<a name="kmeans"></a>
+<a name="get_phi_contrib"></a>
 <div>
 <table class="details" border="1" cellpadding="3"
        cellspacing="0" width="100%" bgcolor="white">
 <tr><td>
   <table width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">kmeans</span>(<span class="sig-arg">frames</span>,
-        <span class="sig-arg">k</span>,
-        <span class="sig-arg">threshold</span>=<span class="sig-default">0.0001</span>,
-        <span class="sig-arg">max_iterations</span>=<span class="sig-default">50</span>,
-        <span class="sig-arg">fixed_clusters</span>=<span class="sig-default">None</span>)</span>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">get_phi_contrib</span>(<span class="sig-arg">x</span>,
+        <span class="sig-arg">curr_node</span>,
+        <span class="sig-arg">coord</span>)</span>
   </h3>
   </td><td align="right" valign="top"
-    ><span class="codelink"><a href="ZIBMolPy.algorithms-pysrc.html#kmeans">source&nbsp;code</a></span>&nbsp;
+    ><span class="codelink"><a href="ZIBMolPy.phi-pysrc.html#get_phi_contrib">source&nbsp;code</a></span>&nbsp;
     </td>
   </tr></table>
   
-  <p>Centroids for new cluster centers are calculated by mean_weighted. <a 
-  href="http://en.wikipedia.org/wiki/K-means_clustering" 
-  target="_top">K-Means</a></p>
+  <p>trajalal</p>
+\sum_{i} \psi(x_i)
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><p>tealal</p>
   <dl class="fields">
-    <dt>Parameters:</dt>
-    <dd><ul class="nomargin-top">
-        <li><strong class="pname"><code>frames</code></strong> (<a href="ZIBMolPy.internals.InternalArray-class.html" 
-          class="link">InternalArray</a>) - Sampling points to clusters</li>
-        <li><strong class="pname"><code>k</code></strong> (positiv integer) - Number of clusters</li>
-        <li><strong class="pname"><code>fixed_clusters</code></strong> (list of <a href="ZIBMolPy.internals.InternalArray-class.html" 
-          class="link">InternalArray</a>.) - additional cluster-centers, which can have members but are never 
-          moved. This is used in <a href="zgf_refine-module.html" 
-          class="link">zgf_refine</a> to create additional nodes.</li>
-    </ul></dd>
   </dl>
 </td></tr></table>
 </div>
@@ -265,7 +277,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Thu Mar 29 18:25:01 2012
+    Generated by Epydoc 3.0.1 on Wed Mar 28 16:46:44 2012
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

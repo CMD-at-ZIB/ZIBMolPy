@@ -86,11 +86,13 @@
   The $\alpha$-value is stored in the <a 
   href="ZIBMolPy.pool.Pool-class.html" class="link">Pool</a>. The 
   dist-function depends on the type of coordinates used. For details look 
-  at <code class="link">InternalCoordinate.sub</code>.</p>
+  at <a href="ZIBMolPy.internals.InternalCoordinate-class.html#sub" 
+  class="link">InternalCoordinate.sub</a>.</p>
   <p>Please note, that not all nodes contained in the pool participate in 
   the partition of the internal coordinate space. If a node participates in
-  the partition is determined by the property <code 
-  class="link">Node.isa_partition</code>.</p>
+  the partition is determined by the property <a 
+  href="ZIBMolPy.node.Node-class.html#isa_partition" 
+  class="link">Node.isa_partition</a>.</p>
 
 <!-- ==================== FUNCTIONS ==================== -->
 <a name="section-Functions"></a>
@@ -102,63 +104,7 @@
 </tr>
 <tr>
     <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-      <table width="100%" cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td><span class="summary-sig"><a name="get_phi_contrib"></a><span class="summary-sig-name">get_phi_contrib</span>(<span class="summary-sig-arg">x</span>,
-        <span class="summary-sig-arg">node_i</span>,
-        <span class="summary-sig-arg">coord</span>)</span></td>
-          <td align="right" valign="top">
-            <span class="codelink"><a href="ZIBMolPy.phi-pysrc.html#get_phi_contrib">source&nbsp;code</a></span>
-            
-          </td>
-        </tr>
-      </table>
-      
-    </td>
-  </tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-      <table width="100%" cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td><span class="summary-sig"><a href="ZIBMolPy.phi-module.html#get_phi_num_contrib" class="summary-sig-name">get_phi_num_contrib</a>(<span class="summary-sig-arg">x</span>,
-        <span class="summary-sig-arg">ref_node</span>,
-        <span class="summary-sig-arg">node_i</span>,
-        <span class="summary-sig-arg">coord</span>)</span><br />
-      Takes all values from ref_node.internals except for coordinate coord.</td>
-          <td align="right" valign="top">
-            <span class="codelink"><a href="ZIBMolPy.phi-pysrc.html#get_phi_num_contrib">source&nbsp;code</a></span>
-            
-          </td>
-        </tr>
-      </table>
-      
-    </td>
-  </tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-      <table width="100%" cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td><span class="summary-sig"><a name="get_phi_contrib_potential"></a><span class="summary-sig-name">get_phi_contrib_potential</span>(<span class="summary-sig-arg">x</span>,
-        <span class="summary-sig-arg">node_i</span>,
-        <span class="summary-sig-arg">coord</span>)</span></td>
-          <td align="right" valign="top">
-            <span class="codelink"><a href="ZIBMolPy.phi-pysrc.html#get_phi_contrib_potential">source&nbsp;code</a></span>
-            
-          </td>
-        </tr>
-      </table>
-      
-    </td>
-  </tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
+      <span class="summary-type">1D numpy.ndarray of length x.n_frames</span>
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
@@ -177,11 +123,11 @@
   </tr>
 <tr>
     <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
+      <span class="summary-type">1D numpy.ndarray of length x.n_frames</span>
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="get_phi_num"></a><span class="summary-sig-name">get_phi_num</span>(<span class="summary-sig-arg">x</span>,
+          <td><span class="summary-sig"><a href="ZIBMolPy.phi-module.html#get_phi_num" class="summary-sig-name">get_phi_num</a>(<span class="summary-sig-arg">x</span>,
         <span class="summary-sig-arg">node_i</span>)</span><br />
       Calculates the numerator $\chi_i(\vec x)$ of the phi-function of 
       node_i at the positions given by x.</td>
@@ -196,7 +142,7 @@
   </tr>
 <tr>
     <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
+      <span class="summary-type">1D numpy.ndarray of length x.n_frames</span>
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
@@ -215,16 +161,82 @@
   </tr>
 <tr>
     <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
+      <span class="summary-type">1D numpy.ndarray of length x_k.size</span>
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="get_phi_potential"></a><span class="summary-sig-name">get_phi_potential</span>(<span class="summary-sig-arg">x</span>,
+          <td><span class="summary-sig"><a href="ZIBMolPy.phi-module.html#get_phi_contrib" class="summary-sig-name">get_phi_contrib</a>(<span class="summary-sig-arg">x_k</span>,
+        <span class="summary-sig-arg">node_i</span>,
+        <span class="summary-sig-arg">coord_k</span>)</span><br />
+      Calculates the phi-function $\phi_i(\vec x)$ with $\vec x = (q_1, 
+      \dots, q_{k-1}, x_k, q_{k+1}, \dots, q_{n})$</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="ZIBMolPy.phi-pysrc.html#get_phi_contrib">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">1D numpy.ndarray of length x_k.size</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="ZIBMolPy.phi-module.html#get_phi_num_contrib" class="summary-sig-name">get_phi_num_contrib</a>(<span class="summary-sig-arg">x_k</span>,
+        <span class="summary-sig-arg">node_i</span>,
+        <span class="summary-sig-arg">node_j</span>,
+        <span class="summary-sig-arg">coord_k</span>)</span><br />
+      Calculates the numerator $\chi_j(\vec x)$ of the phi-function of 
+      node_j at $\vec x = (q_1, \dots, q_{k-1}, x_k, q_{k+1}, \dots, 
+      q_{n})$</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="ZIBMolPy.phi-pysrc.html#get_phi_num_contrib">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">1D numpy.ndarray of length x.n_frames</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="ZIBMolPy.phi-module.html#get_phi_potential" class="summary-sig-name">get_phi_potential</a>(<span class="summary-sig-arg">x</span>,
         <span class="summary-sig-arg">node_i</span>)</span><br />
-      Calculates $-\beta^{-1} \log \phi_i(\vec x)$, where $\beta$ is <code 
-      class="link">Pool.thermo_beta</code></td>
+      Calculates $-\beta^{-1} \log \phi_i(\vec x)$, where $\beta$ is <a 
+      href="ZIBMolPy.pool.Pool-class.html#thermo_beta" 
+      class="link">Pool.thermo_beta</a></td>
           <td align="right" valign="top">
             <span class="codelink"><a href="ZIBMolPy.phi-pysrc.html#get_phi_potential">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">1D numpy.ndarray if length x_j.size</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="ZIBMolPy.phi-module.html#get_phi_contrib_potential" class="summary-sig-name">get_phi_contrib_potential</a>(<span class="summary-sig-arg">x_j</span>,
+        <span class="summary-sig-arg">node_i</span>,
+        <span class="summary-sig-arg">coord_k</span>)</span><br />
+      Calculates $\beta^{-1} \log $ <a 
+      href="ZIBMolPy.phi-module.html#get_phi_contrib" 
+      class="link">get_phi_contrib</a>(x_j, node_i, coord_k), where $\beta$
+      is <a href="ZIBMolPy.pool.Pool-class.html#thermo_beta" 
+      class="link">Pool.thermo_beta</a></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="ZIBMolPy.phi-pysrc.html#get_phi_contrib_potential">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -258,29 +270,6 @@
     <span class="table-header">Function Details</span></td>
 </tr>
 </table>
-<a name="get_phi_num_contrib"></a>
-<div>
-<table class="details" border="1" cellpadding="3"
-       cellspacing="0" width="100%" bgcolor="white">
-<tr><td>
-  <table width="100%" cellpadding="0" cellspacing="0" border="0">
-  <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">get_phi_num_contrib</span>(<span class="sig-arg">x</span>,
-        <span class="sig-arg">ref_node</span>,
-        <span class="sig-arg">node_i</span>,
-        <span class="sig-arg">coord</span>)</span>
-  </h3>
-  </td><td align="right" valign="top"
-    ><span class="codelink"><a href="ZIBMolPy.phi-pysrc.html#get_phi_num_contrib">source&nbsp;code</a></span>&nbsp;
-    </td>
-  </tr></table>
-  
-  <p>Takes all values from ref_node.internals except for coordinate coord. 
-  \ There it uses the values x.</p>
-  <dl class="fields">
-  </dl>
-</td></tr></table>
-</div>
 <a name="get_phi"></a>
 <div>
 <table class="details" border="1" cellpadding="3"
@@ -298,9 +287,45 @@
   
   <p>Calculates the phi-function $\phi_i(\vec x)$ of node_i at the 
   positions given by x.</p>
-  <p>The participating nodes are found via <code 
-  class="link">Node.isa_partition</code></p>
+  <p>The participating nodes are found via <a 
+  href="ZIBMolPy.node.Node-class.html#isa_partition" 
+  class="link">Node.isa_partition</a></p>
   <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>x</code></strong> (<a href="ZIBMolPy.internals.InternalCoordinate-class.html" 
+          class="link">InternalCoordinate</a>)</li>
+        <li><strong class="pname"><code>node_i</code></strong> (<a href="ZIBMolPy.node.Node-class.html" class="link">Node</a>)</li>
+    </ul></dd>
+    <dt>Returns: 1D numpy.ndarray of length x.n_frames</dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="get_phi_num"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">get_phi_num</span>(<span class="sig-arg">x</span>,
+        <span class="sig-arg">node_i</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="ZIBMolPy.phi-pysrc.html#get_phi_num">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Calculates the numerator $\chi_i(\vec x)$ of the phi-function of 
+  node_i at the positions given by x.</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>x</code></strong> (<a href="ZIBMolPy.internals.InternalCoordinate-class.html" 
+          class="link">InternalCoordinate</a>)</li>
+        <li><strong class="pname"><code>node_i</code></strong> (<a href="ZIBMolPy.node.Node-class.html" class="link">Node</a>)</li>
+    </ul></dd>
+    <dt>Returns: 1D numpy.ndarray of length x.n_frames</dt>
   </dl>
 </td></tr></table>
 </div>
@@ -324,6 +349,143 @@
   <p>This is the sum over the numerators of the given nodes at the 
   positions given by x.</p>
   <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>nodes</code></strong> (list of <a href="ZIBMolPy.node.Node-class.html" 
+          class="link">Node</a> objects) - these are sumed over</li>
+        <li><strong class="pname"><code>x</code></strong> (<a href="ZIBMolPy.internals.InternalCoordinate-class.html" 
+          class="link">InternalCoordinate</a>)</li>
+    </ul></dd>
+    <dt>Returns: 1D numpy.ndarray of length x.n_frames</dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="get_phi_contrib"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">get_phi_contrib</span>(<span class="sig-arg">x_k</span>,
+        <span class="sig-arg">node_i</span>,
+        <span class="sig-arg">coord_k</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="ZIBMolPy.phi-pysrc.html#get_phi_contrib">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Calculates the phi-function $\phi_i(\vec x)$ with $\vec x = (q_1, 
+  \dots, q_{k-1}, x_k, q_{k+1}, \dots, q_{n})$</p>
+  <p>Where $\vec q_i = (q_1,\dots, q_n)$ denotes the components of the 
+  position of node_i.</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>coord_k</code></strong> (<a href="ZIBMolPy.internals.InternalCoordinate-class.html" 
+          class="link">InternalCoordinate</a>)</li>
+        <li><strong class="pname"><code>x_k</code></strong> (1D numpy.ndarray)</li>
+        <li><strong class="pname"><code>node_i</code></strong> (<a href="ZIBMolPy.node.Node-class.html" class="link">Node</a>)</li>
+    </ul></dd>
+    <dt>Returns: 1D numpy.ndarray of length x_k.size</dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="get_phi_num_contrib"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">get_phi_num_contrib</span>(<span class="sig-arg">x_k</span>,
+        <span class="sig-arg">node_i</span>,
+        <span class="sig-arg">node_j</span>,
+        <span class="sig-arg">coord_k</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="ZIBMolPy.phi-pysrc.html#get_phi_num_contrib">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Calculates the numerator $\chi_j(\vec x)$ of the phi-function of 
+  node_j at $\vec x = (q_1, \dots, q_{k-1}, x_k, q_{k+1}, \dots, 
+  q_{n})$</p>
+  <p>Where $\vec q_i = (q_1,\dots, q_n)$ denotes the components of the 
+  position of node_i.</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>node_i</code></strong> (<a href="ZIBMolPy.node.Node-class.html" class="link">Node</a>) - reference node</li>
+        <li><strong class="pname"><code>coord_k</code></strong> (<a href="ZIBMolPy.internals.InternalCoordinate-class.html" 
+          class="link">InternalCoordinate</a>)</li>
+        <li><strong class="pname"><code>x_k</code></strong> (1D numpy.ndarray)</li>
+        <li><strong class="pname"><code>node_j</code></strong> (<a href="ZIBMolPy.node.Node-class.html" class="link">Node</a>)</li>
+    </ul></dd>
+    <dt>Returns: 1D numpy.ndarray of length x_k.size</dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="get_phi_potential"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">get_phi_potential</span>(<span class="sig-arg">x</span>,
+        <span class="sig-arg">node_i</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="ZIBMolPy.phi-pysrc.html#get_phi_potential">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Calculates $-\beta^{-1} \log \phi_i(\vec x)$, where $\beta$ is <a 
+  href="ZIBMolPy.pool.Pool-class.html#thermo_beta" 
+  class="link">Pool.thermo_beta</a></p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>x</code></strong> (<a href="ZIBMolPy.internals.InternalArray-class.html" 
+          class="link">InternalArray</a>)</li>
+        <li><strong class="pname"><code>node_i</code></strong> (<a href="ZIBMolPy.node.Node-class.html" class="link">Node</a>)</li>
+    </ul></dd>
+    <dt>Returns: 1D numpy.ndarray of length x.n_frames</dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="get_phi_contrib_potential"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">get_phi_contrib_potential</span>(<span class="sig-arg">x_j</span>,
+        <span class="sig-arg">node_i</span>,
+        <span class="sig-arg">coord_k</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="ZIBMolPy.phi-pysrc.html#get_phi_contrib_potential">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Calculates $\beta^{-1} \log $ <a 
+  href="ZIBMolPy.phi-module.html#get_phi_contrib" 
+  class="link">get_phi_contrib</a>(x_j, node_i, coord_k), where $\beta$ is 
+  <a href="ZIBMolPy.pool.Pool-class.html#thermo_beta" 
+  class="link">Pool.thermo_beta</a></p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>x_j</code></strong> (1D numpy.ndarray)</li>
+        <li><strong class="pname"><code>coord_k</code></strong> (<a href="ZIBMolPy.internals.InternalCoordinate-class.html" 
+          class="link">InternalCoordinate</a>)</li>
+        <li><strong class="pname"><code>node_i</code></strong> (<a href="ZIBMolPy.node.Node-class.html" class="link">Node</a>)</li>
+    </ul></dd>
+    <dt>Returns: 1D numpy.ndarray if length x_j.size</dt>
   </dl>
 </td></tr></table>
 </div>
@@ -359,7 +521,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Thu Mar 29 11:46:34 2012
+    Generated by Epydoc 3.0.1 on Thu Mar 29 18:25:01 2012
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"
