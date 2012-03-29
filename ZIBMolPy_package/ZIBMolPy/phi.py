@@ -90,7 +90,7 @@ def get_phi_denom(x, nodes):
 
 #===============================================================================
 def get_phi_potential(x, node_i):
-	r""" Calculates $\left(-\beta \log \phi_i(\vec x)\right)^{-1}$,
+	r""" Calculates $-\beta^{-1} \log \phi_i(\vec x)$,
 	where $\beta$ is L{Pool.thermo_beta} """
 	
 	return( -1/node_i.pool.thermo_beta*np.log( get_phi(x, node_i) ) )
