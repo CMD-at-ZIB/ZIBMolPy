@@ -29,8 +29,6 @@ If a node participates in the partition is determined by the property L{Node.isa
 
 import numpy as np
 
-
-
 #===============================================================================
 def get_phi(x, node_i):
 	r""" Calculates the phi-function $\phi_i(\vec x)$ of node_i at the positions given by x.
@@ -111,17 +109,17 @@ def get_phi_num_contrib(x_k, node_i, node_j, coord_k):
 
 
 #===============================================================================
-def get_phi_potential(x, node_i, epsilon=0):
+def get_phi_potential(x, node_i):
 	r""" Calculates $-\beta^{-1} \log \phi_i(\vec x)$, 
 	where $\beta$ is L{Pool.thermo_beta<ZIBMolPy.pool.Pool.thermo_beta>} 
 	@type x: L{InternalArray}
 	@type node_i: L{Node}
 	@rtype: 1D numpy.ndarray of length x.n_frames
 	"""
-	return( -1/node_i.pool.thermo_beta*np.log( get_phi(x, node_i) + epsilon ) )
+	return( -1/node_i.pool.thermo_beta*np.nan_to_num(np.log(get_phi(x, node_i))))
 
 
-def get_phi_contrib_potential(x_j, node_i, coord_k, epsilon=0):
+def get_phi_contrib_potential(x_j, node_i, coord_k):
 	r""" Calculates $\beta^{-1} \log $ L{get_phi_contrib}(x_j, node_i, coord_k),
 	where $\beta$ is L{Pool.thermo_beta<ZIBMolPy.pool.Pool.thermo_beta>}
 	@type x_j: 1D numpy.ndarray
@@ -129,7 +127,7 @@ def get_phi_contrib_potential(x_j, node_i, coord_k, epsilon=0):
 	@type coord_k: L{InternalCoordinate}
 	@rtype: 1D numpy.ndarray if length x_j.size
 	"""
-	return( -1/node_i.pool.thermo_beta*np.log( get_phi_contrib(x_j, node_i, coord_k) + epsilon ) )
+	return( -1/node_i.pool.thermo_beta*np.nan_to_num(np.log(get_phi_contrib(x_j, node_i, coord_k))))
 
 
 #EOF

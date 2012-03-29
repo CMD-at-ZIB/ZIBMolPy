@@ -155,7 +155,7 @@ def reweight_direct(nodes, moi_energies, sol_energy, save_ref=False):
 
 		frame_weights = n.frameweights
 		phi_values = n.phi_values
-		phi_weighted_energies = energies + get_phi_potential(n.trajectory, n, epsilon=1.0e-40)
+		phi_weighted_energies = energies + get_phi_potential(n.trajectory, n)
 
 		# define evaluation region where sampling is rather dense, e. g. around mean potential energy with standard deviation of potential energy
 		n.obs.mean_V = np.average(phi_weighted_energies, weights=frame_weights)
@@ -222,7 +222,7 @@ def reweight_entropy(nodes, moi_energies, sol_energy, save_ref=False):
 
 		frame_weights = n.frameweights
 		phi_values = n.phi_values
-		phi_weighted_energies = energies + get_phi_potential(n.trajectory, n, epsilon=1.0e-40)
+		phi_weighted_energies = energies + get_phi_potential(n.trajectory, n)
 	
 		# calculate mean V
 		n.obs.mean_V = np.average(phi_weighted_energies, weights=frame_weights)
@@ -292,7 +292,7 @@ def reweight_presampling(nodes, presamp_temp, moi_energies, sol_energy):
 
 		frame_weights = n.frameweights
 		phi_values = n.phi_values
-		phi_weighted_energies = energies + get_phi_potential(n.trajectory, n, epsilon=1.0e-40)
+		phi_weighted_energies = energies + get_phi_potential(n.trajectory, n)
 
 
 		# calculate mean V and standard deviation
