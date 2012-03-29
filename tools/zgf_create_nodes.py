@@ -314,11 +314,11 @@ def do_phifit_leastsq(pool):
 			
 			#phi_values = get_phi_contrib(all_values, n, active_nodes, c)
 			phi_values = get_phi_contrib(all_values, n, c)
-			phi_potential = -1/n.pool.thermo_beta*np.log(phi_values+0.00001) #TODO make smaller
+			phi_potential = get_phi_contrib_potential(all_values, n, c, epsilon=1.0e-40)
 			node_value = n.internals.getcoord(c)
 			node_index = np.argmin(np.square(c.sub(all_values, node_value)))
 			#phi_potential -= phi_potential[node_index] # gauge: set phi_potential[node] = 0
-			
+
 			# contiguous function = smooth penalty-surface 
 			def heaviside(x): return 1/(1 + np.exp(-500*x))
 			phi_on = heaviside(phi_values - 0.01)
@@ -372,7 +372,6 @@ def do_phifit_switch(pool, frames_int):
 		for c in pool.converter:
 			# analyze phi for this coordinate
 			all_values = pool.coord_range(c, lin_slack=False) #TODO experimental
-			#all_phi_pot = get_phi_contrib_potential(all_values, n, active_nodes, c)
 			all_phi_pot = get_phi_contrib_potential(all_values, n, c)
 
 			norm_phi_pot = abs(all_phi_pot - np.min(all_phi_pot)) # we normalize all_phi_pot to a minimum of zero
@@ -497,7 +496,7 @@ def write_node_preview(pool, parent, chosen_idx):
 	assert(p.wait() == 0)
 	os.remove(trr_out_tmp_fn)
 
-	print "Node preview (desolvated) written to file: %s" % node_preview_fn		
+	print "Node preview (MOI only) written to file: %s" % node_preview_fn		
 
 #==========================================================================
 if(__name__=="__main__"):

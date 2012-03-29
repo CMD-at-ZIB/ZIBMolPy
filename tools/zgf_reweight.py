@@ -51,7 +51,7 @@ Frame weights
 from ZIBMolPy.constants import AVOGADRO, BOLTZMANN
 from ZIBMolPy.restraint import DihedralRestraint, DistanceRestraint
 from ZIBMolPy.ui import Option, OptionsList
-from ZIBMolPy.phi import get_phi
+from ZIBMolPy.phi import get_phi, get_phi_potential
 from ZIBMolPy.pool import Pool
 from ZIBMolPy import gromacs
 import zgf_cleanup
@@ -155,9 +155,7 @@ def reweight_direct(nodes, moi_energies, sol_energy, save_ref=False):
 
 		frame_weights = n.frameweights
 		phi_values = n.phi_values
-		#phi_weighted_energies = energies - (1/beta)*np.log(phi_values)
-		#phi_weighted_energies = energies - (1/get_beta(nodes[0].pool.temperature))*np.log(phi_values+1.0e-40) # avoid log(0.0) TODO Marcus-check
-		phi_weighted_energies = energies - (1/nodes[0].pool.thermo_beta)*np.log(phi_values+1.0e-40) # avoid log(0.0) TODO Marcus-check
+		phi_weighted_energies = energies + get_phi_potential(n.trajectory, n, epsilon=1.0e-40)
 
 		# define evaluation region where sampling is rather dense, e. g. around mean potential energy with standard deviation of potential energy
 		n.obs.mean_V = np.average(phi_weighted_energies, weights=frame_weights)
@@ -224,10 +222,7 @@ def reweight_entropy(nodes, moi_energies, sol_energy, save_ref=False):
 
 		frame_weights = n.frameweights
 		phi_values = n.phi_values
-
-		#phi_weighted_energies = energies - (1/get_beta(nodes[0].pool.temperature))*np.log(phi_values)
-		#phi_weighted_energies = energies - (1/get_beta(nodes[0].pool.temperature))*np.log(phi_values+1.0e-40) # avoid log(0.0) TODO Marcus-check
-		phi_weighted_energies = energies - (1/nodes[0].pool.thermo_beta)*np.log(phi_values+1.0e-40) # avoid log(0.0) TODO Marcus-check
+		phi_weighted_energies = energies + get_phi_potential(n.trajectory, n, epsilon=1.0e-40)
 	
 		# calculate mean V
 		n.obs.mean_V = np.average(phi_weighted_energies, weights=frame_weights)
@@ -297,8 +292,8 @@ def reweight_presampling(nodes, presamp_temp, moi_energies, sol_energy):
 
 		frame_weights = n.frameweights
 		phi_values = n.phi_values
-		#phi_weighted_energies = energies - (1/beta_samp)*np.log(phi_values)
-		phi_weighted_energies = energies - (1/nodes[0].pool.thermo_beta)*np.log(phi_values+1.0e-40) # avoid log(0.0) TODO Marcus-check
+		phi_weighted_energies = energies + get_phi_potential(n.trajectory, n, epsilon=1.0e-40)
+
 
 		# calculate mean V and standard deviation
 		n.obs.mean_V = np.average(phi_weighted_energies, weights=frame_weights)

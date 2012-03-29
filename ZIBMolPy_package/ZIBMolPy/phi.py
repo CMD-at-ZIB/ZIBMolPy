@@ -61,11 +61,11 @@ def get_phi_num_contrib(x, ref_node, node_i, coord):
 
 
 #===============================================================================
-def get_phi_contrib_potential(x, node_i, coord):
+def get_phi_contrib_potential(x, node_i, coord, epsilon=0):
 #	r""" Calculates $\frac{-1}{\beta \log( getphicontrib(x, node_i, coord) )}$,
 #	where $\beta$ is L{Pool.thermo_beta} """
 	
-	return( -1/node_i.pool.thermo_beta*np.log( get_phi_contrib(x, node_i, coord) ) )
+	return( -1/node_i.pool.thermo_beta*np.log( get_phi_contrib(x, node_i, coord) + epsilon ) )
 
 
 #===============================================================================
@@ -89,10 +89,10 @@ def get_phi_denom(x, nodes):
 
 
 #===============================================================================
-def get_phi_potential(x, node_i):
+def get_phi_potential(x, node_i, epsilon=0):
 	r""" Calculates $-\beta^{-1} \log \phi_i(\vec x)$,
 	where $\beta$ is L{Pool.thermo_beta} """
 	
-	return( -1/node_i.pool.thermo_beta*np.log( get_phi(x, node_i) ) )
+	return( -1/node_i.pool.thermo_beta*np.log( get_phi(x, node_i) + epsilon ) )
 
 #EOF
