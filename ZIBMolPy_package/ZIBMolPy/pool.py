@@ -47,17 +47,20 @@ class NodeList(list):
 	
 	#---------------------------------------------------------------------------
 	def coord_range(self, coord, num=360, lin_slack=True):
+		"""
+		Calculates the min and max values occurring for coordinate coord.
+		
+		It first queries L{InternalCoordinate.plot_range<ZIBMolPy.internals.InternalCoordinate.plot_range>}.
+		If plot_range returns None,	it will look at the trajectories of all nodes instead.
+		"""
 		# ask the coordinate		
-		if(coord.plot_max_range != None):
-			(lower, upper) = coord.plot_max_range
+		if(coord.plot_range != None):
+			(lower, upper) = coord.plot_range
 			return( np.linspace(lower, upper, num=num) )
 
-		(lower0, upper0) = coord.plot_min_range 
-		
 		# considering presampling-trajectory and position of all nodes
 		values = self[0].pool.root.trajectory.getcoord(coord)
-		(lower1, upper1) = (min(values), max(values))
-		(lower, upper) = (min(lower0, lower1), max(upper0, upper1))
+		(lower, upper) = (min(values), max(values))
 		
 		ints = self.internals # is None if no nodes besides root exist, yet
 		if(ints != None):
