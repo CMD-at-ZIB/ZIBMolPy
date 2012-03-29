@@ -606,7 +606,16 @@ class InternalCoordinate(object):
 		""" used by L{ZIBMolPy.pool.Pool.coord_range} """
 		return(None)
 
-	
+	def from_external(self, dx_provider):
+		raise(NotImplementedError)
+		
+	@staticmethod
+	def sub(a, b):
+		raise(NotImplementedError)
+		
+	@staticmethod
+	def mean(a, frameweights=None):
+		raise(NotImplementedError)
 #===============================================================================
 class DihedralCoordinate(InternalCoordinate):
 	""" U{http://en.wikipedia.org/wiki/Dihedral_angle} """
