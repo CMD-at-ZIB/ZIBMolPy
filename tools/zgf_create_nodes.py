@@ -31,7 +31,7 @@ Discretization parameters
 """
 
 from ZIBMolPy.internals import DihedralCoordinate, LinearCoordinate
-from ZIBMolPy.utils import get_phi_contrib, get_phi_contrib_potential
+from ZIBMolPy.phi import get_phi_contrib, get_phi_contrib_potential
 from ZIBMolPy.algorithms import kmeans
 from ZIBMolPy.pool import Pool
 from ZIBMolPy.node import Node
@@ -69,6 +69,7 @@ options_desc = OptionsList([
 	Option("P", "methodphifit", "choice", "method to determine phi fit", choices=("switch", "harmonic", "leastsq") ),
 	Option("p", "parent-node", "node", "parent-node", default="root"),
 	Option("w", "write-preview", "bool", "write frames of new nodes as pdb-trajectory", default=False),
+	Option("l", "sampling-length", "int", "length of the normal sampling in ps", default=100, min_value=0),
 	Option("s", "random-seed", "str", "seed for random number generator"),
 	
 ])
@@ -85,7 +86,7 @@ def is_applicable():
 def main(argv=None):
 	if(argv==None): 
 		argv = sys.argv
-		options = options_desc.parse_args(argv)[0]
+	options = options_desc.parse_args(argv)[0]
 	
 	print("Options:\n%s\n"%pformat(eval(str(options))))
 
@@ -123,10 +124,11 @@ def main(argv=None):
 		n = Node()
 		n.parent_frame_num = i
 		n.parent = parent
-		n.state = "creating" # will be set to "created" at end of script
+		n.state = "creating-a-partition" # will be set to "created" at end of script
 		n.extensions_counter = 0
 		n.extensions_max = options.ext_max
 		n.extensions_length = options.ext_length
+		n.sampling_length = options.sampling_length	
 		n.internals = parent.trajectory.getframe(i)
 		pool.append(n)
 		
@@ -154,7 +156,7 @@ def main(argv=None):
 	else:
 		raise(Exception("Method unkown: "+options.methodphifit))
 
-	for n in pool.where("state == 'creating'"):
+	for n in pool.where("state == 'creating-a-partition'"):
 		n.state = "created"
 		n.save()
 		print "saving " +str(n)
@@ -164,7 +166,6 @@ def main(argv=None):
 
 #==========================================================================
 def mknodes_kmeans(parent, numnodes):
-	print "parent", parent
 	frames_int = parent.trajectory
 	fixed_clusters = [n.internals for n in parent.children]
 	means = kmeans(frames_int, numnodes, fixed_clusters=fixed_clusters)
@@ -255,7 +256,7 @@ def mknodes_all(parent):
 #==========================================================================
 def calc_alpha_theta(pool):
 	# calculate theta and alpha
-	active_nodes = pool.where("state != 'refined'")
+	active_nodes = pool.where("isa_partition")
 	theta = calc_theta(active_nodes)
 	assert(theta[1] > 0.00001) #TODO: apparently fails sometimes
 	alpha = -np.log( EPSILON2/len(active_nodes) ) / (3.0*theta[1]*theta[1]) # using theta_median
@@ -292,8 +293,7 @@ def get_force_constant(node):
 def do_phifit_leastsq(pool):
 	from scipy.optimize import leastsq
 	
-	#active_nodes = pool.where("state != 'refined'")
-	new_nodes = pool.where("state == 'creating'")
+	new_nodes = pool.where("state == 'creating-a-partition'")
 		
 	for n in new_nodes:
 		n.restraints = []
@@ -314,11 +314,11 @@ def do_phifit_leastsq(pool):
 			
 			#phi_values = get_phi_contrib(all_values, n, active_nodes, c)
 			phi_values = get_phi_contrib(all_values, n, c)
-			phi_potential = -1/n.pool.thermo_beta*np.log(phi_values+0.00001) #TODO make smaller
+			phi_potential = get_phi_contrib_potential(all_values, n, c)
 			node_value = n.internals.getcoord(c)
 			node_index = np.argmin(np.square(c.sub(all_values, node_value)))
 			#phi_potential -= phi_potential[node_index] # gauge: set phi_potential[node] = 0
-			
+
 			# contiguous function = smooth penalty-surface 
 			def heaviside(x): return 1/(1 + np.exp(-500*x))
 			phi_on = heaviside(phi_values - 0.01)
@@ -346,7 +346,7 @@ def do_phifit_leastsq(pool):
 	
 #==========================================================================
 def do_phifit_harmonic(pool):
-	new_nodes = pool.where("state == 'creating'")
+	new_nodes = pool.where("state == 'creating-a-partition'")
 	for n in new_nodes:
 		n.restraints = []
 		for c in pool.converter:
@@ -365,15 +365,13 @@ def do_phifit_harmonic(pool):
 				raise(Exception("Unkown Coordinate-Type"))
 #==========================================================================
 def do_phifit_switch(pool, frames_int):
-	#active_nodes = pool.where("state != 'refined'")
-	new_nodes = pool.where("state == 'creating'")
+	new_nodes = pool.where("state == 'creating-a-partition'")
 	
 	for n in new_nodes:
 		n.restraints = []
 		for c in pool.converter:
 			# analyze phi for this coordinate
 			all_values = pool.coord_range(c, lin_slack=False) #TODO experimental
-			#all_phi_pot = get_phi_contrib_potential(all_values, n, active_nodes, c)
 			all_phi_pot = get_phi_contrib_potential(all_values, n, c)
 
 			norm_phi_pot = abs(all_phi_pot - np.min(all_phi_pot)) # we normalize all_phi_pot to a minimum of zero
@@ -498,7 +496,7 @@ def write_node_preview(pool, parent, chosen_idx):
 	assert(p.wait() == 0)
 	os.remove(trr_out_tmp_fn)
 
-	print "Node preview (desolvated) written to file: %s" % node_preview_fn		
+	print "Node preview (MOI only) written to file: %s" % node_preview_fn		
 
 #==========================================================================
 if(__name__=="__main__"):

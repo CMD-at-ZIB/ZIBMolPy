@@ -40,7 +40,7 @@ def main():
 	try:
 		for n in needy_nodes:
 			cmd = ["grompp"]
-			cmd += ["-f", "../../"+pool.mdp_fn]
+			cmd += ["-f", "../../"+n.mdp_fn]
 			cmd += ["-n", "../../"+pool.ndx_fn]
 			cmd += ["-c", "../../"+n.pdb_fn]
 			cmd += ["-p", "../../"+n.top_fn]

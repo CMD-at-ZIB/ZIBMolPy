@@ -22,13 +22,16 @@ from ZIBMolPy.pool import Pool
 import ZIBMolPy.topology as topology
 from ZIBMolPy.ui import OptionsList
 from ZIBMolPy.io.trr import TrrFile
+from ZIBMolPy.gromacs import read_mdp_file
 
 import sys
 import os
+import re
 from tempfile import mktemp
 from subprocess import Popen, PIPE
 from math import degrees
 import numpy as np
+import shutil
 
 options_desc = OptionsList()
 
@@ -49,12 +52,29 @@ def main():
 	
 	extract_frames(pool)
 	generate_topology(pool)
+	generate_mdp(pool)
 	
 	for n in needy_nodes:
 		n.state = "grompp-able"
 		n.save()
 		n.unlock()
+
+#===============================================================================
+def generate_mdp(pool):
+	mdp = read_mdp_file(pool.mdp_fn)
+	dt = float(mdp['dt'])
+	orig_mdp = open(pool.mdp_fn).read()
+	orig_mdp = re.sub("\nnsteps", "\n; zgf_setup_nodes: commented-out the following line\n; nsteps", orig_mdp)
 	
+	for n in pool.where("state == 'created'"):
+		print("Writing: "+n.mdp_fn)
+		nsteps = int(n.sampling_length / dt)
+		f = open(n.mdp_fn, "w")
+		f.write(orig_mdp)
+		f.write("\n; zgf_setup_nodes:\n") 
+		f.write("nsteps = %d\n"%nsteps)
+		f.close()
+
 #===============================================================================
 def extract_frames(pool):
 	needy_nodes = pool.where("state == 'created'")
@@ -96,6 +116,11 @@ def extract_frames(pool):
 #===============================================================================
 def generate_topology(pool):
 	for n in pool.where("state == 'created'"):
+		
+		if(not n.has_restraints):
+			shutil.copyfile(pool.top_fn, n.top_fn)
+			continue
+		
 		# load unmodified topology
 		top = topology.Topology(pool.top_fn)
 		

@@ -59,7 +59,6 @@ in L{zgf_create_nodes}, which determines the associated gromacs-restraints.
 
 import numpy as np
 import re
-import math
 from ZIBMolPy.io.pdb import PdbFile
 from ZIBMolPy.io.trr import TrrFile
 from ZIBMolPy.utils import all #pylint: disable=W0622
@@ -597,16 +596,24 @@ class InternalCoordinate(object):
 		return("coord_%03d"%self.index)
 
 	@property
-	def plot_min_range(self):
-		""" used by L{ZIBMolPy.pool.Pool.coord_range} """
-		return(0.0, 0.0)
-
-	@property
-	def plot_max_range(self):
-		""" used by L{ZIBMolPy.pool.Pool.coord_range} """
+	def plot_range(self):
+		""" Used by L{Pool.coord_range<ZIBMolPy.pool.Pool.coord_range>}.
+		
+		Per default it returns None, which means coord_range will look 
+		at the trajectories of all nodes instead.
+		"""
 		return(None)
 
-	
+	def from_external(self, dx_provider):
+		raise(NotImplementedError)
+		
+	@staticmethod
+	def sub(a, b):
+		raise(NotImplementedError)
+		
+	@staticmethod
+	def mean(a, frameweights=None):
+		raise(NotImplementedError)
 #===============================================================================
 class DihedralCoordinate(InternalCoordinate):
 	""" U{http://en.wikipedia.org/wiki/Dihedral_angle} """
@@ -674,15 +681,10 @@ class DihedralCoordinate(InternalCoordinate):
 		return("Degrees")
 	
 	@property
-	def plot_min_range(self):
-		""" used by L{ZIBMolPy.pool.Pool.coord_range} """
-		return(-1*math.pi, math.pi)
-
-	@property
-	def plot_max_range(self):
-		""" used by L{ZIBMolPy.pool.Pool.coord_range} """
-		return(self.plot_min_range)
-
+	def plot_range(self):
+		""" Used by L{Pool.coord_range<ZIBMolPy.pool.Pool.coord_range>}."""
+		return(-1*np.pi, np.pi)
+	
 	def plot_scale(self, data):
 		return(np.degrees(data))
 		

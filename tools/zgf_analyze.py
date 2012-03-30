@@ -41,7 +41,8 @@ Symmetrization error threshold
 
 from os import path
 import sys
-from ZIBMolPy.utils import get_phi_num, get_phi_denom, register_file_dependency
+from ZIBMolPy.utils import register_file_dependency
+from ZIBMolPy.phi import get_phi_num, get_phi_denom
 from ZIBMolPy.pool import Pool
 from ZIBMolPy.algorithms import cluster_by_isa, orthogonalize, symmetrize
 from ZIBMolPy.ui import userinput, Option, OptionsList
@@ -62,7 +63,7 @@ sys.modules[__name__].__doc__ += options_desc.epytext() # for epydoc
 
 def is_applicable():
 	pool = Pool()
-	return( len(pool.where("'weight_direct' in obs")) > 0 and len(pool.where("state != 'refined' and 'weight_direct' not in obs")) == 0 )
+	return( len(pool.where("isa_partition")) > 0 and len(pool.where("isa_partition and 'weight_direct' not in obs")) == 0 )
 
 #===============================================================================
 def main():
@@ -71,11 +72,12 @@ def main():
 	zgf_cleanup.main()
 	
 	pool = Pool()
-	active_nodes = pool.where("state != 'refined'")
+	active_nodes = pool.where("isa_partition")
 	
 	assert(len(active_nodes) == len(active_nodes.multilock())) # make sure we lock ALL nodes
 
 	if active_nodes.where("'weight_direct' not in obs"):
+		active_nodes.unlock()
 		sys.exit("Matrix calculation not possible: Not all of the nodes have been reweighted.")
 	
 	print "\n### Getting S matrix ..."
@@ -127,12 +129,13 @@ def main():
 	print "\n### Sorted eigenvalues of symmetrized S matrix:"
 	for (idx, ev, gap, wgap) in zip(range(1, len(eigvalues)+1), eigvalues, gaps, wgaps):
 		print "EV%04d: %f, gap to next: %f, EV-weighted gap to next: %f" % (idx, ev, gap, wgap)
-	n_clusters = np.argmax(gaps)+1
+	n_clusters = np.argmax(wgaps)+1
 	print "\n### Maximum gap %f after top %d eigenvalues." % (np.max(gaps), n_clusters)
 	print "### Maximum EV-weighted gap %f after top %d eigenvalues." % (np.max(wgaps), np.argmax(wgaps)+1)
 	sys.stdout.flush()
 	if not options.auto_cluster:
 		n_clusters = userinput("Please enter the number of clusters for PCCA+", "int", "x>0")
+	print "### Using %d clusters for PCCA+ ..."%n_clusters
 
 	print "eigenvectors"
 	print eigvectors[:, :n_clusters]

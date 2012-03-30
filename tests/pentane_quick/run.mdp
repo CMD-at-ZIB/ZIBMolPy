@@ -2,8 +2,7 @@
 constraints         =  none
 integrator          =  md
 dt                  =  0.001  ; ps
-;nsteps              =  1000000 ; 1000 ps
-nsteps              =  1000 ; 1 ps
+nsteps              =  100000 ; 100 ps
 nstcomm             =  1 
 nstxout             =  250     ; output coordinates every 0.25 ps 
 nstvout             =  0       ; frequency to write velocities to output trajectory, the last velocities are always written

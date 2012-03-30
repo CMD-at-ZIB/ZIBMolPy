@@ -1,12 +1,12 @@
 <xml>
-<run>rm -rvf pool-desc.txt nodes analysis tmp_*.xtc tmp_*.trr node_preview_from_*.pdb *fixed.mdp</run>
+<run>rm -rvf pool-desc.txt nodes analysis tmp_*.trr node_preview_from_*.pdb *fixed.mdp</run>
 
-<run>zgf_create_pool.py -C 2 -I internals_only_lin.int</run>
+<run>zgf_create_pool -C 2 -I internals_only_lin.int</run>
 <match-stdout>
 'gr_threshold': 1.1,
 </match-stdout>
 
-<run>zgf_create_nodes.py -E 3 -L 1 -K 5 -s 123</run>
+<run>zgf_create_nodes -E 3 -L 1 -K 5 -s 123</run>
 <match-stdout>
 Discretization overview:
 - Variance per int of presampling trajectory:
@@ -25,7 +25,7 @@ theta_mean: 0.913106, theta_median: 1.188795
 alpha (from theta_median): 2.008914
 </match-stdout>
 
-<run>zgf_setup_nodes.py</run>
+<run>zgf_setup_nodes</run>
 
 
 </xml>

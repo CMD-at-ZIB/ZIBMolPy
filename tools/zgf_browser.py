@@ -16,7 +16,6 @@ import pkgutil
 
 import ZIBMolPy.plots
 from ZIBMolPy.pool import Pool
-from ZIBMolPy.gromacs import read_mdp_file
 import pango # Pango is a library for rendering internationalized texts
 import gobject
 import gtk
@@ -34,7 +33,7 @@ from matplotlib.figure import Figure
 from matplotlib.backends.backend_gtkagg import FigureCanvasGTKAgg as FigureCanvas
 
 
-WIKI_URL = "https://wiki.kobv.de/confluence/display/AGCMD/ZIBMolPy"
+WIKI_URL = "https://github.com/CMD-at-ZIB/ZIBMolPy/wiki"
 
 
 #===============================================================================
@@ -253,7 +252,7 @@ class Statusbar(gtk.Statusbar):
 	
 
 	def update(self):
-		if(not self.board.pool):
+		if(len(self.board.pool)==0):
 			return
 		
 		msg_parts = []
@@ -265,17 +264,15 @@ class Statusbar(gtk.Statusbar):
 		n_active = len(self.board.pool)-n_refined
 		if(n_active > 0):
 			size_msg += "+%d"%n_active
-		n_needy = len(self.board.pool.where("state != 'converged'"))-n_refined
+		n_needy = len(self.board.pool.where("state != 'converged'")) - n_refined
 		if(n_needy > 0):
 			size_msg += "(%d)"%n_needy
 
 		msg_parts.append(size_msg)
 	
-		if(self.board.pool.alpha):
+		if(self.board.pool.alpha!=None):
 			msg_parts.append("α=%.2f"%self.board.pool.alpha)
 		
-		mdp = read_mdp_file(self.board.pool.mdp_fn)
-		t_default = float(mdp['dt']) * float(mdp['nsteps']) #time of one default run
 		t_left = 0 #time still needed (estimate) 
 		t_used = 0 #time already used
 		
@@ -283,15 +280,14 @@ class Statusbar(gtk.Statusbar):
 			if(not hasattr(n,"extensions_max")):
 				continue #this is probably the root-node
 			expected_exts = n.extensions_max/2.0 #how many extension do we expect?
-			if n.state in ("converged", "refined", "not-converged"):
-				t_used += t_default + n.extensions_length * n.extensions_counter
+			if n.is_sampled:
+				t_used += n.sampling_length + n.extensions_length * n.extensions_counter
 			elif(n.extensions_counter == 0):
-				t_left += t_default +  n.extensions_length * expected_exts 
+				t_left += n.sampling_length +  n.extensions_length * expected_exts 
 			else:
-				t_used += t_default + n.extensions_length * n.extensions_counter
+				t_used += n.sampling_length + n.extensions_length * n.extensions_counter
 				t_left +=  n.extensions_length * max(1, expected_exts - n.extensions_counter)
 		
-		#n_done = len(self.board.pool.where('state in ("converged", "refined", "not-converged")'))
 		msg_parts.append("time-used=%d ps"%t_used)
 		msg_parts.append("time-left (est.)=%d ps"%t_left)
 		ctx = self.get_context_id("foobar")
@@ -317,6 +313,7 @@ class Menubar(gtk.MenuBar):
 		
 		self.tool_buttons = []
 		all_tools = [path.basename(fn)[:-3] for fn in glob(path.dirname(sys.argv[0])+"/zgf_*.py")]
+		 
 		PIPELINE_TOOLS = ("zgf_create_pool", "zgf_create_nodes", "zgf_setup_nodes", "zgf_grompp", "zgf_mdrun", "zgf_refine", "zgf_reweight", "zgf_analyze")
 		other_tools = sorted([t for t in all_tools if t not in PIPELINE_TOOLS and t!="zgf_browser"])
 		self.mk_tools_menu(PIPELINE_TOOLS, "Pipeline", accelerate=True)
@@ -597,7 +594,7 @@ class StartDialog(gtk.Dialog):
 		gtk.Dialog.__init__(self, title=zgf_command)
 		self.command = zgf_command
 		self.resize(350,400)
-		tooltips = gtk.Tooltips()
+		#tooltips = gtk.Tooltips()
 		self.module = __import__(zgf_command)
 		self.entries = {}
 		
@@ -626,7 +623,8 @@ class StartDialog(gtk.Dialog):
 				label.set_width_chars(18)
 				hbox.pack_start(label, expand=False)
 				hbox.pack_start(w, expand=True)
-				tooltips.set_tip(hbox, o.help)
+				#tooltips.set_tip(hbox, o.help)
+				hbox.set_tooltip_text(o.help)
 				self.vbox.pack_start(hbox, expand=False)
 				self.entries[o.long_name] = w
 		
@@ -647,7 +645,7 @@ class StartDialog(gtk.Dialog):
 	#---------------------------------------------------------------------------
 	def on_clicked(self, widget):
 		if(widget.get_label() == "gtk-ok"):
-			cmd = [self.command+".py"]
+			cmd = [self.command]
 			if(hasattr(self.module, "options_desc")):
 				cmd += ["--gui"]
 				for o in self.module.options_desc:
@@ -819,7 +817,7 @@ class CoordinateList(gtk.TreeView):
 #===============================================================================
 class NodeList(gtk.TreeView):
 	def __init__(self, board):
-		liststore = gtk.ListStore(str, str, str, str, bool, str, str, bool, bool, bool)
+		liststore = gtk.ListStore(str, str, str, bool, str, bool, str, str, bool, bool, bool)
 		gtk.TreeView.__init__(self, liststore)
 		self.board = board
 		self.board.listeners.append(self.update)
@@ -833,7 +831,7 @@ class NodeList(gtk.TreeView):
 		
 		renderer2 = gtk.CellRendererToggle()
 		renderer2.connect('toggled', self.on_toggled_convlog)
-		
+				
 		renderer3 = gtk.CellRendererToggle()
 		renderer3.connect('toggled', self.on_toggled_weightlog)
 		
@@ -843,15 +841,18 @@ class NodeList(gtk.TreeView):
 		renderer5 = gtk.CellRendererToggle()
 		renderer5.connect('toggled', self.on_toggled_mdlog)
 		
+		renderer6 = gtk.CellRendererToggle()
+				
 		self.append_column(gtk.TreeViewColumn("Name", renderer1, text=1))
 		self.append_column(gtk.TreeViewColumn("State", renderer1, text=2))
-		self.append_column(gtk.TreeViewColumn("Extension", renderer1, text=3))
-		self.append_column(gtk.TreeViewColumn("ConvLog", renderer2, active=4))
-		self.append_column(gtk.TreeViewColumn("Weight (dir.)", renderer1, text=5))
-		self.append_column(gtk.TreeViewColumn("Weight (corr.)", renderer1, text=6))
-		self.append_column(gtk.TreeViewColumn("WeightLog", renderer3, active=7))
-		self.append_column(gtk.TreeViewColumn("Trajectory", renderer4, active=8))
-		self.append_column(gtk.TreeViewColumn("MDLog", renderer5, active=9))
+		self.append_column(gtk.TreeViewColumn("Restrained", renderer6, active=3))
+		self.append_column(gtk.TreeViewColumn("Extension", renderer1, text=4))
+		self.append_column(gtk.TreeViewColumn("ConvLog", renderer2, active=5))
+		self.append_column(gtk.TreeViewColumn("Weight (dir.)", renderer1, text=6))
+		self.append_column(gtk.TreeViewColumn("Weight (corr.)", renderer1, text=7))
+		self.append_column(gtk.TreeViewColumn("WeightLog", renderer3, active=8))
+		self.append_column(gtk.TreeViewColumn("Trajectory", renderer4, active=9))
+		self.append_column(gtk.TreeViewColumn("MDLog", renderer5, active=10))
 		self.append_column(gtk.TreeViewColumn("")) # placeholder
 						 
 
@@ -938,7 +939,7 @@ class NodeList(gtk.TreeView):
 			if('weight_corrected' in n.obs):
 				weight_corrected = "%1.10f"%n.obs.weight_corrected
 				
-			row = [color, n.name, n.state, ext_txt, n.has_convergence_log, weight_direct, weight_corrected, n.has_reweighting_log, n.has_trajectory, n.has_mdrun_log]
+			row = [color, n.name, n.state, n.has_restraints, ext_txt, n.has_convergence_log, weight_direct, weight_corrected, n.has_reweighting_log, n.has_trajectory, n.has_mdrun_log]
 			
 			# Updating the entire list, without clearing it. 
 			# This preserves the selection and the up/down-keys still work :-)

@@ -51,7 +51,7 @@ Frame weights
 from ZIBMolPy.constants import AVOGADRO, BOLTZMANN
 from ZIBMolPy.restraint import DihedralRestraint, DistanceRestraint
 from ZIBMolPy.ui import Option, OptionsList
-from ZIBMolPy.utils import get_phi
+from ZIBMolPy.phi import get_phi, get_phi_potential
 from ZIBMolPy.pool import Pool
 from ZIBMolPy import gromacs
 import zgf_cleanup
@@ -70,7 +70,7 @@ CRITICAL_FRAME_WEIGHT = 5.0
 
 
 options_desc = OptionsList([
-	Option("s", "ignore-sol", "bool", "ignore SOL energy contribution (recommended)", default=True),
+	Option("s", "sol-energy", "bool", "include SOL energy contribution", default=False),
 	Option("c", "ignore-convergence", "bool", "reweight despite not-converged", default=False),
 	Option("m", "method", "choice", "reweighting method", choices=("entropy", "direct", "presampling")),
 	Option("t", "presamp-temp", "float", "presampling temp", default=1000),
@@ -81,7 +81,7 @@ sys.modules[__name__].__doc__ += options_desc.epytext() # for epydoc
 
 def is_applicable():
 	pool = Pool()
-	return( len(pool) > 1  and len(pool.where("state in ('converged', 'not-converged', 'refined')")) == len(pool) )
+	return( len(pool) > 1  and len(pool.where("is_sampled")) == len(pool) )
 
 
 
@@ -94,9 +94,10 @@ def main():
 	
 	pool = Pool()
 
-	not_reweightable = "state not in ('refined','converged')"
+	#not_reweightable = "state not in ('refined','converged')"
+	not_reweightable = "isa_partition and state!='converged'"
 	if options.ignore_convergence:
-		not_reweightable = "state not in ('refined','converged','not-converged')"
+		not_reweightable = "isa_partition and state not in ('converged','not-converged')"
 
 	if pool.where(not_reweightable):
 		print "Pool can not be reweighted due to the following nodes:"		
@@ -104,12 +105,12 @@ def main():
 			print "Node %s with state %s."%(bad_guy.name, bad_guy.state)
 		sys.exit("Aborting.")
 		
-	active_nodes = pool.where("state != 'refined'")
+	active_nodes = pool.where("isa_partition")
 	assert(len(active_nodes) == len(active_nodes.multilock())) # make sure we lock ALL nodes
 
 	for n in active_nodes:
 		check_restraint_energy(n)
-	
+
 	# find out about number of energygrps
 	mdp_file = gromacs.read_mdp_file(pool.mdp_fn)
 	energygrps = [str(egrp) for egrp in re.findall('[\S]+', mdp_file["energygrps"])]
@@ -118,17 +119,17 @@ def main():
 		moi_energies = False # Gromacs energies are named differently when there are less than two energygrps :(
 
 	if(options.method == "direct"): 
-		reweight_direct(active_nodes, moi_energies, options.ignore_sol, options.save_refpoints)
+		reweight_direct(active_nodes, moi_energies, options.sol_energy, options.save_refpoints)
 	elif(options.method == "entropy"):
-		reweight_entropy(active_nodes, moi_energies, options.ignore_sol, options.save_refpoints)
+		reweight_entropy(active_nodes, moi_energies, options.sol_energy, options.save_refpoints)
 	elif(options.method == "presampling"):
-		reweight_presampling(active_nodes, options.presamp_temp, moi_energies, options.ignore_sol)
+		reweight_presampling(active_nodes, options.presamp_temp, moi_energies, options.sol_energy)
 	else:
 		raise(Exception("Method unkown: "+options.method))
 	
 	weight_sum = np.sum([n.tmp['weight'] for n in active_nodes])
 	
-	print "Thermodynamic weights calculated by method '%s' (ignore-sol=%s):"%(options.method, options.ignore_sol)
+	print "Thermodynamic weights calculated by method '%s' (sol-energy=%s):"%(options.method, options.sol_energy)
 	for n in active_nodes:
 		n.obs.weight_direct = n.tmp['weight'] / weight_sum
 		if(options.method == "direct"):
@@ -143,20 +144,18 @@ def main():
 
 
 #===============================================================================
-def reweight_direct(nodes, moi_energies, ignore_sol, save_ref=False):
+def reweight_direct(nodes, moi_energies, sol_energy, save_ref=False):
 	print "Direct free energy reweighting: see Klimm, Bujotzek, Weber 2011"
 	
 	beta = nodes[0].pool.thermo_beta
 	
 	for n in nodes:
 		# get potential V and substract penalty potential
-		energies = load_energies(n, with_penalty=False, with_sol=not(ignore_sol), with_moi_energies=moi_energies)
+		energies = load_energies(n, with_penalty=False, with_sol=sol_energy, with_moi_energies=moi_energies)
 
 		frame_weights = n.frameweights
 		phi_values = n.phi_values
-		#phi_weighted_energies = energies - (1/beta)*np.log(phi_values)
-		#phi_weighted_energies = energies - (1/get_beta(nodes[0].pool.temperature))*np.log(phi_values+1.0e-40) # avoid log(0.0) TODO Marcus-check
-		phi_weighted_energies = energies - (1/nodes[0].pool.thermo_beta)*np.log(phi_values+1.0e-40) # avoid log(0.0) TODO Marcus-check
+		phi_weighted_energies = energies + get_phi_potential(n.trajectory, n)
 
 		# define evaluation region where sampling is rather dense, e. g. around mean potential energy with standard deviation of potential energy
 		n.obs.mean_V = np.average(phi_weighted_energies, weights=frame_weights)
@@ -203,7 +202,7 @@ def reweight_direct(nodes, moi_energies, ignore_sol, save_ref=False):
 
 
 #===============================================================================
-def reweight_entropy(nodes, moi_energies, ignore_sol, save_ref=False):
+def reweight_entropy(nodes, moi_energies, sol_energy, save_ref=False):
 	print "Entropy reweighting: see Klimm, Bujotzek, Weber 2011"
 	
 	# calculate variance of internal coordinates
@@ -219,14 +218,11 @@ def reweight_entropy(nodes, moi_energies, ignore_sol, save_ref=False):
 		output("======= Starting node reweighting %s"%datetime.now())
 		
 		# get potential V and substract penalty potential
-		energies = load_energies(n, with_penalty=False, with_sol=not(ignore_sol), with_moi_energies=moi_energies)
+		energies = load_energies(n, with_penalty=False, with_sol=sol_energy, with_moi_energies=moi_energies)
 
 		frame_weights = n.frameweights
 		phi_values = n.phi_values
-
-		#phi_weighted_energies = energies - (1/get_beta(nodes[0].pool.temperature))*np.log(phi_values)
-		#phi_weighted_energies = energies - (1/get_beta(nodes[0].pool.temperature))*np.log(phi_values+1.0e-40) # avoid log(0.0) TODO Marcus-check
-		phi_weighted_energies = energies - (1/nodes[0].pool.thermo_beta)*np.log(phi_values+1.0e-40) # avoid log(0.0) TODO Marcus-check
+		phi_weighted_energies = energies + get_phi_potential(n.trajectory, n)
 	
 		# calculate mean V
 		n.obs.mean_V = np.average(phi_weighted_energies, weights=frame_weights)
@@ -271,7 +267,7 @@ def reweight_entropy(nodes, moi_energies, ignore_sol, save_ref=False):
 	
 
 #===============================================================================
-def reweight_presampling(nodes, presamp_temp, moi_energies, ignore_sol):
+def reweight_presampling(nodes, presamp_temp, moi_energies, sol_energy):
 	print "Presampling analysis reweighting: see formula 18 in Fackeldey, Durmaz, Weber 2011"
 	
 	# presampling data
@@ -292,12 +288,12 @@ def reweight_presampling(nodes, presamp_temp, moi_energies, ignore_sol):
 		output("======= Starting node reweighting %s"%datetime.now())
 		
 		# get potential V and substract penalty potential
-		energies = load_energies(n, with_penalty=False, with_sol=not(ignore_sol), with_moi_energies=moi_energies)
+		energies = load_energies(n, with_penalty=False, with_sol=sol_energy, with_moi_energies=moi_energies)
 
 		frame_weights = n.frameweights
 		phi_values = n.phi_values
-		#phi_weighted_energies = energies - (1/beta_samp)*np.log(phi_values)
-		phi_weighted_energies = energies - (1/nodes[0].pool.thermo_beta)*np.log(phi_values+1.0e-40) # avoid log(0.0) TODO Marcus-check
+		phi_weighted_energies = energies + get_phi_potential(n.trajectory, n)
+
 
 		# calculate mean V and standard deviation
 		n.obs.mean_V = np.average(phi_weighted_energies, weights=frame_weights)
@@ -350,6 +346,7 @@ def load_energies(node, with_penalty=True, with_sol=True, with_moi_energies=True
 	
 	xvg_fn = mktemp(suffix=".xvg", dir=node.dir)
 	cmd = ["g_energy", "-dp", "-f", node.dir+"/ener.edr", "-o", xvg_fn, "-sum"]
+
 	print("Calling: "+(" ".join(cmd)))
 	p = Popen(cmd, stdin=PIPE)
 	p.communicate(input=("\n".join(energy_terms)+"\n"))

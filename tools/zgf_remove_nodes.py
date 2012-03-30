@@ -57,7 +57,7 @@ def main():
 	pool.reload_nodes()
 	
 	#TODO: this code-block also exists in zgf_create_node
-	if(len(pool.where("state != 'refined'")) < 2):
+	if(len(pool.where("isa_partition")) < 2):
 		pool.alpha = None
 	elif(options.methodalphas == "theta"):
 		pool.alpha = zgf_create_nodes.calc_alpha_theta(pool)
