@@ -59,7 +59,6 @@ in L{zgf_create_nodes}, which determines the associated gromacs-restraints.
 
 import numpy as np
 import re
-import math
 from ZIBMolPy.io.pdb import PdbFile
 from ZIBMolPy.io.trr import TrrFile
 from ZIBMolPy.utils import all #pylint: disable=W0622
@@ -684,7 +683,7 @@ class DihedralCoordinate(InternalCoordinate):
 	@property
 	def plot_range(self):
 		""" Used by L{Pool.coord_range<ZIBMolPy.pool.Pool.coord_range>}."""
-		return(-1*math.pi, math.pi)
+		return(-1*np.pi, np.pi)
 	
 	def plot_scale(self, data):
 		return(np.degrees(data))

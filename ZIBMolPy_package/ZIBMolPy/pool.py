@@ -67,7 +67,7 @@ class NodeList(list):
 			values = ints.getcoord(coord)
 			(lower2, upper2) = (min(values), max(values))
 			(lower, upper) = (min(lower, lower2), max(upper, upper2))
-		slack = 0			
+		slack = 0
 		if lin_slack:
 			slack = 0.1*(upper - lower)
 		return( np.linspace(lower-slack, upper+slack, num=num) )
@@ -83,12 +83,12 @@ class NodeList(list):
 			time.sleep(1)
 			
 		return(self.where("owns_lock"))
-	
+
 	#---------------------------------------------------------------------------
 	def unlock(self):
 		for n in self:
 			n.unlock()
-	
+
 	#---------------------------------------------------------------------------
 	def append(self, n):
 		if(n not in self):
