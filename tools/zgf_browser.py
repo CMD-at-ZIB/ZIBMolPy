@@ -233,10 +233,10 @@ class AboutDialog(gtk.AboutDialog):
 		gtk.AboutDialog.__init__(self)
 		citation = "M. Weber, S. Kube, L. Walter, P. Deuflhard:\nStable computation of probability densities\nfor metastable dynamical systems,\nMultiscale Board. Simul. 6(2):396-416, 2007"
 		self.set_name("ZIBgridfree")
-		self.set_version("v0.0")
+		self.set_version("v1.0")
 		self.set_copyright("© Zuse Institut Berlin"+"\nPlease cite:\n"+citation)
 		self.set_comments("pool-format: "+str(Pool.FORMAT_VERSION))
-		#self.set_license("unkown license")
+		#self.set_license("LPGL 3.0")
 		#self.set_website(WIKI_URL)
 		#self.set_website_label("wiki of the ZIBMolPy project")
 		self.set_authors(["Ole Schütt", "Alexander Bujotzek", "Marcus Weber"])

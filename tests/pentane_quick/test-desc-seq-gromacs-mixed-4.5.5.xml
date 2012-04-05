@@ -1,0 +1,146 @@
+<xml>
+<run>rm -rvf pool-desc.txt nodes analysis tmp_*.trr node_preview_from_*.pdb *fixed.mdp</run>
+
+<run>zgf_create_pool -C 2 -G 3 -p topol-4.5.5.top -I internals_mixed.int</run>
+
+<run>zgf_create_nodes -E 2 -L 1 -l 1 -K 5 -s 123</run>
+<match-stdout>
+Discretization overview:
+- Variance per int of presampling trajectory:
+[[ 1.98297083  1.88333502  0.00227632]]
+- Variance per int of chosen nodes:
+[[  1.39790128e+00   2.13827903e+00   7.34873858e-04]]
+- Relative variance per int of chosen nodes:
+[[ 0.70495302  1.13536838  0.3228348 ]]
+</match-stdout>
+<match-stdout>
+### Obtain alpha: theta ###
+theta_mean: 1.994934, theta_median: 1.968575
+alpha (from theta_median): 0.732607
+</match-stdout>
+
+<run>zgf_setup_nodes</run>
+<match-stdout>
+node0001: pdb vs internals deviation: 4.30e-08
+node0002: pdb vs internals deviation: 6.64e-08
+node0003: pdb vs internals deviation: 7.66e-08
+node0004: pdb vs internals deviation: 9.93e-08
+node0005: pdb vs internals deviation: 6.76e-08
+</match-stdout>
+
+<run>zgf_grompp</run>
+
+<run>zgf_cleanup</run>
+<match-stdout>
+Node node0000 is refined and not locked.
+Node node0001 is mdrun-able and not locked.
+Node node0002 is mdrun-able and not locked.
+Node node0003 is mdrun-able and not locked.
+Node node0004 is mdrun-able and not locked.
+Node node0005 is mdrun-able and not locked.
+</match-stdout>
+
+<run>zgf_mdrun -sr</run>
+<match-stdout>
+Loading trr-file: nodes/node0001/node0001.trr... 
+done.
+W_chain_vars [ 0.02582654  0.00758218  0.00024637]
+B_total_var [ 0.00126231  0.01735361  0.00017736]
+</match-stdout>
+<match-stdout>
+Loading trr-file: nodes/node0002/node0002.trr... 
+done.
+W_chain_vars [  1.14312752e-02   7.63157478e-03   2.32256272e-06]
+B_total_var [  5.93296723e-04   5.13207685e-03   3.04463050e-08]
+</match-stdout>
+<match-stdout>
+Loading trr-file: nodes/node0003/node0003.trr... 
+done.
+W_chain_vars [ 0.01687412  0.00514732  0.00011026]
+B_total_var [  8.74734011e-03   1.54479328e-02   1.41169556e-06]
+</match-stdout>
+<match-stdout>
+Loading trr-file: nodes/node0004/node0004.trr... 
+done.
+W_chain_vars [  2.93606276e-02   2.08488081e-02   1.93270402e-05]
+B_total_var [  3.35289388e-05   5.91198272e-02   3.39017428e-05]
+</match-stdout>
+<match-stdout>
+Loading trr-file: nodes/node0005/node0005.trr... 
+done.
+W_chain_vars [  8.94117708e-02   3.76777844e-03   1.96737855e-05]
+B_total_var [  1.36552700e-01   6.96295386e-03   8.74134688e-07]
+</match-stdout>
+
+<run>zgf_cleanup</run>
+<match-stdout>
+Node node0000 is refined and not locked.
+Node node0001 is converged and not locked.
+Node node0002 is converged and not locked.
+Node node0003 is converged and not locked.
+Node node0004 is converged and not locked.
+Node node0005 is converged and not locked.
+
+</match-stdout>
+
+<run>zgf_reweight -c</run>
+<match-stdout>
+  unweighted mean V: 83.2802398682 [kJ/mol], without penalty potential
+  phi-weighted mean V: 83.9636004806 [kJ/mol], without penalty potential
+  weighted mean V: 85.393947 [kJ/mol]
+  energy region (=weighted V standard deviation): 29.740725 [kJ/mol]
+  evaluation region (=conjugate variance): 0.072313
+  number of refpoints: 3
+Thermodynamic weights calculated by method 'entropy' (sol-energy=False):
+  node0005 with A: 83.108392 [kJ/mol] and weight: 0.848980
+  node0004 with A: 87.622942 [kJ/mol] and weight: 0.138952
+  node0003 with A: 93.925408 [kJ/mol] and weight: 0.011105
+  node0002 with A: 100.039543 [kJ/mol] and weight: 0.000957
+  node0001 with A: 112.893805 [kJ/mol] and weight: 0.000006
+</match-stdout>
+
+<run>zgf_analyze -c</run>
+<match-stdout>
+### Node weights after symmetrization of S matrix:
+node0001: initial weight: 0.000006, corrected weight: 0.417642, weight change: 0.417636
+node0002: initial weight: 0.000957, corrected weight: 0.162714, weight change: 0.161756
+node0003: initial weight: 0.011105, corrected weight: 0.095806, weight change: 0.084701
+node0004: initial weight: 0.138952, corrected weight: 0.246559, weight change: 0.107607
+node0005: initial weight: 0.848980, corrected weight: 0.077279, weight change: 0.771701
+
+### Sorted eigenvalues of symmetrized S matrix:
+EV0001: 1.000000, gap to next: 0.047757, EV-weighted gap to next: 0.047757
+EV0002: 0.952243, gap to next: 0.050514, EV-weighted gap to next: 0.048102
+EV0003: 0.901729, gap to next: 0.026928, EV-weighted gap to next: 0.024281
+EV0004: 0.874801, gap to next: 0.139740, EV-weighted gap to next: 0.122244
+EV0005: 0.735062, gap to next: 0.000000, EV-weighted gap to next: 0.000000
+</match-stdout>
+<match-stdout>
+Q_c matrix:
+[[-0.05878334  0.04388973  0.02545391 -0.0105603 ]
+ [ 0.02430266 -0.07759614  0.01537795  0.03791553]
+ [ 0.0086629   0.00962427 -0.07863654  0.06034936]
+ [ 0.00042131  0.01788407  0.03790514 -0.05621053]]
+</match-stdout>
+<match-stdout>
+cluster weights (calculated twice for checking):
+[-0.12494614 -0.19766113 -0.27369308 -0.40369948]
+[ 0.12497483  0.1977002   0.27379203  0.40353257]
+</match-stdout>
+
+<run>zgf_extract_conformations</run>
+<match-stdout>
+### Extraction summary ###
+node threshold: 0.5, frame threshold: 0.5
+Cluster trajectories were written to ./analysis/:
+cluster1.trr [3 frames] from node(s):
+[2]
+cluster2.trr [3 frames] from node(s):
+[1]
+cluster3.trr [2 frames] from node(s):
+[3]
+cluster4.trr [3 frames] from node(s):
+[0]
+</match-stdout>
+
+</xml>
