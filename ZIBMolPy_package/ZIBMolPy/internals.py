@@ -26,34 +26,35 @@ Please note:
 Labels
 ======
 	Each internal coordinate comes with a standard label stating its type and index. Optional custom labels can be specified within the int-file as::
-		(0-1-2-4){'label':'cat'},(1-2-3-4), ...
+		(0-1-2-4){'label':'cat'},(1-2-3-4){'label':'puppy'}
 
-	which will overwrite the standard label "dih_000" with "cat".
+	which will overwrite the standard labels "dih_000" and "dih_001" with "cat" and "puppy".
 
 Weights and Offsets
 ===================
-	Angle coordinates can take on only values between -2S{pi} and +2S{pi}.
-	But distance coordinates can in principle take on any positiv value.
-	This can lead to problems where distance coordinates are overly dominate.
+	Whereas angle coordinates can take on only values between -S{pi} and +S{pi}, distance coordinates can, in principle, take on any positive value.
+	This can lead to problems where distance coordinates with a large absolute value are overly dominant.
 	
-	Therefore, distance coordinates also offer a weight and an offset paramter::
-		(0-4){'weight':2.0, 'offset':1.5},(20-46){'label':'puppy', 'weight':2.0, 'offset':-0.4}
+	Therefore, distance coordinates also offer a weight and an offset parameter::
+		(0-4){'weight':14.82, 'offset':1.5},(20-46){'weight':62.48, 'offset':-0.4}
+
+	Linear coordinates can be weighted and normalized automatically by calling L{zgf_create_pool} with option '--balance-linears'.
 	
 	See also L{LinearCoordinate}.
 
 
 Custom Coordinate
 =================
-One can create his own subclasses of L{InternalCoordinate}.
+One can create his own sub classes of L{InternalCoordinate}.
 
-They can be addressed in the int-file by providing a 'type' argument e.g.::
+They can be addressed in the int-file by providing a 'type' argument, e.g.::
 	(3-1-4){'type':'Funny', 'foobar':'cat'},...
 
 This will call the following constructor::
 	FunnyCoordinate(3, 1, 4, foobar='cat')
 	
-Besides writting a subclass one also has make some adjustments to the code 
-in L{zgf_create_nodes}, which determines the associated gromacs-restraints.
+Besides writing a subclass, one also has make some adjustments to the code 
+in L{zgf_create_nodes}, which determines the associated Gromacs restraints.
 
 """
 

@@ -152,10 +152,10 @@ def generate_topology(pool):
 			elif isinstance(r, DistanceRestraint):
 				(r0, r1, r2, k) = r.params
 				
-				r0 = r0/c.weight + c.offset #TODO:really??? 
-				r1 = r1/c.weight + c.offset #TODO:really???
-				r2 = r2/c.weight + c.offset #TODO:really???
-				k  = k/pow(c.weight,2)    #TODO:really???
+				r0 = r0/c.weight + c.offset #TODO could use c.plot_scale(r)
+				r1 = r1/c.weight + c.offset #TODO could use c.plot_scale(r)
+				r2 = r2/c.weight + c.offset #TODO could use c.plot_scale(r)
+				k  = k/pow(c.weight,2)
 				
 				#t = tuple( rel_atoms + [disres_idx] + [r0, r1, r2, k] )
 				#newline = "%d  %d  1  %d  1  %.10f  %.10f  %.10f  %.10f; ZIBgridfree\n" % t

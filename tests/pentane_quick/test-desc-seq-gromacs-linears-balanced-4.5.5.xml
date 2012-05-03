@@ -21,11 +21,16 @@ alpha (from theta_median): 5.193972
 
 <run>zgf_setup_nodes</run>
 <match-stdout>
-node0001: pdb vs internals deviation: 1.35e-07
-node0002: pdb vs internals deviation: 2.25e-07
-node0003: pdb vs internals deviation: 2.21e-07
-node0004: pdb vs internals deviation: 8.40e-08
-node0005: pdb vs internals deviation: 3.87e-07
+node0001: pdb vs internals deviation: 1.36e-06
+node0002: pdb vs internals deviation: 6.37e-07
+node0003: pdb vs internals deviation: 1.98e-06
+node0004: pdb vs internals deviation: 1.11e-06
+node0005: pdb vs internals deviation: 1.46e-06
+node0006: pdb vs internals deviation: 6.94e-07
+node0007: pdb vs internals deviation: 1.22e-06
+node0008: pdb vs internals deviation: 1.55e-06
+node0009: pdb vs internals deviation: 1.50e-06
+node0010: pdb vs internals deviation: 1.11e-06
 </match-stdout>
 
 <run>zgf_grompp</run>
@@ -38,38 +43,73 @@ Node node0002 is mdrun-able and not locked.
 Node node0003 is mdrun-able and not locked.
 Node node0004 is mdrun-able and not locked.
 Node node0005 is mdrun-able and not locked.
+Node node0006 is mdrun-able and not locked.
+Node node0007 is mdrun-able and not locked.
+Node node0008 is mdrun-able and not locked.
+Node node0009 is mdrun-able and not locked.
+Node node0010 is mdrun-able and not locked.
 </match-stdout>
 
 <run>zgf_mdrun -sr</run>
 <match-stdout>
 Loading trr-file: nodes/node0001/node0001.trr... 
 done.
-W_chain_vars [ 0.0167427   0.04591266  0.0155512 ]
-B_total_var [ 0.00387732  0.00756489  0.01416794]
+W_chain_vars [ 0.12360528  0.06023261]
+B_total_var [ 0.00432287  0.17952573]
 </match-stdout>
 <match-stdout>
 Loading trr-file: nodes/node0002/node0002.trr... 
 done.
-W_chain_vars [  1.10436130e-02   4.06206338e-03   1.95446877e-05]
-B_total_var [  1.84534831e-04   1.49137087e-05   1.09471488e-06]
+W_chain_vars [ 0.15784521  0.2767967 ]
+B_total_var [ 0.53713107  1.37372339]
 </match-stdout>
 <match-stdout>
 Loading trr-file: nodes/node0003/node0003.trr... 
 done.
-W_chain_vars [ 0.00955694  0.0334263   0.01687101]
-B_total_var [ 0.07733163  0.00440871  0.00070213]
+W_chain_vars [ 0.01667064  0.12962504]
+B_total_var [ 0.0007223   0.00990208]
 </match-stdout>
 <match-stdout>
 Loading trr-file: nodes/node0004/node0004.trr... 
 done.
-W_chain_vars [ 0.01713731  0.04018443  0.00349119]
-B_total_var [ 0.0107809   0.00091719  0.00017196]
+W_chain_vars [ 0.05720134  0.45918201]
+B_total_var [ 0.02480344  1.46822977]
 </match-stdout>
 <match-stdout>
 Loading trr-file: nodes/node0005/node0005.trr... 
 done.
-W_chain_vars [ 0.0187586   0.03517106  0.01207998]
-B_total_var [ 0.00069949  0.01071107  0.0002367 ]
+W_chain_vars [ 0.02936946  0.04400212]
+B_total_var [ 0.01447136  0.03555357]
+</match-stdout>
+<match-stdout>
+Loading trr-file: nodes/node0006/node0006.trr... 
+done.
+W_chain_vars [ 0.0232951   0.47798227]
+B_total_var [ 0.04523745  0.14321066]
+</match-stdout>
+<match-stdout>
+Loading trr-file: nodes/node0007/node0007.trr... 
+done.
+W_chain_vars [ 0.00350332  0.04869096]
+B_total_var [ 0.01014173  0.4131034 ]
+</match-stdout>
+<match-stdout>
+Loading trr-file: nodes/node0008/node0008.trr... 
+done.
+W_chain_vars [ 0.0091146   0.49927032]
+B_total_var [  1.06498548e-04   1.26802638e-01]
+</match-stdout>
+<match-stdout>
+Loading trr-file: nodes/node0009/node0009.trr... 
+done.
+W_chain_vars [ 0.0015873   0.04902476]
+B_total_var [  1.10601017e-03   1.27969997e-06]
+</match-stdout>
+<match-stdout>
+Loading trr-file: nodes/node0010/node0010.trr... 
+done.
+W_chain_vars [ 0.0152262   0.06633883]
+B_total_var [ 0.04072939  0.04428378]
 </match-stdout>
 
 <run>zgf_cleanup</run>
@@ -80,7 +120,11 @@ Node node0002 is converged and not locked.
 Node node0003 is converged and not locked.
 Node node0004 is converged and not locked.
 Node node0005 is converged and not locked.
-
+Node node0006 is converged and not locked.
+Node node0007 is converged and not locked.
+Node node0008 is converged and not locked.
+Node node0009 is converged and not locked.
+Node node0010 is converged and not locked.
 </match-stdout>
 
 <run>zgf_reweight -c</run>
@@ -97,6 +141,8 @@ Thermodynamic weights calculated by method 'entropy' (sol-energy=False):
   node0002 with A: 113.915155 [kJ/mol] and weight: 0.000012
   node0001 with A: 129.778020 [kJ/mol] and weight: 0.000000
 </match-stdout>
+
+<!--
 
 <run>zgf_analyze -c</run>
 <match-stdout>
@@ -131,5 +177,7 @@ cluster1.trr [3 frames] from node(s):
 cluster2.trr [3 frames] from node(s):
 [1, 2]
 </match-stdout>
+
+-->
 
 </xml>

@@ -262,7 +262,6 @@ def reweight_entropy(nodes, moi_energies, sol_energy, save_ref=False):
 
 	nodes.sort(key = lambda n: n.obs.A) # sort in ascending order by free energy values		
 	for (n1, n2) in zip(nodes[1:], nodes[:-1]): # calculate and normalize weights
-		#n1.tmp['weight'] = np.exp(-get_beta(nodes[0].pool.temperature)*( n1.obs.A - n2.obs.A )) * n2.tmp['weight']
 		n1.tmp['weight'] = np.exp(-nodes[0].pool.thermo_beta*( n1.obs.A - n2.obs.A )) * n2.tmp['weight']
 	
 
@@ -274,7 +273,6 @@ def reweight_presampling(nodes, presamp_temp, moi_energies, sol_energy):
 	presampling_internals = nodes[0].pool.root.trajectory # alternatively pool[0].trajectory
 	
 	# presampling and sampling beta
-	#beta_samp = get_beta(nodes[0].pool.temperature)
 	beta_samp = nodes[0].pool.thermo_beta
 	beta_presamp = 1/(presamp_temp*BOLTZMANN*AVOGADRO)
 		
@@ -318,7 +316,6 @@ def reweight_presampling(nodes, presamp_temp, moi_energies, sol_energy):
 
 	nodes.sort(key = lambda n: n.obs.A) # sort in ascending order by free energy values
 	for (n1, n2) in zip(nodes[1:], nodes[:-1]): # calculate and normalize weights
-		#n1.tmp['weight'] = np.exp(-get_beta(nodes[0].pool.temperature)*( n1.obs.A - n2.obs.A )) * n2.tmp['weight']
 		n1.tmp['weight'] = np.exp(-nodes[0].pool.thermo_beta*( n1.obs.A - n2.obs.A )) * n2.tmp['weight']
 		
 
@@ -381,7 +378,8 @@ def check_restraint_energy(node):
 	if(has_dih_restraints):
 		energy_terms += ["Dih.-Rest."]
 	
-	xvg_fn = mktemp(suffix=".xvg", dir=node.dir)
+	#xvg_fn = mktemp(suffix=".xvg", dir=node.dir)
+	xvg_fn = mktemp(suffix=".xvg")
 	cmd = ["g_energy", "-dp", "-f", node.dir+"/ener.edr", "-o", xvg_fn]
 	print("Calling: "+(" ".join(cmd)))
 	p = Popen(cmd, stdin=PIPE)
@@ -399,18 +397,27 @@ def check_restraint_energy(node):
 	dis_penalty = np.zeros(node.trajectory.n_frames)
 	
 	for i, r in enumerate(node.restraints):
+		
+		# DEBUG_BEGINN
+		c = node.pool.converter[i]
+		#p = r.energy_rescaled(node.trajectory.getcoord(i), c)
 		p = r.energy(node.trajectory.getcoord(i))
+		# DEBUG_ENDE
+		
 		if(isinstance(r, DihedralRestraint)):
 			dih_penalty += p
 		elif(isinstance(r, DistanceRestraint)):
 			dis_penalty += p
 		else:
 			warn("Unkown Restraint-type: "+str(r))
+
+	dih_penalty_gmx = np.zeros(node.trajectory.n_frames)
+	dis_penalty_gmx = np.zeros(node.trajectory.n_frames)
 	
 	if(has_dih_restraints):
 		i = energy_terms.index("Dih.-Rest.") + 1 # index 0 = time of frame
-	
-		dih_diffs = np.abs(dih_penalty - energies[:,i])
+		dih_penalty_gmx = energies[:,i]
+		dih_diffs = np.abs(dih_penalty - dih_penalty_gmx)
 		max_diff = np.argmax(dih_diffs)
 		dih_diff = dih_diffs[max_diff]
 		bad_diff = max(0.006*energies[max_diff,i], 0.006)
@@ -422,10 +429,12 @@ def check_restraint_energy(node):
 	if(has_dis_restraints):
 		#i = energy_terms.index("Dis.-Rest.") + 1 # index 0 = time of frame
 		i = energy_terms.index("Restraint-Pot.") + 1 # index 0 = time of frame
-		dis_diff = np.max(np.abs(dis_penalty - energies[:,i]))
+		dis_penalty_gmx = energies[:,i]
+		dis_diff = np.max(np.abs(dis_penalty - dis_penalty_gmx))
 		print "dis_diff: ", dis_diff
 		#assert(dis_diff < 1e-6) #TODO: set reasonable threshold
-		assert(dis_diff < 1e-4) #TODO: set reasonable threshold
+
+	return( dih_penalty_gmx + dis_penalty_gmx ) # values are returned for optinal plotting
 
 #===============================================================================
 if(__name__ == "__main__"):
