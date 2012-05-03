@@ -700,7 +700,8 @@ class LinearCoordinate(InternalCoordinate):
 		InternalCoordinate.__init__(self, atoms , label)
 		self._weight = weight
 		self._offset = offset
-	
+		assert(weight > 0) #negative weights break inequalities
+		
 	def __repr__(self):
 		out = self.__class__.__name__ + "("+", ".join([str(a) for a in self.atoms])
 		if(self._label != None):
@@ -728,9 +729,20 @@ class LinearCoordinate(InternalCoordinate):
 	def from_externals(self, dx_provider):
 		# transpose puts xyz onto the first axis - easier for broadcasting
 		b = dx_provider(self._atoms[0], self._atoms[1]).transpose()
-		b_norm = np.sqrt(b[0]*b[0]+b[1]*b[1]+b[2]*b[2])
-		return(self._weight*(b_norm - self._offset))
+		b_norm_real = np.sqrt(b[0]*b[0]+b[1]*b[1]+b[2]*b[2])
+		b_norm_scaled = self.real2scaled(b_norm_real)
+		return(b_norm_scaled)
 	
+	#---------------------------------------------------------------------------
+	def real2scaled(self, real_distance):
+		scaled_distance = self._weight*(real_distance - self._offset)
+		return(scaled_distance)
+	
+	#---------------------------------------------------------------------------
+	def scaled2real(self, scaled_distance):
+		real_distance = scaled_distance/self._weight + self._offset
+		return(real_distance)
+		
 	#---------------------------------------------------------------------------
 	@staticmethod
 	def sub(a, b):
@@ -748,11 +760,12 @@ class LinearCoordinate(InternalCoordinate):
 			return(self._label)
 		return("lin_%03d"%self.index)
 
-	def plot_scale(self, data):
-		return(data/self._weight + self._offset)
+	def plot_scale(self, scaled_data):
+		return( self.scaled2real(scaled_data) )
 		
-	def plot_scaleinv(self, data):
-		return(self._weight*(data-self._offset))
+	def plot_scaleinv(self, real_data):
+		return( self.real2scaled(real_data) )
+		
 	
 	@property
 	def plot_label(self):

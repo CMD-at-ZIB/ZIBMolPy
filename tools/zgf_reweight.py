@@ -397,12 +397,8 @@ def check_restraint_energy(node):
 	dis_penalty = np.zeros(node.trajectory.n_frames)
 	
 	for i, r in enumerate(node.restraints):
-		
-		# DEBUG_BEGINN
 		c = node.pool.converter[i]
-		#p = r.energy_rescaled(node.trajectory.getcoord(i), c)
 		p = r.energy(node.trajectory.getcoord(i))
-		# DEBUG_ENDE
 		
 		if(isinstance(r, DihedralRestraint)):
 			dih_penalty += p
@@ -432,8 +428,9 @@ def check_restraint_energy(node):
 		dis_penalty_gmx = energies[:,i]
 		dis_diff = np.max(np.abs(dis_penalty - dis_penalty_gmx))
 		print "dis_diff: ", dis_diff
-		#assert(dis_diff < 1e-6) #TODO: set reasonable threshold
-
+		assert(dis_diff < 1e-6) #TODO: set reasonable threshold
+		
+			
 	return( dih_penalty_gmx + dis_penalty_gmx ) # values are returned for optinal plotting
 
 #===============================================================================
