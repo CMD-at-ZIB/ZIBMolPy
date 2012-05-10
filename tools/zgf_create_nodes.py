@@ -114,7 +114,7 @@ def main(argv=None):
 	elif(options.methodnodes == "all"):
 		chosen_idx = mknodes_all(parent)
 	else:
-		raise(Exception("Method unkown: "+options.methodnodes))
+		raise(Exception("Method unknown: "+options.methodnodes))
 
 	chosen_idx.sort() # makes preview-trajectory easier to understand 
 	if(options.write_preview):
@@ -139,7 +139,7 @@ def main(argv=None):
 	elif(options.methodalphas == "user"):
 		pool.alpha = userinput("Please enter a value for alpha", "float")
 	else:
-		raise(Exception("Method unkown: "+options.methodalphas))
+		raise(Exception("Method unknown: "+options.methodalphas))
 	
 	pool.history.append({'refined_node': (parent.name, parent.state), 'size':old_pool_size, 'alpha':old_alpha, 'timestamp':datetime.now()})
 	

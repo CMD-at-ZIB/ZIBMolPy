@@ -21,9 +21,11 @@ from ZIBMolPy.ui import OptionsList, Option
 
 import sys
 import re
+import os
 from subprocess import Popen, PIPE
 import numpy as np
 import shutil
+from tempfile import mktemp
 
 
 #===============================================================================
@@ -75,14 +77,11 @@ def main():
 	# make box and fill with solvent
 	genbox(pool, max_linear, options.bt, (options.box_x, options.box_y, options.box_z), solv_box)
 
-	# update topology files
+	# update topology files (add solvent model and ions includes)
 	update_tops(pool, solv_fn)
 
-	# grompp?? ... maybe not, because this duplicates code... make zgf_grompp smarter
-	#TODO ion support ... maybe use extra tool
-
 	for n in needy_nodes:
-		n.state = "m-grompp-able"
+		n.state = "em-grompp-able"
 		n.save()
 		n.unlock()
 
@@ -117,17 +116,16 @@ def genbox(pool, max_linear, boxtype, dims, solv_box, slack=0.1):
 	n_solmols = []
 	for n in pool.where("state == 'grompp-able'"):
 
-		editconf_pdb_fn = n.pdb_fn.rsplit(".", 1)[0] + "_editconf.pdb" #TODO if this works out, we can just overwrite n.pdb_fn
-
-		cmd = ["editconf", "-f", n.pdb_fn, "-o", editconf_pdb_fn, "-bt", boxtype, "-box"] + [str(dim) for dim in new_dims] 
+		cmd = ["editconf", "-f", n.pdb_fn, "-o", n.pdb_fn, "-bt", boxtype, "-box"] + [str(dim) for dim in new_dims] 
 		print("Calling: %s"%" ".join(cmd))
 		p = Popen(cmd)
 		retcode = p.wait()
 		assert(retcode == 0) # editconf should never fail
+		
+		genbox_fn = mktemp(suffix=".pdb", dir=n.dir)
 
-		genbox_pdb_fn = n.pdb_fn.rsplit(".", 1)[0] + "_genbox.pdb" #TODO couldn't I save the guy in /dev/null?
-
-		cmd = ["genbox", "-cp", editconf_pdb_fn, "-o", genbox_pdb_fn, "-cs", solv_box] 
+		# 1st genbox: finding out how many solvent molecules we can fit in
+		cmd = ["genbox", "-cp", n.pdb_fn, "-o", genbox_fn, "-cs", solv_box] 
 		print("Calling: %s"%" ".join(cmd))
 		p = Popen(cmd, stdout=PIPE, stderr=PIPE)
 		stderr = p.communicate()[1]
@@ -135,19 +133,20 @@ def genbox(pool, max_linear, boxtype, dims, solv_box, slack=0.1):
 		foo = re.search("\nAdded \d+ molecules\n", stderr, re.DOTALL).group(0)
 		n_solmols.append( int( re.findall("\d+", foo)[0] ) )
 
+		os.remove(genbox_fn)
+
 	max_solmols = min(n_solmols)
 
 	print "Maximum number of SOL molecules per box is %d."%max_solmols
 	
 	for n in pool.where("state == 'grompp-able'"):
 
-		editconf_pdb_fn = n.pdb_fn.rsplit(".", 1)[0] + "_editconf.pdb"
-
-		cmd = ["genbox", "-cp", editconf_pdb_fn, "-o", n.pdb_fn, "-cs", solv_box, "-maxsol", str(max_solmols), "-p", n.top_fn]
+		# 2nd genbox: filling each box with an equal number of solvent molecules
+		cmd = ["genbox", "-cp", n.pdb_fn, "-o", n.pdb_fn, "-cs", solv_box, "-maxsol", str(max_solmols), "-p", n.top_fn]
 		print("Calling: %s"%" ".join(cmd))
 		p = Popen(cmd)
 		retcode = p.wait()
-		assert(p.returncode == 0)
+		assert(p.returncode == 0) # genbox should never fail
 		
 
 #===============================================================================
