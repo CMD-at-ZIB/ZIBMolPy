@@ -68,7 +68,7 @@ sys.modules[__name__].__doc__ += options_desc.epytext() # for epydoc
 
 def is_applicable():
 	pool = Pool()
-	return(len(pool.where("state in ('mdrun-able','converged', 'not-converged')")) > 0)
+	return(len(pool.where("state in ('em-mdrun-able', 'mdrun-able','converged', 'not-converged')")) > 0)
 	
 
 #===============================================================================
@@ -90,7 +90,7 @@ def main():
 			n.reload()
 
 		active_node = None
-		for n in pool.where("state=='mdrun-able'"):
+		for n in pool.where("state in ('em-mdrun-able', 'mdrun-able')"):
 			if(n.lock()):
 				active_node = n
 				break
@@ -165,6 +165,11 @@ def process(node, options):
 	
 	print("Calling: %s"%" ".join(cmd1))
 	check_call(cmd1, cwd=node.dir, preexec_fn=implant_bomb)
+
+	# if we were just minimizing, we go back to grompp-able now
+	if(node.state == "em-mdrun-able"):
+		node.state = "grompp-able"
+		return	
 	
 	# check for convergence
 	converged = conv_check_gelman_rubin(node)
