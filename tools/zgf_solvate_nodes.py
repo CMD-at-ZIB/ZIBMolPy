@@ -98,7 +98,7 @@ def query_linear_length(pool):
 
 
 #===============================================================================
-def genbox(pool, max_linear, boxtype, dims, solv_box, slack=0.1):
+def genbox(pool, max_linear, boxtype, dims, solv_box, slack=1.0):
 	
 	# it has to hold that Gromacs box size >= 2*maximum distance restraint length
 	new_dims = ()

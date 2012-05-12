@@ -69,7 +69,7 @@ def call_genion(pool, np, pname, nn, nname, random_seed):
 	
 	for n in pool.where("state == 'em-mdrun-able'"):
 
-		cmd = ["genion", "-s", n.tpr_fn, "-o", n.pdb_fn, "-p", n.top_fn, "-np", str(np), "-pname", pname, "-nn", str(nn), "-nname", nname, "-seed", random_seed ]
+		cmd = ["genion", "-s", n.tpr_fn, "-o", n.pdb_fn, "-p", n.top_fn, "-np", str(np), "-pname", pname, "-nn", str(nn), "-nname", nname, "-seed", random_seed, "-g", n.dir+"/genion.log" ]
 		print("Calling: %s"%" ".join(cmd))
 		p = Popen(cmd, stdin=PIPE)
 		p.communicate(input=("SOL\n"))
