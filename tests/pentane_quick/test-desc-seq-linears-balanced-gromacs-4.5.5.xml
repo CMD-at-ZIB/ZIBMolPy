@@ -54,62 +54,62 @@ Node node0010 is mdrun-able and not locked.
 <match-stdout>
 Loading trr-file: nodes/node0001/node0001.trr... 
 done.
-W_chain_vars [ 0.12360528  0.06023261]
-B_total_var [ 0.00432287  0.17952573]
+W_chain_vars [ 0.02934887  0.08474295]
+B_total_var [ 0.00094204  0.02498776]
 </match-stdout>
 <match-stdout>
 Loading trr-file: nodes/node0002/node0002.trr... 
 done.
-W_chain_vars [ 0.15784521  0.2767967 ]
-B_total_var [ 0.53713107  1.37372339]
+W_chain_vars [ 0.1250046   0.18230451]
+B_total_var [ 0.2594665   0.84475225]
 </match-stdout>
 <match-stdout>
 Loading trr-file: nodes/node0003/node0003.trr... 
 done.
-W_chain_vars [ 0.01667064  0.12962504]
-B_total_var [ 0.0007223   0.00990208]
+W_chain_vars [ 0.04986785  0.0777653 ]
+B_total_var [ 0.00935384  0.00040643]
 </match-stdout>
 <match-stdout>
 Loading trr-file: nodes/node0004/node0004.trr... 
 done.
-W_chain_vars [ 0.05720134  0.45918201]
-B_total_var [ 0.02480344  1.46822977]
+W_chain_vars [ 0.01345524  0.10493403]
+B_total_var [ 0.02850393  0.14969665]
 </match-stdout>
 <match-stdout>
 Loading trr-file: nodes/node0005/node0005.trr... 
 done.
-W_chain_vars [ 0.02936946  0.04400212]
-B_total_var [ 0.01447136  0.03555357]
+W_chain_vars [ 0.04645319  0.16225883]
+B_total_var [ 0.0062084   0.15377143]
 </match-stdout>
 <match-stdout>
 Loading trr-file: nodes/node0006/node0006.trr... 
 done.
-W_chain_vars [ 0.0232951   0.47798227]
-B_total_var [ 0.04523745  0.14321066]
+W_chain_vars [ 0.01328102  0.03842883]
+B_total_var [ 0.00633619  0.22411247]
 </match-stdout>
 <match-stdout>
 Loading trr-file: nodes/node0007/node0007.trr... 
 done.
-W_chain_vars [ 0.00350332  0.04869096]
-B_total_var [ 0.01014173  0.4131034 ]
+W_chain_vars [ 0.02501562  0.02487104]
+B_total_var [ 0.00674264  0.01558898]
 </match-stdout>
 <match-stdout>
 Loading trr-file: nodes/node0008/node0008.trr... 
 done.
-W_chain_vars [ 0.0091146   0.49927032]
-B_total_var [  1.06498548e-04   1.26802638e-01]
+W_chain_vars [ 0.00320568  0.02726116]
+B_total_var [  4.00530062e-08   7.00098351e-02]
 </match-stdout>
 <match-stdout>
 Loading trr-file: nodes/node0009/node0009.trr... 
 done.
-W_chain_vars [ 0.0015873   0.04902476]
-B_total_var [  1.10601017e-03   1.27969997e-06]
+W_chain_vars [ 0.00325235  0.02687916]
+B_total_var [ 0.00042129  0.01652114]
 </match-stdout>
 <match-stdout>
 Loading trr-file: nodes/node0010/node0010.trr... 
 done.
-W_chain_vars [ 0.0152262   0.06633883]
-B_total_var [ 0.04072939  0.04428378]
+W_chain_vars [ 0.01724714  0.06723643]
+B_total_var [ 0.02743438  0.00031288]
 </match-stdout>
 
 <run>zgf_cleanup</run>
@@ -129,42 +129,52 @@ Node node0010 is converged and not locked.
 
 <run>zgf_reweight -c</run>
 <match-stdout>
-  unweighted mean V: 87.5072236 [kJ/mol], without penalty potential
-  phi-weighted mean V: 88.8413144468 [kJ/mol], without penalty potential
-  weighted mean V: 88.026321 [kJ/mol]
-  energy region (=weighted V standard deviation): 26.257317 [kJ/mol]
-  evaluation region (=conjugate variance): 0.117987
-  number of refpoints: 3
-WARNING: No nearpoints found for refpoint 1! (node0003)
 Thermodynamic weights calculated by method 'entropy' (sol-energy=False):
-  node0003 with A: 85.740766 [kJ/mol] and weight: 0.999988
-  node0002 with A: 113.915155 [kJ/mol] and weight: 0.000012
-  node0001 with A: 129.778020 [kJ/mol] and weight: 0.000000
+  node0007 with A: 89.248519 [kJ/mol] and weight: 0.609052
+  node0009 with A: 90.407690 [kJ/mol] and weight: 0.382675
+  node0001 with A: 100.038658 [kJ/mol] and weight: 0.008053
+  node0008 with A: 109.021413 [kJ/mol] and weight: 0.000220
+  node0005 with A: 128.664529 [kJ/mol] and weight: 0.000000
+  node0003 with A: 129.392835 [kJ/mol] and weight: 0.000000
+  node0006 with A: 140.378010 [kJ/mol] and weight: 0.000000
+  node0010 with A: 144.244469 [kJ/mol] and weight: 0.000000
+  node0004 with A: 165.192635 [kJ/mol] and weight: 0.000000
+  node0002 with A: 166.936485 [kJ/mol] and weight: 0.000000
 </match-stdout>
-
-<!--
 
 <run>zgf_analyze -c</run>
 <match-stdout>
 ### Node weights after symmetrization of S matrix:
-node0001: initial weight: 0.000000, corrected weight: 0.412048, weight change: 0.412048
-node0002: initial weight: 0.000012, corrected weight: 0.434589, weight change: 0.434576
-node0003: initial weight: 0.999988, corrected weight: 0.153364, weight change: 0.846624
-
-### Sorted eigenvalues of symmetrized S matrix:
-EV0001: 1.000000, gap to next: 0.198090, EV-weighted gap to next: 0.198090
-EV0002: 0.801910, gap to next: 0.262640, EV-weighted gap to next: 0.210613
-EV0003: 0.539270, gap to next: 0.000000, EV-weighted gap to next: 0.000000
+node0001: initial weight: 0.008053, corrected weight: 0.036077, weight change: 0.028024
+node0002: initial weight: 0.000000, corrected weight: 0.223616, weight change: 0.223616
+node0003: initial weight: 0.000000, corrected weight: 0.120865, weight change: 0.120865
+node0004: initial weight: 0.000000, corrected weight: 0.004601, weight change: 0.004601
+node0005: initial weight: 0.000000, corrected weight: 0.071203, weight change: 0.071203
+node0006: initial weight: 0.000000, corrected weight: 0.018933, weight change: 0.018933
+node0007: initial weight: 0.609052, corrected weight: 0.255921, weight change: 0.353130
+node0008: initial weight: 0.000220, corrected weight: 0.036179, weight change: 0.035959
+node0009: initial weight: 0.382675, corrected weight: 0.181094, weight change: 0.201581
+node0010: initial weight: 0.000000, corrected weight: 0.051511, weight change: 0.051511
 </match-stdout>
 <match-stdout>
-Q_c matrix:
-[[-0.10358084  0.10358084]
- [ 0.09450944 -0.09450944]]
+### Sorted eigenvalues of symmetrized S matrix:
+EV0001: 1.000000, gap to next: 0.059390, EV-weighted gap to next: 0.059390
+EV0002: 0.940610, gap to next: 0.062944, EV-weighted gap to next: 0.059206
+EV0003: 0.877666, gap to next: 0.074566, EV-weighted gap to next: 0.065444
+EV0004: 0.803099, gap to next: 0.097418, EV-weighted gap to next: 0.078236
+EV0005: 0.705681, gap to next: 0.018796, EV-weighted gap to next: 0.013264
+EV0006: 0.686885, gap to next: 0.021331, EV-weighted gap to next: 0.014652
+EV0007: 0.665554, gap to next: 0.085549, EV-weighted gap to next: 0.056938
+EV0008: 0.580004, gap to next: 0.044945, EV-weighted gap to next: 0.026069
+EV0009: 0.535059, gap to next: 0.146907, EV-weighted gap to next: 0.078604
+EV0010: 0.388152, gap to next: 0.000000, EV-weighted gap to next: 0.000000
 </match-stdout>
 <match-stdout>
 cluster weights (calculated twice for checking):
-[-0.47710284 -0.5228971 ]
-[ 0.47695285  0.52304704]
+[ 0.00737079  0.01962904  0.03824999  0.05098137  0.06177334  0.15890554
+  0.20111099  0.21425237  0.24772647]
+[ 0.00737115  0.01961154  0.03819513  0.05097047  0.06175357  0.15895781
+  0.20118286  0.21413446  0.2478228 ]
 </match-stdout>
 
 <run>zgf_extract_conformations</run>
@@ -172,12 +182,24 @@ cluster weights (calculated twice for checking):
 ### Extraction summary ###
 node threshold: 0.5, frame threshold: 0.5
 Cluster trajectories were written to ./analysis/:
-cluster1.trr [3 frames] from node(s):
+cluster1.trr [1 frames] from node(s):
+[3]
+cluster2.trr [2 frames] from node(s):
+[5]
+cluster3.trr [3 frames] from node(s):
 [0]
-cluster2.trr [3 frames] from node(s):
-[1, 2]
+cluster4.trr [2 frames] from node(s):
+[7]
+cluster5.trr [3 frames] from node(s):
+[4]
+cluster6.trr [5 frames] from node(s):
+[2, 9]
+cluster7.trr [3 frames] from node(s):
+[8]
+cluster8.trr [1 frames] from node(s):
+[1]
+cluster9.trr [3 frames] from node(s):
+[6]
 </match-stdout>
-
--->
 
 </xml>
