@@ -3,7 +3,7 @@
           "DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-  <title>ZIBMolPy.pool</title>
+  <title>zgf_genion</title>
   <link rel="stylesheet" href="epydoc.css" type="text/css" />
   <script type="text/javascript" src="epydoc.js"></script>
 	
@@ -53,8 +53,7 @@
   <tr valign="top">
     <td width="100%">
       <span class="breadcrumbs">
-        <a href="ZIBMolPy-module.html">Package&nbsp;ZIBMolPy</a> ::
-        Module&nbsp;pool
+        Module&nbsp;zgf_genion
       </span>
     </td>
     <td>
@@ -62,34 +61,132 @@
         <!-- hide/show private -->
         <tr><td align="right"><span class="options"
             >[<a href="frames.html" target="_top">frames</a
-            >]&nbsp;|&nbsp;<a href="ZIBMolPy.pool-module.html"
+            >]&nbsp;|&nbsp;<a href="zgf_genion-module.html"
             target="_top">no&nbsp;frames</a>]</span></td></tr>
       </table>
     </td>
   </tr>
 </table>
 <!-- ==================== MODULE DESCRIPTION ==================== -->
-<h1 class="epydoc">Module pool</h1><p class="nomargin-top"><span class="codelink"><a href="ZIBMolPy.pool-pysrc.html">source&nbsp;code</a></span></p>
-<!-- ==================== CLASSES ==================== -->
-<a name="section-Classes"></a>
+<h1 class="epydoc">Module zgf_genion</h1><p class="nomargin-top"><span class="codelink"><a href="zgf_genion-pysrc.html">source&nbsp;code</a></span></p>
+<h1 class="heading">What it does</h1>
+    <p>bla</p>
+  <h1 class="heading">How it works</h1>
+    <p>At the command line, type:</p>
+<pre class="literalblock">
+       $ zgf_genion bla
+</pre>
+  <h1 class="heading">Options</h1>
+    <ul>
+      <li>
+        <b>np</b>:
+<pre class="literalblock">
+ help: Number of positive ions
+ short_name: p
+ datatype: int
+ long_name: np
+</pre>
+      </li>
+      <li>
+        <b>pname</b>:
+<pre class="literalblock">
+ default: NA
+ help: Name of the positive ion
+ short_name: P
+ datatype: str
+ long_name: pname
+</pre>
+      </li>
+      <li>
+        <b>nn</b>:
+<pre class="literalblock">
+ help: Number of negative ions
+ short_name: n
+ datatype: int
+ long_name: nn
+</pre>
+      </li>
+      <li>
+        <b>nname</b>:
+<pre class="literalblock">
+ default: CL
+ help: Name of the negative ion
+ short_name: N
+ datatype: str
+ long_name: nname
+</pre>
+      </li>
+      <li>
+        <b>random-seed</b>:
+<pre class="literalblock">
+ default: 1993
+ help: Seed for random number generator
+ short_name: s
+ datatype: str
+ long_name: random-seed
+</pre>
+      </li>
+    </ul>
+
+<!-- ==================== FUNCTIONS ==================== -->
+<a name="section-Functions"></a>
 <table class="summary" border="1" cellpadding="3"
        cellspacing="0" width="100%" bgcolor="white">
 <tr bgcolor="#70b0f0" class="table-header">
   <td align="left" colspan="2" class="table-header">
-    <span class="table-header">Classes</span></td>
+    <span class="table-header">Functions</span></td>
 </tr>
 <tr>
     <td width="15%" align="right" valign="top" class="summary">
       <span class="summary-type">&nbsp;</span>
     </td><td class="summary">
-        <a href="ZIBMolPy.pool.NodeList-class.html" class="summary-name">NodeList</a>
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="is_applicable"></a><span class="summary-sig-name">is_applicable</span>()</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="zgf_genion-pysrc.html#is_applicable">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
     </td>
   </tr>
 <tr>
     <td width="15%" align="right" valign="top" class="summary">
       <span class="summary-type">&nbsp;</span>
     </td><td class="summary">
-        <a href="ZIBMolPy.pool.Pool-class.html" class="summary-name">Pool</a>
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="main"></a><span class="summary-sig-name">main</span>()</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="zgf_genion-pysrc.html#main">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="call_genion"></a><span class="summary-sig-name">call_genion</span>(<span class="summary-sig-arg">pool</span>,
+        <span class="summary-sig-arg">np</span>,
+        <span class="summary-sig-arg">pname</span>,
+        <span class="summary-sig-arg">nn</span>,
+        <span class="summary-sig-arg">nname</span>,
+        <span class="summary-sig-arg">random_seed</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="zgf_genion-pysrc.html#call_genion">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
     </td>
   </tr>
 </table>
@@ -105,10 +202,48 @@
     <td width="15%" align="right" valign="top" class="summary">
       <span class="summary-type">&nbsp;</span>
     </td><td class="summary">
-        <a name="__package__"></a><span class="summary-name">__package__</span> = <code title="'ZIBMolPy'"><code class="variable-quote">'</code><code class="variable-string">ZIBMolPy</code><code class="variable-quote">'</code></code>
+        <a href="zgf_genion-module.html#options_desc" class="summary-name">options_desc</a> = <code title="[&lt;ZIBMolPy.ui.Option np&gt;, &lt;ZIBMolPy.ui.Option pname&gt;, &lt;ZIBMolPy.ui.Opt\
+ion nn&gt;, &lt;ZIBMolPy.ui.Option nname&gt;, &lt;ZIBMolPy.ui.Option random-seed&gt;]">[&lt;ZIBMolPy.ui.Option np&gt;, &lt;ZIBMolPy.ui.Option p<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="__package__"></a><span class="summary-name">__package__</span> = <code title="None">None</code><br />
+      hash(x)
     </td>
   </tr>
 </table>
+<!-- ==================== VARIABLES DETAILS ==================== -->
+<a name="section-VariablesDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td align="left" colspan="2" class="table-header">
+    <span class="table-header">Variables Details</span></td>
+</tr>
+</table>
+<a name="options_desc"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">options_desc</h3>
+  
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+[&lt;ZIBMolPy.ui.Option np&gt;, &lt;ZIBMolPy.ui.Option pname&gt;, &lt;ZIBMolPy.ui.Opt<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+ion nn&gt;, &lt;ZIBMolPy.ui.Option nname&gt;, &lt;ZIBMolPy.ui.Option random-seed&gt;]
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<br />
 <!-- ==================== NAVIGATION BAR ==================== -->
 <table class="navbar" border="0" width="100%" cellpadding="0"
        bgcolor="#a0c0ff" cellspacing="0">
