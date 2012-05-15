@@ -65,7 +65,6 @@ class DihedralRestraint(Restraint):
 					vtot[i] = 0.5*kfac*ddp*ddp
 					#ddphi = kfac*ddp;
 		return(vtot)
-			
 
 #===============================================================================
 class DistanceRestraint(Restraint):
@@ -83,6 +82,7 @@ class DistanceRestraint(Restraint):
 		c2 = np.logical_and(r1<=r, r<r2)
 		c3 = (r2 <= r)
 		return( v1*c1 + v2*c2 + v3*c3 )
+
 
 #===============================================================================
 #EOF	

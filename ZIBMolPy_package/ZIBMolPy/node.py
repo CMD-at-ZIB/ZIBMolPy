@@ -302,7 +302,8 @@ class Node(object):
 			phi_values = get_phi(frames_int, self)
 			penalty_potential = np.zeros(frames_int.n_frames)
 			for (r, c) in zip(self.restraints, self.pool.converter):
-				penalty_potential += r.energy(frames_int[:,c])
+				penalty_potential += r.energy(frames_int[:,c])				
+
 			beta = self.pool.thermo_beta
 			frameweights = phi_values / np.exp(-beta * penalty_potential)
 		

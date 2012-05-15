@@ -87,6 +87,10 @@ def merge_moleculetypes(top, mt_name1, mt_name2):
 	assert(len(found_m1) == 1) # mt used only once?
 	assert(len(found_m2) == 1) # mt used only once?
 	m1, m2 = found_m1[0], found_m2[0] 
+	
+	# Are the moleculetypes consecutive?
+	# This is not a fundamental problem. 
+	# One would just have to rearrange the atoms in the pdb files as well.
 	assert(top.molecules.index(m1)+1 == top.molecules.index(m2))
 	
 	# find moleculetype objects

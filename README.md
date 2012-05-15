@@ -13,6 +13,10 @@ What's this?
 
 <p align="justify">This implementation represents an evolution of the original ZIBgridfree as it couples the original algorithm to the state-of-the-art molecular dynamics engine <a href="http://www.gromacs.org">Gromacs</a>. This creates the possibility to apply ZIBgridfree to very large molecular systems.</p>
 
+<p align="justify">ZIBMolPy is currently being developed by Alexander Bujotzek and Ole Schütt in the working group of Marcus Weber at Zuse-Institute Berlin. A manuscript for publication is in preparation:</p>
+
+* <p align="justify">A. Bujotzek, O. Schütt, M. Weber: ZIBgridfree: Efficient conformational analysis by meshless uncoupling-coupling</p>
+
 License
 -------
 
@@ -44,14 +48,17 @@ You have to install a bunch of packages. On Ubuntu/Debian you can simply type:
 
 #### Download
 
-1. Download the current 'master' version as [zipball](https://github.com/CMD-at-ZIB/ZIBMolPy/zipball/master) or [tarball](https://github.com/CMD-at-ZIB/ZIBMolPy/tarball/master), or use git: <br />
-`git clone git://github.com/CMD-at-ZIB/ZIBMolPy.git`
+1. Download the current 'master' version as [zipball](https://github.com/CMD-at-ZIB/ZIBMolPy/zipball/master) or [tarball](https://github.com/CMD-at-ZIB/ZIBMolPy/tarball/master).
 
 2. Extract it with e.g. <br />
 `tar -xvzf CMD-at-ZIB-ZIBMolPy-80c927a.tar.gz`
 
 3. Go into the the directory: <br />
 `cd CMD-at-ZIB-ZIBMolPy-xxxxxx`
+
+Alternatively, use git to obtain the code: <br />
+`git clone git://github.com/CMD-at-ZIB/ZIBMolPy.git` (read-only) <br />
+`git clone git@github.com:CMD-at-ZIB/ZIBMolPy.git` (read+write)
 
 #### System-wide installation
 

@@ -54,8 +54,9 @@ import traceback
 import sys
 
 options_desc = OptionsList([ 
-	Option("s", "seq", "bool", "suppress parallel mdrun", default=False),
-	Option("n", "np", "int", "Number of processors to be used", default=4, min_value=1),
+	Option("s", "seq", "bool", "Suppress MPI", default=False),
+	Option("n", "np", "int", "Number of processors to be used for MPI", default=4, min_value=1),
+	Option("t", "nt", "int", "Number of threads to start, 0 is guess", default=0, min_value=0),
 	Option("p", "npme", "int", "Number of separate processors to be used for PME, -1 is guess", default=-1, min_value=-1),
 	Option("r", "reprod", "bool", "Avoid mdrun optimizations that affect binary reproducibility", default=False),
 	Option("d", "pd", "bool", "Use particle decomposition", default=False),
@@ -68,7 +69,7 @@ sys.modules[__name__].__doc__ += options_desc.epytext() # for epydoc
 
 def is_applicable():
 	pool = Pool()
-	return(len(pool.where("state in ('mdrun-able','converged', 'not-converged')")) > 0)
+	return(len(pool.where("state in ('em-mdrun-able', 'mdrun-able','converged', 'not-converged')")) > 0)
 	
 
 #===============================================================================
@@ -80,7 +81,7 @@ def main():
 		for n in pool.where("state in ('converged', 'not-converged')"):
 			print("\n\nRunning Gelman-Rubin on %s"%n)
 			conv_check_gelman_rubin(n)
-		return #exit
+		return # exit
 
 	auto_refines_counter = 0
 	while(True):		
@@ -90,7 +91,7 @@ def main():
 			n.reload()
 
 		active_node = None
-		for n in pool.where("state=='mdrun-able'"):
+		for n in pool.where("state in ('em-mdrun-able', 'mdrun-able')"):
 			if(n.lock()):
 				active_node = n
 				break
@@ -102,7 +103,7 @@ def main():
 				zgf_refine.main(["--refine-all"])
 				continue
 			else:
-				break #we're done - exit
+				break # we're done - exit
 	
 		try:
 			process(active_node, options)
@@ -127,24 +128,31 @@ def process(node, options):
 	
 	cmd1 = ["mdrun"]
 	cmd1 += ["-s", "../../"+node.tpr_fn]
-	cmd1 += ["-o", "../../"+node.trr_fn]
+	
+	if(node.state == "em-mdrun-able"):
+		cmd1 += ["-c", "../../"+node.pdb_fn]
+		cmd1 += ["-o", "../../"+node.dir+"/em.trr"]
+		cmd1 += ["-e", "../../"+node.dir+"/em.edr"]
+		cmd1 += ["-g", "../../"+node.dir+"/em.log"]
+	else:
+		cmd1 += ["-o", "../../"+node.trr_fn]
+
 	cmd1 += ["-append", "-cpi", "state.cpt"] # continue previouly state, if exists
 	if(options.npme != -1):
 		cmd1 += ["-npme", str(options.npme)]
+	if(options.nt != 0):
+		cmd1 += ["-nt", str(options.nt)]
 	if(options.reprod):
 		cmd1 += ["-reprod"]
 	if(options.pd):
 		cmd1 += ["-pd"]
-
-    # use mpiexec and mdrun_mpi if available
+	
+	# use mpiexec and mdrun_mpi if available
 	if(not options.seq and call(["which","mpiexec"])==0):
 		if(call(["which","mdrun_mpi"])==0):
 			cmd1[0] = "mdrun_mpi"
 		cmd1 = ["mpiexec", "-np", str(options.np)] + cmd1
 		
-	
-		
-	
 	#http://stackoverflow.com/questions/4554767/terminating-subprocess-in-python
 	#alternative
 	#p = Popen(...)
@@ -165,6 +173,11 @@ def process(node, options):
 	
 	print("Calling: %s"%" ".join(cmd1))
 	check_call(cmd1, cwd=node.dir, preexec_fn=implant_bomb)
+
+	# if we were just minimizing, we go back to grompp-able now
+	if(node.state == "em-mdrun-able"):
+		node.state = "grompp-able"
+		return
 	
 	# check for convergence
 	converged = conv_check_gelman_rubin(node)
@@ -179,7 +192,8 @@ def process(node, options):
 	else:
 		node.extensions_counter += 1
 		node.state = "mdrun-able" # actually it should still be in this state
-	
+
+
 #===============================================================================
 def conv_check_gelman_rubin(node):
 	frames = node.trajectory
@@ -189,6 +203,7 @@ def conv_check_gelman_rubin(node):
 	is_converged = gelman_rubin(frames, n_chains, threshold, log)
 	log.close()
 	return(is_converged)
+
 
 #===============================================================================
 if(__name__ == "__main__"):

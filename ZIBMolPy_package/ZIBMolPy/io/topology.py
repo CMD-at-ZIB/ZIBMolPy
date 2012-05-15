@@ -368,7 +368,7 @@ def resolve_includes(filename, includedirs, filesloaded=set()):
 		for d in [path.dirname(filename)] + includedirs:
 			absfn = path.join(d, fn)
 			if(path.exists(absfn)):
-				print("Inlcuding %s"%absfn)	
+				print("Including %s"%absfn)	
 				return( resolve_includes(absfn, includedirs, filesloaded) )
 		print("Could not include %s"%fn)
 		return('\n#include "%s"\n'%fn)

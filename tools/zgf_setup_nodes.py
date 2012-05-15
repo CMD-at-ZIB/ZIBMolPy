@@ -150,12 +150,12 @@ def generate_topology(pool):
 				moltype_of_interest.add2section("dihedral_restraints", newline)
 			
 			elif isinstance(r, DistanceRestraint):
-				(r0, r1, r2, k) = r.params
+				(r0_scaled, r1_scaled, r2_scaled, k_scaled) = r.params
 				
-				r0 = r0/c.weight + c.offset #TODO:really??? 
-				r1 = r1/c.weight + c.offset #TODO:really???
-				r2 = r2/c.weight + c.offset #TODO:really???
-				k  = k/pow(c.weight,2)    #TODO:really???
+				r0_real = c.scaled2real(r0_scaled)
+				r1_real = c.scaled2real(r1_scaled)
+				r2_real = c.scaled2real(r2_scaled)
+				k_real  = k_scaled * pow(c.weight,2)
 				
 				#t = tuple( rel_atoms + [disres_idx] + [r0, r1, r2, k] )
 				#newline = "%d  %d  1  %d  1  %.10f  %.10f  %.10f  %.10f; ZIBgridfree\n" % t
@@ -163,7 +163,8 @@ def generate_topology(pool):
 				# Using bond type 10 instead of "true" distance restraints because
 				# - it will keep the molecule together when resolving PBC
 				# - distance restraints do not write energies to edr when DD is on
-				t = tuple( rel_atoms + [r0, r1, r2, k] )
+				
+				t = tuple( rel_atoms + [r0_real, r1_real, r2_real, k_real] )
 				newline = "%d  %d  10  %.10f  %.10f  %.10f  %.10f; ZIBgridfree\n" % t
 				moltype_of_interest.add2section("bonds", newline)
 				#disres_idx += 1

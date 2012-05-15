@@ -114,7 +114,7 @@ def main(argv=None):
 	elif(options.methodnodes == "all"):
 		chosen_idx = mknodes_all(parent)
 	else:
-		raise(Exception("Method unkown: "+options.methodnodes))
+		raise(Exception("Method unknown: "+options.methodnodes))
 
 	chosen_idx.sort() # makes preview-trajectory easier to understand 
 	if(options.write_preview):
@@ -139,7 +139,7 @@ def main(argv=None):
 	elif(options.methodalphas == "user"):
 		pool.alpha = userinput("Please enter a value for alpha", "float")
 	else:
-		raise(Exception("Method unkown: "+options.methodalphas))
+		raise(Exception("Method unknown: "+options.methodalphas))
 	
 	pool.history.append({'refined_node': (parent.name, parent.state), 'size':old_pool_size, 'alpha':old_alpha, 'timestamp':datetime.now()})
 	
@@ -149,8 +149,7 @@ def main(argv=None):
 	if(options.methodphifit == "harmonic"):
 		do_phifit_harmonic(pool)
 	elif(options.methodphifit == "switch"):
-		frames_int = parent.trajectory #TODO: do_phifit_switch should rather use pool.coord_range
-		do_phifit_switch(pool, frames_int)
+		do_phifit_switch(pool)
 	elif(options.methodphifit == "leastsq"):
 		do_phifit_leastsq(pool)
 	else:
@@ -364,14 +363,14 @@ def do_phifit_harmonic(pool):
 			else:
 				raise(Exception("Unkown Coordinate-Type"))
 #==========================================================================
-def do_phifit_switch(pool, frames_int):
+def do_phifit_switch(pool):
 	new_nodes = pool.where("state == 'creating-a-partition'")
 	
 	for n in new_nodes:
 		n.restraints = []
 		for c in pool.converter:
 			# analyze phi for this coordinate
-			all_values = pool.coord_range(c, lin_slack=False) #TODO experimental
+			all_values = pool.coord_range(c, lin_slack=False)
 			all_phi_pot = get_phi_contrib_potential(all_values, n, c)
 
 			norm_phi_pot = abs(all_phi_pot - np.min(all_phi_pot)) # we normalize all_phi_pot to a minimum of zero
@@ -386,7 +385,8 @@ def do_phifit_switch(pool, frames_int):
 					phi0 = dphi = k = 0.0
 					print "Constant phi (no restraint) for coordinate %s of node %s." % (c, n.name)
 				else:
-					dih_plateau = np.take( np.linspace(-1*np.pi, np.pi, num=360), plateau )
+					dih_plateau = np.take( all_values, plateau )
+
 					dih_plateau_left = dih_plateau[0] # 1st edge of plateau
 					dih_plateau_right = dih_plateau[len(plateau)-1] # 2nd edge of plateau
 
@@ -425,7 +425,8 @@ def do_phifit_switch(pool, frames_int):
 					phi0 = DihedralCoordinate.sub(dih_plateau_right, dphi)
 				
 					# get k via Steigungsdreieck
-					dih_phi_pot_max = np.linspace(-np.pi, np.pi, num=360)[argmax_phi_pot]
+					dih_phi_pot_max = all_values[argmax_phi_pot]
+
 					flank1 = np.abs( dih_phi_pot_max - dih_plateau_left )
 					flank1 = np.minimum( flank1, 2*np.pi-flank1 )
 					flank2 = np.abs( dih_phi_pot_max - dih_plateau_right )
@@ -439,17 +440,12 @@ def do_phifit_switch(pool, frames_int):
 					r0 = r1 = r2 = k = 0.0
 					print "Constant phi (no restraint) for coordinate %s of node %s." % (c, n.name)
 				else:
-					lin_plateau = np.take( np.linspace(np.min(frames_int.getcoord(c)), np.max(frames_int.getcoord(c)), num=360), plateau )
-
-					#print lin_plateau
-					#lin_plateau2 = np.take( all_values, plateau )
-					#print lin_plateau2 #TODO discrepancy between linspace above and coord_range (all values), check
-
-			
+					lin_plateau = np.take( all_values, plateau )
+					
 					r0 = lin_plateau[0] # 1st edge of plateau
 					r1 = lin_plateau[len(plateau)-1] # 2nd edge of plateau
 					r2 = THE_BIG_NUMBER # = using only harmonic part of restraint
-
+					
 					# node_value not on plateau
 					if node_value > r1:
 						r1 = node_value # extend plateau to the right
@@ -457,11 +453,7 @@ def do_phifit_switch(pool, frames_int):
 						r0 = node_value # extend plateau to the left
 				
 					# get k via Steigungsdreieck
-					lin_phi_pot_max = np.linspace(np.min(frames_int.getcoord(c)), np.max(frames_int.getcoord(c)), num=360)[argmax_phi_pot]
-
-					#print lin_phi_pot_max
-					#lin_phi_pot_max2 = all_values[argmax_phi_pot]
-					#print lin_phi_pot_max2
+					lin_phi_pot_max = all_values[argmax_phi_pot]
 
 					flank1 = np.abs(lin_phi_pot_max - r0)
 					flank2 = np.abs(lin_phi_pot_max - r1)

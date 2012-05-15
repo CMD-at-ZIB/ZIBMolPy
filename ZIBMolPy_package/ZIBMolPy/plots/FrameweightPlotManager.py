@@ -3,6 +3,8 @@
 import gtk
 import numpy as np
 
+import zgf_reweight
+
 #===============================================================================
 class FrameweightPlotManager(object):
 	#pylint: disable=E1101, W0201
@@ -16,7 +18,7 @@ class FrameweightPlotManager(object):
 		
 	def get_ctrl_panel(self):
 		panel = gtk.VBox()
-		for x in ("restraint", "phi", "frame_weights", "mean_frame_weight", "mean_phi"):
+		for x in ("restraint", "restraint_gmx", "phi", "frame_weights", "mean_frame_weight", "mean_phi"):
 			cb =  gtk.CheckButton(label=x.replace("_"," "))
 			cb.set_active(True)
 			setattr(self, "cb_show_"+x, cb)
@@ -41,7 +43,22 @@ class FrameweightPlotManager(object):
 		axes.set_xlabel('Frame')
 		axes2 = axes.twinx() # create twin axes
 		axes2.set_ylabel('Weight')
-		
+
+		if(self.board.cb_show_colors.get_active()):
+			plotargs_phi = {'linewidth':4, 'color':'magenta', 'linestyle':'--'}
+			plotargs_restraint = {'linewidth':4, 'color':'red'}
+			plotargs_restraint_gmx = {'linewidth':4, 'color':'orange', 'linestyle':'--'}
+			plotargs_frameweight = {'linewidth':4, 'color':'green'}
+			plotargs_mean_phi = {'linewidth':4, 'color':'magenta', 'linestyle':':'}
+			plotargs_mean_frameweight = {'linewidth':4, 'color':'green', 'linestyle':':'}
+		else:
+			plotargs_phi = {'linewidth':4, 'color':'grey', 'linestyle':'--'} 
+			plotargs_restraint = {'linewidth':4, 'color':'dimgrey'}
+			plotargs_restraint_gmx = {'linewidth':4, 'color':'lightgrey', 'linestyle':'--'}
+			plotargs_frameweight = {'linewidth':4, 'color':'black'}
+			plotargs_mean_phi = {'linewidth':4, 'color':'grey', 'linestyle':':'}
+			plotargs_mean_frameweight = {'linewidth':4, 'color':'black', 'linestyle':':'}
+			
 		n = self.board.selected_node
 		if(self.board.cb_show_title.get_active()):
 			parent_name = "n/a"
@@ -51,15 +68,17 @@ class FrameweightPlotManager(object):
 
 		if(n.has_trajectory and n.has_internals and n.has_restraints):
 			if self.cb_show_restraint.get_active():
-				axes.plot(n.penalty_potential, linewidth=1, color='red', linestyle="-", alpha=0.5, label='Restraint')
-			if self.cb_show_phi.get_active():
-				axes2.plot(n.phi_values, linewidth=2, color='magenta', linestyle="-", alpha=0.8, label='Phi')
+				axes.plot(n.penalty_potential, label='Restraint', **plotargs_restraint)
 			if self.cb_show_frame_weights.get_active():		
-				axes2.plot(n.frameweights, linewidth=2, color='green', linestyle="-", alpha=0.8, label='Frame weight')
+				axes2.plot(n.frameweights, label='Frame weight', **plotargs_frameweight)
+			if self.cb_show_phi.get_active():
+				axes2.plot(n.phi_values, label='Phi', **plotargs_phi)			
 			if self.cb_show_mean_frame_weight.get_active():
-				axes2.axhline(y=np.mean(n.frameweights), linewidth=4, color='green', linestyle="--", label='Mean frame weight')
+				axes2.axhline(y=np.mean(n.frameweights), label='Mean frame weight', **plotargs_mean_frameweight)
 			if self.cb_show_mean_phi.get_active():
-				axes2.axhline(y=np.mean(n.phi_values), linewidth=4, color='magenta', linestyle="--", label='Mean phi')
+				axes2.axhline(y=np.mean(n.phi_values), label='Mean phi', **plotargs_mean_phi)
+			if self.cb_show_restraint_gmx.get_active():
+				axes.plot(zgf_reweight.check_restraint_energy(n), label='Restraint from GMX', **plotargs_restraint_gmx)
 		
 		if(self.board.cb_show_legend.get_active()):
 			handles = axes.get_legend_handles_labels()[0] + axes2.get_legend_handles_labels()[0] 
@@ -67,7 +86,7 @@ class FrameweightPlotManager(object):
 			if(len(handles) > 0):
 				self.board.canvas.figure.legend(handles, labels)
 		
-		#redraw
+		# redraw
 		self.board.canvas.draw_idle()
 
 #===============================================================================
