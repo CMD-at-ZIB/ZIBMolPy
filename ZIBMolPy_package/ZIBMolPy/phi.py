@@ -118,6 +118,17 @@ def get_phi_potential(x, node_i):
 	"""
 	return( -1/node_i.pool.thermo_beta*np.nan_to_num(np.log(get_phi(x, node_i))))
 
+# numerically problematic variant
+#def get_phi_contrib_potential(x_j, node_i, coord_k):
+#	r""" Calculates $\beta^{nuj-1} \log $ L{get_phi_contrib}(x_j, node_i, coord_k),
+#	where $\beta$ is L{Pool.thermo_beta<ZIBMolPy.pool.Pool.thermo_beta>}
+#	@type x_j: 1D numpy.ndarray
+#	@type node_i: L{Node}
+#	@type coord_k: L{InternalCoordinate}
+#	@rtype: 1D numpy.ndarray if length x_j.size
+#	"""
+#	return( -1/node_i.pool.thermo_beta*np.nan_to_num(np.log(get_phi_contrib(x_j, node_i, coord_k))))
+
 
 def get_phi_contrib_potential(x_j, node_i, coord_k):
 	r""" Calculates $\beta^{-1} \log $ L{get_phi_contrib}(x_j, node_i, coord_k),
@@ -127,7 +138,18 @@ def get_phi_contrib_potential(x_j, node_i, coord_k):
 	@type coord_k: L{InternalCoordinate}
 	@rtype: 1D numpy.ndarray if length x_j.size
 	"""
-	return( -1/node_i.pool.thermo_beta*np.nan_to_num(np.log(get_phi_contrib(x_j, node_i, coord_k))))
+	assert(x_j.ndim == 1)
+	
+	# decompose ln(phi) so dass, ln(phi) = a - b
+	a=-node_i.pool.alpha *np.square(coord_k.sub(x_j, node_i.internals.getcoord(coord_k)))
+	
+	all_nodes = node_i.pool.where("isa_partition")
+	other_nums = [ get_phi_num_contrib(x_j, node_i, n, coord_k) for n in all_nodes ]
+	# calculate denominator
+	denom = np.sum(other_nums, axis=0)
+	b=np.log(denom)
 
+
+	return( -1/node_i.pool.thermo_beta*np.nan_to_num(a-b))
 
 #EOF
