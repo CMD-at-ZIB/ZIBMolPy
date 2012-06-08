@@ -140,15 +140,14 @@ def get_phi_contrib_potential(x_j, node_i, coord_k):
 	"""
 	assert(x_j.ndim == 1)
 	
-	# decompose ln(phi) so dass, ln(phi) = a - b
-	a=-node_i.pool.alpha *np.square(coord_k.sub(x_j, node_i.internals.getcoord(coord_k)))
+	# decompose ln(phi) so that ln(phi) = a - b
+	a=-node_i.pool.alpha*np.square(coord_k.sub(x_j, node_i.internals.getcoord(coord_k)))
 	
 	all_nodes = node_i.pool.where("isa_partition")
 	other_nums = [ get_phi_num_contrib(x_j, node_i, n, coord_k) for n in all_nodes ]
-	# calculate denominator
+
 	denom = np.sum(other_nums, axis=0)
 	b=np.log(denom)
-
 
 	return( -1/node_i.pool.thermo_beta*np.nan_to_num(a-b))
 

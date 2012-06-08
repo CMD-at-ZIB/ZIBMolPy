@@ -48,6 +48,7 @@ options_desc = OptionsList([
 	Option("M", "email", "str", "email-address for notifications"),
 	Option("D", "dryrun", "bool", "Only generates job-file, but does not submit it", default=False),
 	Option("S", "subdivide", "int", "number of parallel zgf_mdrun processes started within the job", min_value=1, default=1),
+	Option("A", "account", "str", "account to be debited"),
 ])
 
 sys.modules[__name__].__doc__ += options_desc.epytext() # for epydoc
@@ -73,6 +74,8 @@ def main():
 	joblines += ["#PBS -N zgf_job", "#PBS -j oe",]
 	if(options.email): 
 		joblines += ["#PBS -m ea -M "+options.email]
+	if(options.account): 
+		joblines += ["#PBS -A "+options.account]
 	wt_hours = math.floor(options.walltime)
 	wt_minutes = (options.walltime - wt_hours) * 60 
 	joblines += ["#PBS -l walltime=%0.2d:%0.2d:00"%(wt_hours, wt_minutes)]

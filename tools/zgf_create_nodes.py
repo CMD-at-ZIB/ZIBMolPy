@@ -311,12 +311,10 @@ def do_phifit_leastsq(pool):
 			else:
 				raise(Exception("Unkown Coordinate-Type"))
 			
-			#phi_values = get_phi_contrib(all_values, n, active_nodes, c)
 			phi_values = get_phi_contrib(all_values, n, c)
 			phi_potential = get_phi_contrib_potential(all_values, n, c)
 			node_value = n.internals.getcoord(c)
 			node_index = np.argmin(np.square(c.sub(all_values, node_value)))
-			#phi_potential -= phi_potential[node_index] # gauge: set phi_potential[node] = 0
 
 			# contiguous function = smooth penalty-surface 
 			def heaviside(x): return 1/(1 + np.exp(-500*x))
@@ -326,8 +324,8 @@ def do_phifit_leastsq(pool):
 				p[1:] = [ max(i, 0) for i in p[1:] ] #all but p[0] should be positiv
 				
 				restraint = restraint_class.calc_energy(p, all_values)
-				#penalties = (phi_values+0.01)*(phi_potential - restraint) # weich
-				#penalties = (phi_values+0.001)*(phi_potential - restraint) # also weich
+				#penalties = (phi_values+0.01)*(phi_potential - restraint) # soft
+				#penalties = (phi_values+0.001)*(phi_potential - restraint) # soft
 				#penalties = (phi_values+0.1)*(phi_potential - restraint) # hard
 				diff = restraint - phi_potential
 				restr_too_high = heaviside(diff)
