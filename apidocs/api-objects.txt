@@ -201,6 +201,11 @@ zgf_mdrun.gelman_rubin	ZIBMolPy.algorithms-module.html#gelman_rubin
 zgf_mdrun.check_call	ZIBMolPy.utils-module.html#check_call
 zgf_mdrun.conv_check_gelman_rubin	zgf_mdrun-module.html#conv_check_gelman_rubin
 zgf_mdrun.main	zgf_mdrun-module.html#main
+zgf_recover_failed	zgf_recover_failed-module.html
+zgf_recover_failed.is_applicable	zgf_recover_failed-module.html#is_applicable
+zgf_recover_failed.__package__	zgf_recover_failed-module.html#__package__
+zgf_recover_failed.options_desc	zgf_recover_failed-module.html#options_desc
+zgf_recover_failed.main	zgf_recover_failed-module.html#main
 zgf_refine	zgf_refine-module.html
 zgf_refine.main	zgf_refine-module.html#main
 zgf_refine.kmeans	ZIBMolPy.algorithms-module.html#kmeans
@@ -245,6 +250,7 @@ zgf_solvate_nodes	zgf_solvate_nodes-module.html
 zgf_solvate_nodes.query_linear_length	zgf_solvate_nodes-module.html#query_linear_length
 zgf_solvate_nodes.genbox	zgf_solvate_nodes-module.html#genbox
 zgf_solvate_nodes.__package__	zgf_solvate_nodes-module.html#__package__
+zgf_solvate_nodes.userinput	ZIBMolPy.ui-module.html#userinput
 zgf_solvate_nodes.options_desc	zgf_solvate_nodes-module.html#options_desc
 zgf_solvate_nodes.is_applicable	zgf_solvate_nodes-module.html#is_applicable
 zgf_solvate_nodes.update_tops	zgf_solvate_nodes-module.html#update_tops
