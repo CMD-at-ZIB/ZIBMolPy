@@ -62,7 +62,7 @@ for x in FORWARDED_ZGF_MDRUN_OPTIONS:
 	
 def is_applicable():
 	pool = Pool()
-	return(len(pool.where("state=='mdrun-able'")) > 0)
+	return(len(pool.where("state in ('em-mdrun-able', 'mdrun-able')")) > 0)
 
 
 #===============================================================================

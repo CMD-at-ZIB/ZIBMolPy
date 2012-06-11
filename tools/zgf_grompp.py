@@ -31,7 +31,7 @@ sys.modules[__name__].__doc__ += options_desc.epytext() # for epydoc
 
 def is_applicable():
 	pool = Pool()
-	return(len(pool.where("state == 'grompp-able'")) > 0 or len(pool.where("state == 'em-grompp-able'")) > 0)
+	return(len(pool.where("state in ('grompp-able', 'em-grompp-able')")) > 0)
 
 #===============================================================================
 def main():

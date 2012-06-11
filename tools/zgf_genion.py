@@ -5,12 +5,16 @@
 What it does
 ============
 
-bla
+This optional tool adds a number of ions specified by the user to nodes with state 'em-mdrun-able' by calling the Gromacs tool genion.
+
+The node topologies will be updated accordingly. Finally, L{zgf_grompp} will be called in order to compile a new tpr-file.
+
+B{The next step is L{zgf_mdrun}, or L{zgf_submit_job_HLRN}, if you are working on HLRN.}
 
 How it works
 ============
 	At the command line, type::
-		$ zgf_genion bla
+		$ zgf_genion
 
 """
 
