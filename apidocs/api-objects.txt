@@ -48,6 +48,7 @@ ZIBMolPy.node.my_lock_signature	ZIBMolPy.node-module.html#my_lock_signature
 ZIBMolPy.node.get_phi	ZIBMolPy.phi-module.html#get_phi
 ZIBMolPy.phi	ZIBMolPy.phi-module.html
 ZIBMolPy.phi.get_phi_num_contrib	ZIBMolPy.phi-module.html#get_phi_num_contrib
+ZIBMolPy.phi.get_phi_stable	ZIBMolPy.phi-module.html#get_phi_stable
 ZIBMolPy.phi.get_phi_contrib	ZIBMolPy.phi-module.html#get_phi_contrib
 ZIBMolPy.phi.__package__	ZIBMolPy.phi-module.html#__package__
 ZIBMolPy.phi.get_phi_contrib_potential	ZIBMolPy.phi-module.html#get_phi_contrib_potential
