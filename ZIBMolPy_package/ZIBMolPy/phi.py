@@ -30,6 +30,19 @@ If a node participates in the partition is determined by the property L{Node.isa
 import numpy as np
 
 #===============================================================================
+def get_phi_stable(x, node_i):
+	r""" Calculates the phi-function $\phi_i(\vec x)$ of node_i at the positions given by x.
+	
+	The participating nodes are found via L{Node.isa_partition<ZIBMolPy.node.Node.isa_partition>}
+	@type x: L{InternalCoordinate}
+	@type node_i: L{Node}
+	@rtype: 1D numpy.ndarray of length x.n_frames
+	""" 	
+	nodes = node_i.pool.where("isa_partition")
+	return(1/ np.sum( np.exp(-node.pool.alpha*( (x - node.internals).norm2() - (x - node_i.internals).norm2() ) ) for node in nodes))
+
+
+#===============================================================================
 def get_phi(x, node_i):
 	r""" Calculates the phi-function $\phi_i(\vec x)$ of node_i at the positions given by x.
 	
