@@ -15,7 +15,12 @@ a normalisation-factor:
 \[ \phi_i(\vec x) = \frac{\chi_i(\vec x)}{\sum_j \chi_j(\vec x)} \]
 
 This numerator is defined as:
-\[ \chi_i(\vec x) = \exp(- \alpha \operatorname{dist}(\vec x, \vec q_i)) \]
+\[ \chi_i(\vec x) = \exp(- \alpha \operatorname{dist}^2(\vec x, \vec q_i)) \]
+
+Calculation of $\phi_i(\vec x)$ might lead to division by zero for large alpha. In order to calculate $\phi_i(\vec x)$ numerically stable it is helpful to cancel fractions and obtain:
+\[ \phi_i(\vec x) = \frac{1}{\sum_j \exp(- \alpha (\operatorname{dist}^2(\vec x, \vec q_j) - \operatorname{dist}^2(\vec x, \vec q_i)))}= \frac{1}{1 + \sum_{j\neq i} \exp(- \alpha (\operatorname{dist}^2(\vec x, \vec q_j) - \operatorname{dist}^2(\vec x, \vec q_i)))} \]
+
+This is an improvement since the denominator is always greater than one. 
 
 The node's position $\vec q_i$ is stored in the internal-attribute of the L{Node}-object.
 The $\alpha$-value is stored in the L{Pool}.
