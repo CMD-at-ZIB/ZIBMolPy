@@ -42,12 +42,13 @@ Symmetrization error threshold
 from os import path
 import sys
 from ZIBMolPy.utils import register_file_dependency
-from ZIBMolPy.phi import get_phi_num, get_phi_denom
+from ZIBMolPy.phi import get_phi_num, get_phi_denom, get_phi
 from ZIBMolPy.pool import Pool
 from ZIBMolPy.algorithms import cluster_by_isa, orthogonalize, symmetrize
 from ZIBMolPy.ui import userinput, Option, OptionsList
 from scipy.io import savemat
 import numpy as np
+import time
 
 import zgf_cleanup
 
@@ -57,6 +58,7 @@ options_desc = OptionsList([
 	Option("c", "auto-cluster", "bool", "choose number of clusters automatically", default=False),
 	Option("l", "lag-time", "int", "lag time for K matrix", default=1, min_value=0),
 	Option("o", "overwrite-mat", "bool", "overwrite existing matrices", default=False),
+	Option("f", "fast-mat", "bool", "fast but less stable matrix calculation", default=False),
 	])
 
 sys.modules[__name__].__doc__ += options_desc.epytext() # for epydoc
@@ -81,11 +83,11 @@ def main():
 		sys.exit("Matrix calculation not possible: Not all of the nodes have been reweighted.")
 	
 	print "\n### Getting S matrix ..."
-	s_matrix = cache_matrix(pool.s_mat_fn, active_nodes, overwrite=options.overwrite_mat)
+	s_matrix = cache_matrix(pool.s_mat_fn, active_nodes, overwrite=options.overwrite_mat, fast=options.fast_mat)
 	register_file_dependency(pool.s_mat_fn, pool.filename)
 
 	print "\n### Getting K matrix ..."
-	k_matrix = cache_matrix(pool.k_mat_fn, active_nodes, shift=options.lag_time, overwrite=options.overwrite_mat)
+	k_matrix = cache_matrix(pool.k_mat_fn, active_nodes, shift=options.lag_time, overwrite=options.overwrite_mat, fast=options.fast_mat)
 	register_file_dependency(pool.k_mat_fn, pool.filename)	
 
 	node_weights = np.array([node.obs.weight_direct for node in active_nodes])
@@ -195,10 +197,13 @@ def main():
 
 #===============================================================================
 # "cache" specialized for "calc_matrix" in order to save a proper npz
-def cache_matrix(filename, nodes, shift=0, overwrite=False):
+def cache_matrix(filename, nodes, shift=0, overwrite=False, fast=False):
 	if(path.exists(filename) and not overwrite):
 		return(np.load(filename)["matrix"])
-	mat = calc_matrix(nodes, shift)
+	t1 = time.time()
+	mat = calc_matrix(nodes, shift, fast)
+	t2 = time.time()
+	print("Matrix calculation took %f seconds.")%(t2-t1)
 	for n in nodes:
 		register_file_dependency(filename, n.trr_fn)
 	np.savez(filename, matrix=mat, node_names=[n.name for n in nodes])
@@ -206,17 +211,20 @@ def cache_matrix(filename, nodes, shift=0, overwrite=False):
 
 
 #===============================================================================
-def calc_matrix(nodes, shift=0):
+def calc_matrix(nodes, shift=0, cache_denom=False):
 	mat = np.zeros( (len(nodes), len(nodes)) )
 	for (i, ni) in enumerate(nodes):
 		print("Working on: %s"%ni)
-		phi_denom = get_phi_denom(ni.trajectory, nodes)
+		if(cache_denom):
+			phi_denom = get_phi_denom(ni.trajectory, nodes)
 		frame_weights = ni.frameweights
 		if shift > 0:
 			frame_weights = frame_weights[:-shift]
 		for (j, nj) in enumerate(nodes):
-			mat[i, j] = np.average(get_phi_num(ni.trajectory, nj)[shift:] / phi_denom[shift:], weights=frame_weights)
-	
+			if(cache_denom):
+				mat[i, j] = np.average(get_phi_num(ni.trajectory, nj)[shift:] / phi_denom[shift:], weights=frame_weights)
+			else:
+				mat[i, j] = np.average(get_phi(ni.trajectory, nj)[shift:], weights=frame_weights)
 	return(mat)
 
 
