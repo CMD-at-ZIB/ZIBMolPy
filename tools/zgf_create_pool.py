@@ -23,7 +23,7 @@ Requirements
 	- U{mdp file<https://wiki.kobv.de/confluence/display/AGCMD/Example+mdp-file+for+Gromacs+with+ZIBgridfree>} for grompp
 	- Gromacs topology for the molecule, and all included files
 	- index file including group 'MOI' (molecule of interest)
-	- U{internal coordinates <http://www.zib.de/cmd-debian/ZIBMolPy/apidocs/ZIBMolPy.internals-module.html>} definition
+	- L{internal coordinates<ZIBMolPy.internals>} definition
 
 	MOI will probably be everything except the solvent, or at least every molecule that is involved in your internal coordinates. You have to make sure that it is specified in the index file. Furthermore, MOI has to be among the energy groups ('energygrps') in the U{mdp file<https://wiki.kobv.de/confluence/display/AGCMD/Example+mdp-file+for+Gromacs+with+ZIBgridfree>}.
 
