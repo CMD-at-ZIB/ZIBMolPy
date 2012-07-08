@@ -41,7 +41,7 @@ class CoordPlotManager(object):
 
 		panel.pack_start(gtk.Label("histogram bins:"), expand=False)
 		self.cobo_nbins = gtk.combo_box_new_text() #TODO: is there a native int combo box?
-		for v in ("50", "40", "30", "20", "10"):
+		for v in ("50", "100", "180"):
 			self.cobo_nbins.append_text(v)
 		self.cobo_nbins.set_active(0)
 		self.cobo_nbins.connect('changed', self.update)
@@ -83,12 +83,12 @@ class CoordPlotManager(object):
 		yscale = coord2.plot_scale
 		
 		xvalues = self.board.pool.coord_range(coord1)
-		xedges = xscale(np.linspace(np.min(xvalues), np.max(xvalues), num=xbins+1))
+		xedges = xscale(np.linspace(np.min(xvalues), np.max(xvalues), num=xbins))
 		xlims = (min(xedges), max(xedges))
 		axes1.set_xlim3d(xlims)
 
 		yvalues = self.board.pool.coord_range(coord2)
-		yedges = yscale(np.linspace(np.min(yvalues), np.max(yvalues), num=ybins+1))
+		yedges = yscale(np.linspace(np.min(yvalues), np.max(yvalues), num=ybins))
 		ylims = (min(yedges), max(yedges))
 		axes1.set_ylim3d(ylims)
 
@@ -101,7 +101,7 @@ class CoordPlotManager(object):
 			xsamples = xscale(self.board.pool.root.trajectory.getcoord(coord1))
 			ysamples = yscale(self.board.pool.root.trajectory.getcoord(coord2))
 
-			hist = np.histogram2d(xsamples, ysamples, normed=True, bins=[xedges, yedges])[0]
+			hist = np.histogram2d(xsamples, ysamples, normed=True, bins=[xbins, ybins])[0]
 		elif(self.rb_show_sampling.get_active()):
 			#plotargs = {'label':'sampling'}
 
@@ -110,7 +110,7 @@ class CoordPlotManager(object):
 				xsamples = xscale(n.trajectory.getcoord(coord1))
 				ysamples = yscale(n.trajectory.getcoord(coord2))
 
-				hist_node = np.histogram2d(xsamples, ysamples, normed=True, bins=[xedges, yedges], weights=n.frameweights)[0]
+				hist_node = np.histogram2d(xsamples, ysamples, normed=True, bins=[xbins, ybins], weights=n.frameweights)[0]
 				if(self.rb_weights_none.get_active()):
 					hist += hist_node
 				elif(self.rb_weights_direct.get_active() and 'weight_direct' in n.obs):
@@ -123,8 +123,8 @@ class CoordPlotManager(object):
 		X, Y = np.meshgrid(xedges, yedges)
 		Z = hist
 
-		axes1.plot_surface(X, Y, Z, rstride=1, cstride=1, alpha=1.0, cmap=cmap)
-		
+		axes1.plot_surface(X, Y, Z, rstride=1, cstride=1, alpha=1.0, cmap=cmap, antialiased=True)
+
 
 #===============================================================================
 #EOF
