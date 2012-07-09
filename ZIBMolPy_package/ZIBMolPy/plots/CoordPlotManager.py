@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from ZIBMolPy.internals import DihedralCoordinate
 import gtk
 import numpy as np
 from mpl_toolkits.mplot3d import Axes3D
@@ -46,6 +47,15 @@ class CoordPlotManager(object):
 		self.cobo_nbins.set_active(0)
 		self.cobo_nbins.connect('changed', self.update)
 		panel.pack_start(self.cobo_nbins, expand=False)
+
+		sep3 = gtk.HSeparator()
+		panel.pack_start(sep3, expand=False)
+
+		cb =  gtk.CheckButton(label="shift dihedrals")
+		setattr(self, "cb_shift_dihedrals", cb)
+		cb.connect("toggled", self.update)
+		panel.pack_start(cb, expand=False)
+		
 		return(panel)
 
 	def begin_session(self):
@@ -78,17 +88,29 @@ class CoordPlotManager(object):
 			axes1.set_title( "%s vs. %s"%(coord1.label, coord2.label) )
 
 		axes1.set_xlabel(coord1.label+" ["+coord1.plot_label+"]")
-		xscale = coord1.plot_scale
 		axes1.set_ylabel(coord2.label+" ["+coord2.plot_label+"]")
-		yscale = coord2.plot_scale
 		
-		xvalues = self.board.pool.coord_range(coord1)
-		xedges = xscale(np.linspace(np.min(xvalues), np.max(xvalues), num=xbins))
+		if(self.cb_shift_dihedrals.get_active() and isinstance(coord1, DihedralCoordinate)):
+			xscale = alternative_dih_scale #TODO we could put this into InternalCoordinate
+		else:
+			xscale = coord1.plot_scale
+		
+		xvalues = xscale(self.board.pool.coord_range(coord1))
+		xedges = np.linspace(np.min(xvalues), np.max(xvalues), num=xbins)
+		# due to strange behavior of np.histogram2d, we need one additional bin to get same dimensions
+		xedges_hist = np.linspace(np.min(xvalues), np.max(xvalues), num=xbins+1)
 		xlims = (min(xedges), max(xedges))
 		axes1.set_xlim3d(xlims)
 
-		yvalues = self.board.pool.coord_range(coord2)
-		yedges = yscale(np.linspace(np.min(yvalues), np.max(yvalues), num=ybins))
+		if(self.cb_shift_dihedrals.get_active() and isinstance(coord2, DihedralCoordinate)):
+			yscale = alternative_dih_scale
+		else:
+			yscale = coord2.plot_scale
+
+		yvalues = yscale(self.board.pool.coord_range(coord2))
+		yedges = np.linspace(np.min(yvalues), np.max(yvalues), num=ybins)
+		# due to strange behavior of np.histogram2d, we need one additional bin to get same dimensions
+		yedges_hist = np.linspace(np.min(yvalues), np.max(yvalues), num=ybins+1)
 		ylims = (min(yedges), max(yedges))
 		axes1.set_ylim3d(ylims)
 
@@ -96,21 +118,19 @@ class CoordPlotManager(object):
 		axes1.set_zlabel('Probability')
 
 		if(self.rb_show_presampling.get_active()):
-			#plotargs = {'label':'presampling'}
 
 			xsamples = xscale(self.board.pool.root.trajectory.getcoord(coord1))
 			ysamples = yscale(self.board.pool.root.trajectory.getcoord(coord2))
 
-			hist = np.histogram2d(xsamples, ysamples, normed=True, bins=[xbins, ybins])[0]
+			hist = np.histogram2d(xsamples, ysamples, normed=True, bins=[xedges_hist, yedges_hist])[0]
 		elif(self.rb_show_sampling.get_active()):
-			#plotargs = {'label':'sampling'}
 
 			hist = np.zeros((xbins, ybins))
 			for n in self.board.pool.where("state != 'refined' and has_trajectory"):
 				xsamples = xscale(n.trajectory.getcoord(coord1))
 				ysamples = yscale(n.trajectory.getcoord(coord2))
 
-				hist_node = np.histogram2d(xsamples, ysamples, normed=True, bins=[xbins, ybins], weights=n.frameweights)[0]
+				hist_node = np.histogram2d(xsamples, ysamples, normed=True, bins=[xedges_hist, yedges_hist], weights=n.frameweights)[0]
 				if(self.rb_weights_none.get_active()):
 					hist += hist_node
 				elif(self.rb_weights_direct.get_active() and 'weight_direct' in n.obs):
@@ -127,4 +147,9 @@ class CoordPlotManager(object):
 
 
 #===============================================================================
+def alternative_dih_scale(data):
+		""" maps dihedrals from [-PI, PI] radians to [0, 360] degrees """
+		return(np.degrees( np.mod(data + 2*np.pi, 2*np.pi) ))
+
+
 #EOF
