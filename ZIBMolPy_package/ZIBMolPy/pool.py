@@ -10,7 +10,7 @@ from ZIBMolPy import utils
 import time
 from ZIBMolPy.constants import BOLTZMANN, AVOGADRO
 
-#needed to eval pool-desc.txt
+# needed to eval pool-desc.txt
 import datetime #pylint: disable=W0611
 
 #===============================================================================
@@ -71,7 +71,11 @@ class NodeList(list):
 		if lin_slack:
 			slack = 0.1*(upper - lower)
 		return( np.linspace(lower-slack, upper+slack, num=num) )
-		
+
+	#---------------------------------------------------------------------------
+	def get_force_constant(self):
+		return(self.alpha / self.thermo_beta) # in kJ/(mol rad^2)
+
 	#---------------------------------------------------------------------------
 	def multilock(self):
 		nodes_lockable = self.where("not is_locked")
