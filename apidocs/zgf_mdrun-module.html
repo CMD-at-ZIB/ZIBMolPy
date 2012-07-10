@@ -112,11 +112,14 @@
     'node0042_convergence.log' stored in the node directory. <b>Note that 
     convergence as indicated by the GR criterion does not necessarily mean 
     that the sampling is sufficient</b>. If, at the end of the day, not all
-    of the nodes in the pool have converged, you can use <a 
+    of the nodes in the pool have converged, you can use  <a 
     href="zgf_browser-module.html" class="link">zgf_browser</a> to get an 
-    impression where convergence was not achieved. Generally, if a node is 
-    situated in a transition region, convergence may not be achieved at all
-    and refinement is the only option.</p>
+    impression where convergence was not achieved.</p>
+    <p>In case that convergence keeps on failing due to a certain internal 
+    coordinate, or due to a certain internal coordinate type (such as 
+    linears), you might want to modify the <a 
+    href="http://www.zib.de/cmd-debian/ZIBMolPy/apidocs/ZIBMolPy.internals-module.html"
+    target="_top">internal coordinate weights</a>.</p>
   <h1 class="heading">Automatic refinement</h1>
     <p>If you use this option, <a href="zgf_mdrun-module.html" 
     class="link">zgf_mdrun</a> will automatically call <a 
@@ -126,15 +129,10 @@
     parameters from <a href="zgf_create_nodes-module.html" 
     class="link">zgf_create_nodes</a>.</p>
   <h1 class="heading">Nodes with state &quot;mdrun-failed&quot;</h1>
-    <p>If something goes wrong during the sampling of a node, it will adapt
-    the state &quot;mdrun-failed&quot;. After the problem is resolved (see 
-    below), you have to recover the node back to state 
-    &quot;mdrun-able&quot; by calling the tool <a 
-    href="zgf_recover_failed-module.html" 
-    class="link">zgf_recover_failed</a>. Failed node samplings are often 
-    related to domain decomposition problems in systems with explicit 
-    solvent and <a href="ZIBMolPy.internals-module.html" 
-    class="link">linear coordinates</a>:</p>
+    <p>If something goes seriously wrong during the sampling of a node, it 
+    will adapt the state &quot;mdrun-failed&quot;. You have to manually set
+    the node back to state &quot;mdrun-able&quot; after the problem is 
+    resolved. Possible causes for failed node samplings are:</p>
     <ul>
       <li>
         <b>Problem:</b> Domain decomposition does not fit number of 
@@ -142,25 +140,16 @@
         or change PME grid dimension, or use particle decomposition.
       </li>
       <li>
-        <b>Problem:</b> Domain decomposition does not work due to (long) 
-        distance restraints (<a href="ZIBMolPy.internals-module.html" 
-        class="link">linear coordinates</a>). <b>Solution:</b> Change 
-        number of nodes/PME nodes, or change PME grid dimension, or use 
-        particle decomposition. Using particle decomposition and a 
-        relatively low number of processors per node (preferably sharing 
-        the same memory) works best in difficult cases.
+        <b>Problem:</b> Domain decomposition does not work with restraints.
+        <b>Solution:</b> Change number of nodes/PME nodes, or change PME 
+        grid dimension, or use particle decomposition.
       </li>
       <li>
-        <b>Problem:</b> Unspecific crashes when <a 
-        href="ZIBMolPy.internals-module.html" class="link">linear 
-        coordinates</a> are used. <b>Solution:</b> Make periodic box bigger
-        (at least double the size of the largest <a 
-        href="ZIBMolPy.internals-module.html" class="link">linear 
-        coordinate</a>).
+        <b>Problem:</b> Unspecific crashes when Linear Coordinates are 
+        used. <b>Solution:</b> Make periodic box bigger (at least double 
+        the size of the largest Linear Coordinate).
       </li>
     </ul>
-    <p>A recovered node sampling will be resumed at the latest Gromacs 
-    checkpoint file (state.cpt).</p>
   <h1 class="heading">Options</h1>
     <ul>
       <li>
@@ -304,6 +293,22 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
+          <td><span class="summary-sig"><a name="check_runaway"></a><span class="summary-sig-name">check_runaway</span>(<span class="summary-sig-arg">node</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="zgf_mdrun-pysrc.html#check_runaway">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
           <td><span class="summary-sig"><a name="conv_check_gelman_rubin"></a><span class="summary-sig-name">conv_check_gelman_rubin</span>(<span class="summary-sig-arg">node</span>)</span></td>
           <td align="right" valign="top">
             <span class="codelink"><a href="zgf_mdrun-pysrc.html#conv_check_gelman_rubin">source&nbsp;code</a></span>
@@ -404,7 +409,7 @@ uto-refines&gt;]
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Fri Jul  6 17:41:50 2012
+    Generated by Epydoc 3.0.1 on Tue Jul 10 11:33:11 2012
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

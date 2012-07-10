@@ -82,14 +82,40 @@
   <p>This numerator is defined as: \[ \chi_i(\vec x) = \exp(- \alpha 
   \operatorname{dist}^2(\vec x, \vec q_i)) \]</p>
   <p>Calculation of $\phi_i(\vec x)$ might lead to division by zero for 
-  large $\alpha$. In order to calculate $\phi_i(\vec x)$ numerically 
-  stable, it is helpful to cancel fractions and obtain: \[ \phi_i(\vec x) =
+  large alpha. In order to calculate $\phi_i(\vec x)$ numerically stable it
+  is helpful to cancel fractions and obtain: \[ \phi_i(\vec x) = 
   \frac{1}{\sum_j \exp(- \alpha (\operatorname{dist}^2(\vec x, \vec q_j) - 
   \operatorname{dist}^2(\vec x, \vec q_i)))}= \frac{1}{1 + \sum_{j\neq i} 
   \exp(- \alpha (\operatorname{dist}^2(\vec x, \vec q_j) - 
   \operatorname{dist}^2(\vec x, \vec q_i)))} \]</p>
-  <p>This is an improvement since the denominator is always larger than 
+  <p>This is an improvement since the denominator is always greater than 
   one.</p>
+  <p>It may happen that $\phi_i(\vec x)$ becomes very small so that it is 
+  represented as zero by the computer. In such a case it is not possible to
+  directly obtain the contribution of phi to the potential, namly: \[ 
+  ln(\phi_i(\vec x)). \]</p>
+  <p>However one can compute this expression simply by the following trick.
+  Assume we have $n$ nodes labeled by $1,\dots,n$ define:</p>
+  <p>\[ m:=\max\limits_{j=1,\dots,n} - \alpha (\operatorname{dist}^2(\vec 
+  x, \vec q_j) - \operatorname{dist}^2(\vec x, \vec q_i))\]</p>
+  <p>than we can rewrite the demanded expression as follows:</p>
+  <p>\begin{align*} ln(\phi_i(\vec x))&amp;= ln \left( 
+  \frac{1}{\sum_{j=1}^n \exp(- \alpha (\operatorname{dist}^2(\vec x, \vec 
+  q_j) - \operatorname{dist}^2(\vec x, \vec q_i)))} \right) \\ &amp;= 
+  -ln\left(\sum_{j=1}^n \exp(- \alpha (\operatorname{dist}^2(\vec x, \vec 
+  q_j) - \operatorname{dist}^2(\vec x, \vec q_i)))\right) \\ &amp;= 
+  -ln\left(\exp(m) \cdot \sum_{j=1}^n \exp(- \alpha 
+  (\operatorname{dist}^2(\vec x, \vec q_j) - \operatorname{dist}^2(\vec x, 
+  \vec q_i))-m)\right)\\ &amp;= -m-ln\left(\cdot \sum_{j=1}^n \exp(- \alpha
+  (\operatorname{dist}^2(\vec x, \vec q_j) - \operatorname{dist}^2(\vec x, 
+  \vec q_i))-m)\right) \end{align*}</p>
+  <p>Note that: \[ 1 \leq \sum_{j=1}^n \exp(- \alpha 
+  (\operatorname{dist}^2(\vec x, \vec q_j) - \operatorname{dist}^2(\vec x, 
+  \vec q_i))-m) \leq n \] so that it is no problem at all to calculate the 
+  needed expression $ln(\phi_i(\vec x))$.</p>
+  <p>Also note that the last step was essential since the term 
+  $\sum_{j=1}^n \exp(- \alpha (\operatorname{dist}^2(\vec x, \vec q_j) - 
+  \operatorname{dist}^2(\vec x, \vec q_i)))$ may become infinity.</p>
   <p>The node's position $\vec q_i$ is stored in the internal-attribute of 
   the <a href="ZIBMolPy.node.Node-class.html" class="link">Node</a>-object.
   The $\alpha$-value is stored in the <a 
@@ -170,26 +196,6 @@
   </tr>
 <tr>
     <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">1D numpy.ndarray of length x.n_frames</span>
-    </td><td class="summary">
-      <table width="100%" cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td><span class="summary-sig"><a href="ZIBMolPy.phi-module.html#get_phi_potential" class="summary-sig-name">get_phi_potential</a>(<span class="summary-sig-arg">x</span>,
-        <span class="summary-sig-arg">node_i</span>)</span><br />
-      Calculates $-\beta^{-1} \log \phi_i(\vec x)$, where $\beta$ is <a 
-      href="ZIBMolPy.pool.Pool-class.html#thermo_beta" 
-      class="link">Pool.thermo_beta</a></td>
-          <td align="right" valign="top">
-            <span class="codelink"><a href="ZIBMolPy.phi-pysrc.html#get_phi_potential">source&nbsp;code</a></span>
-            
-          </td>
-        </tr>
-      </table>
-      
-    </td>
-  </tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
       <span class="summary-type">1D numpy.ndarray of length x_k.size</span>
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
@@ -198,8 +204,7 @@
         <span class="summary-sig-arg">node_i</span>,
         <span class="summary-sig-arg">coord_k</span>)</span><br />
       Calculates the phi-function $\phi_i(\vec x)$ with $\vec x = (q_1, 
-      \dots, q_{k-1}, x_k, q_{k+1}, \dots, q_{n})$ where $\vec q_i = 
-      (q_1,\dots, q_n)$ denotes the components of the position of node_i.</td>
+      \dots, q_{k-1}, x_k, q_{k+1}, \dots, q_{n})$</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="ZIBMolPy.phi-pysrc.html#get_phi_contrib">source&nbsp;code</a></span>
             
@@ -221,10 +226,26 @@
         <span class="summary-sig-arg">coord_k</span>)</span><br />
       Calculates the numerator $\chi_j(\vec x)$ of the phi-function of 
       node_j at $\vec x = (q_1, \dots, q_{k-1}, x_k, q_{k+1}, \dots, 
-      q_{n})$ where $\vec q_i = (q_1,\dots, q_n)$ denotes the components of
-      the position of node_i.</td>
+      q_{n})$</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="ZIBMolPy.phi-pysrc.html#get_phi_num_contrib">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="get_phi_potential"></a><span class="summary-sig-name">get_phi_potential</span>(<span class="summary-sig-arg">x</span>,
+        <span class="summary-sig-arg">node_i</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="ZIBMolPy.phi-pysrc.html#get_phi_potential">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -245,7 +266,7 @@
       href="ZIBMolPy.phi-module.html#get_phi_contrib" 
       class="link">get_phi_contrib</a>(x_j, node_i, coord_k), where $\beta$
       is <a href="ZIBMolPy.pool.Pool-class.html#thermo_beta" 
-      class="link">Pool.thermo_beta</a>.</td>
+      class="link">Pool.thermo_beta</a></td>
           <td align="right" valign="top">
             <span class="codelink"><a href="ZIBMolPy.phi-pysrc.html#get_phi_contrib_potential">source&nbsp;code</a></span>
             
@@ -300,7 +321,7 @@
   positions given by x.</p>
   <p>The participating nodes are found via <a 
   href="ZIBMolPy.node.Node-class.html#isa_partition" 
-  class="link">Node.isa_partition</a>.</p>
+  class="link">Node.isa_partition</a></p>
   <dl class="fields">
     <dt>Parameters:</dt>
     <dd><ul class="nomargin-top">
@@ -329,12 +350,6 @@
   
   <p>Calculates the numerator $\chi_i(\vec x)$ of the phi-function of 
   node_i at the positions given by x.</p>
-  <p>Calculating numerator and denominator of the phi-function separately 
-  opens up possibilities for caching, see <a href="zgf_analyze-module.html"
-  class="link">zgf_analyze</a>.</p>
-  <p>This method is not as stable for large values of $\alpha 
-  \operatorname{dist}^2(\vec x, \vec q_i)$ as <a 
-  href="ZIBMolPy.phi-module.html#get_phi" class="link">phi.get_phi</a>.</p>
   <dl class="fields">
     <dt>Parameters:</dt>
     <dd><ul class="nomargin-top">
@@ -365,12 +380,6 @@
   phi-function.</p>
   <p>This is the sum over the numerators of the given nodes at the 
   positions given by x.</p>
-  <p>Calculating numerator and denominator of the phi-function separately 
-  opens up possibilities for caching, see <a href="zgf_analyze-module.html"
-  class="link">zgf_analyze</a>.</p>
-  <p>This method is not as stable for large values of $\alpha 
-  \operatorname{dist}^2(\vec x, \vec q_i)$ as <a 
-  href="ZIBMolPy.phi-module.html#get_phi" class="link">phi.get_phi</a>.</p>
   <dl class="fields">
     <dt>Parameters:</dt>
     <dd><ul class="nomargin-top">
@@ -378,35 +387,6 @@
           class="link">Node</a> objects) - these are sumed over</li>
         <li><strong class="pname"><code>x</code></strong> (<a href="ZIBMolPy.internals.InternalCoordinate-class.html" 
           class="link">InternalCoordinate</a>)</li>
-    </ul></dd>
-    <dt>Returns: 1D numpy.ndarray of length x.n_frames</dt>
-  </dl>
-</td></tr></table>
-</div>
-<a name="get_phi_potential"></a>
-<div>
-<table class="details" border="1" cellpadding="3"
-       cellspacing="0" width="100%" bgcolor="white">
-<tr><td>
-  <table width="100%" cellpadding="0" cellspacing="0" border="0">
-  <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">get_phi_potential</span>(<span class="sig-arg">x</span>,
-        <span class="sig-arg">node_i</span>)</span>
-  </h3>
-  </td><td align="right" valign="top"
-    ><span class="codelink"><a href="ZIBMolPy.phi-pysrc.html#get_phi_potential">source&nbsp;code</a></span>&nbsp;
-    </td>
-  </tr></table>
-  
-  <p>Calculates $-\beta^{-1} \log \phi_i(\vec x)$, where $\beta$ is <a 
-  href="ZIBMolPy.pool.Pool-class.html#thermo_beta" 
-  class="link">Pool.thermo_beta</a></p>
-  <dl class="fields">
-    <dt>Parameters:</dt>
-    <dd><ul class="nomargin-top">
-        <li><strong class="pname"><code>x</code></strong> (<a href="ZIBMolPy.internals.InternalArray-class.html" 
-          class="link">InternalArray</a>)</li>
-        <li><strong class="pname"><code>node_i</code></strong> (<a href="ZIBMolPy.node.Node-class.html" class="link">Node</a>)</li>
     </ul></dd>
     <dt>Returns: 1D numpy.ndarray of length x.n_frames</dt>
   </dl>
@@ -429,8 +409,9 @@
   </tr></table>
   
   <p>Calculates the phi-function $\phi_i(\vec x)$ with $\vec x = (q_1, 
-  \dots, q_{k-1}, x_k, q_{k+1}, \dots, q_{n})$ where $\vec q_i = 
-  (q_1,\dots, q_n)$ denotes the components of the position of node_i.</p>
+  \dots, q_{k-1}, x_k, q_{k+1}, \dots, q_{n})$</p>
+  <p>Where $\vec q_i = (q_1,\dots, q_n)$ denotes the components of the 
+  position of node_i.</p>
   <dl class="fields">
     <dt>Parameters:</dt>
     <dd><ul class="nomargin-top">
@@ -461,8 +442,9 @@
   </tr></table>
   
   <p>Calculates the numerator $\chi_j(\vec x)$ of the phi-function of 
-  node_j at $\vec x = (q_1, \dots, q_{k-1}, x_k, q_{k+1}, \dots, q_{n})$ 
-  where $\vec q_i = (q_1,\dots, q_n)$ denotes the components of the 
+  node_j at $\vec x = (q_1, \dots, q_{k-1}, x_k, q_{k+1}, \dots, 
+  q_{n})$</p>
+  <p>Where $\vec q_i = (q_1,\dots, q_n)$ denotes the components of the 
   position of node_i.</p>
   <dl class="fields">
     <dt>Parameters:</dt>
@@ -497,7 +479,7 @@
   href="ZIBMolPy.phi-module.html#get_phi_contrib" 
   class="link">get_phi_contrib</a>(x_j, node_i, coord_k), where $\beta$ is 
   <a href="ZIBMolPy.pool.Pool-class.html#thermo_beta" 
-  class="link">Pool.thermo_beta</a>.</p>
+  class="link">Pool.thermo_beta</a></p>
   <dl class="fields">
     <dt>Parameters:</dt>
     <dd><ul class="nomargin-top">
@@ -542,7 +524,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Fri Jul  6 17:41:50 2012
+    Generated by Epydoc 3.0.1 on Tue Jul 10 11:33:11 2012
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"
