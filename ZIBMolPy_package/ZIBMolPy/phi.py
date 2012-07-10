@@ -108,20 +108,12 @@ def get_phi_potential(x, node_i):
 	@type node_i: L{Node}
 	@rtype: 1D numpy.ndarray of length x.n_frames
 	"""
-	#TODO needs better documentation
 	all_nodes = node_i.pool.where("isa_partition")
 	other_nums = [ -node.pool.alpha*( (x - node.internals).norm2() - (x - node_i.internals).norm2() )  for node in all_nodes ]
 
-	# N=amount of nodes
-	# usually x_j is given as an array with 360 entries. 
-	# other_nums consist then of N arrays each of size 360 
-	# if you imagine other_nums as a matrix with 360 columns and N rows,
-	# then max_value[j] gives you the maximum of the j-column of the matrix
 	max_value = np.max(other_nums,axis=0)
-	for i in range(len(other_nums)):
-		for j in range(len(max_value)):
-			other_nums[i][j]=np.add(other_nums[i][j],-max_value[j])
-
+	
+	other_nums=np.add(other_nums,-max_value)
 	other_nums=np.exp(other_nums)
 	denom = np.sum(other_nums, axis=0)
 	
@@ -183,7 +175,6 @@ def get_phi_contrib_potential(x_j, node_i, coord_k):
 	@type coord_k: L{InternalCoordinate}
 	@rtype: 1D numpy.ndarray if length x_j.size
 	"""
-	#TODO needs better documentation
 	assert(x_j.ndim == 1)
 	
 	a = node_i.pool.alpha*np.square(coord_k.sub(x_j, node_i.internals.getcoord(coord_k)))
@@ -192,20 +183,11 @@ def get_phi_contrib_potential(x_j, node_i, coord_k):
 	other_nums = [ get_phi_num_contrib(x_j, node_i, n, coord_k) for n in all_nodes ]
 	other_nums = np.add(other_nums, a)
 	
-	# N=amount of nodes
-	# usually x_j is given as an array with 360 entries. 
-	# other_nums consist then of N arrays each of size 360 
-	# if you imagine other_nums as a matrix with 360 columns and N rows,
-	# then max_value[j] gives you the maximum of the j-column of the matrix
 	max_value = np.max(other_nums,axis=0)
 
-	for i in range(len(other_nums)):
-		for j in range(len(max_value)):
-			other_nums[i][j]=np.add(other_nums[i][j],-max_value[j])
-
+	other_nums=np.add(other_nums,-max_value)
 	other_nums = np.exp(other_nums)
-	denom = np.sum(other_nums, axis=0)
-	
+	denom = np.sum(other_nums, axis=0)	
 	return( -1/node_i.pool.thermo_beta*(-max_value-np.log(denom)))
 
 
