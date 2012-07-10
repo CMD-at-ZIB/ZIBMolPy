@@ -25,9 +25,7 @@ Stale node locks
 
 Convergence
 ===========
-	Information about the convergence properties of individual internal coordinates can be found in the convergence log file named 'node0042_convergence.log' stored in the node directory. B{Note that convergence as indicated by the GR criterion does not necessarily mean that the sampling is sufficient}. If, at the end of the day, not all of the nodes in the pool have converged, you can use  L{zgf_browser} to get an impression where convergence was not achieved.
-
-	In case that convergence keeps on failing due to a certain internal coordinate, or due to a certain internal coordinate type (such as linears), you might want to modify the U{internal coordinate weights <http://www.zib.de/cmd-debian/ZIBMolPy/apidocs/ZIBMolPy.internals-module.html>}.
+	Information about the convergence properties of individual internal coordinates can be found in the convergence log file named 'node0042_convergence.log' stored in the node directory. B{Note that convergence as indicated by the GR criterion does not necessarily mean that the sampling is sufficient}. If, at the end of the day, not all of the nodes in the pool have converged, you can use L{zgf_browser} to get an impression where convergence was not achieved. Generally, if a node is situated in a transition region, convergence may not be achieved at all and refinement is the only option.
 
 Automatic refinement
 ====================
@@ -35,11 +33,13 @@ Automatic refinement
 
 Nodes with state "mdrun-failed"
 ===============================
-	If something goes seriously wrong during the sampling of a node, it will adapt the state "mdrun-failed". You have to manually set the node back to state "mdrun-able" after the problem is resolved. Possible causes for failed node samplings are:
+	If something goes wrong during the sampling of a node, it will adapt the state "mdrun-failed". After the problem is resolved (see below), you have to recover the node back to state "mdrun-able" by calling the tool L{zgf_recover_failed}. Failed node samplings are often related to domain decomposition problems in systems with explicit solvent and L{linear coordinates<ZIBMolPy.internals>}:
 
 		- B{Problem:} Domain decomposition does not fit number of nodes/PME nodes. B{Solution:} Change number of nodes/PME nodes, or change PME grid dimension, or use particle decomposition.
-		- B{Problem:} Domain decomposition does not work with restraints. B{Solution:} Change number of nodes/PME nodes, or change PME grid dimension, or use particle decomposition.
-		- B{Problem:} Unspecific crashes when Linear Coordinates are used. B{Solution:} Make periodic box bigger (at least double the size of the largest Linear Coordinate).
+		- B{Problem:} Domain decomposition does not work due to (long) distance restraints (L{linear coordinates<ZIBMolPy.internals>}). B{Solution:} Change number of nodes/PME nodes, or change PME grid dimension, or use particle decomposition. Using particle decomposition and a relatively low number of processors per node (preferably sharing the same memory) works best in difficult cases.
+		- B{Problem:} Unspecific crashes when L{linear coordinates<ZIBMolPy.internals>} are used. B{Solution:} Make periodic box bigger (at least double the size of the largest L{linear coordinate<ZIBMolPy.internals>}).
+
+	A recovered node sampling will be resumed at the latest Gromacs checkpoint file (state.cpt).
 """
 
 from ZIBMolPy.utils import check_call
@@ -69,7 +69,7 @@ sys.modules[__name__].__doc__ += options_desc.epytext() # for epydoc
 
 def is_applicable():
 	pool = Pool()
-	return(len(pool.where("state in ('em-mdrun-able', 'mdrun-able','converged', 'not-converged')")) > 0)
+	return(len(pool.where("state in ('em-mdrun-able', 'mdrun-able', 'converged', 'not-converged')")) > 0)
 	
 
 #===============================================================================
@@ -114,17 +114,11 @@ def main():
 			active_node.save()
 			active_node.unlock()
 			traceback.print_exc()
-			#sys.exit("Error: mdrun failed.")
 			continue
 			
 
 #===============================================================================
 def process(node, options):
-	
-	if(node.extensions_counter > 0):
-		cmd0 = ["tpbconv", "-s", node.tpr_fn, "-o", node.tpr_fn, "-extend", str(node.extensions_length)]
-		print("Calling: %s"%" ".join(cmd0))
-		check_call(cmd0)
 	
 	cmd1 = ["mdrun"]
 	cmd1 += ["-s", "../../"+node.tpr_fn]
@@ -192,6 +186,10 @@ def process(node, options):
 	else:
 		node.extensions_counter += 1
 		node.state = "mdrun-able" # actually it should still be in this state
+	
+		cmd0 = ["tpbconv", "-s", node.tpr_fn, "-o", node.tpr_fn, "-extend", str(node.extensions_length)]
+		print("Calling: %s"%" ".join(cmd0))
+		check_call(cmd0) # tell Gromacs to extend the tpr file for another round
 
 
 #===============================================================================

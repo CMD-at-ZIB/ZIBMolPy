@@ -19,6 +19,9 @@ Convenience:
 	- L{zgf_extract_conformations}
 	- L{zgf_cleanup}
 	- L{zgf_remove_nodes}
+	- L{zgf_solvate_nodes}
+	- L{zgf_genion}
+	- L{zgf_recover_failed}
 
 Testing:
 ========

@@ -5,19 +5,23 @@
 What it does
 ============
 
-bla
+This optional tool will put unsolvated node configurations (e.g. obtained by high-temperature presampling in vacuum) into equally sized solvent boxes.
+
+All solvent boxes will be filled with the same number of solvent molecules. The node topologies will be updated accordingly. For known solvent models, the necessary force field include statements will be added to the node topologies. If the specified box size is too small to fit in the specified linear coordinates (if any), the box size will be increased automatically.
+
+B{The next step is L{zgf_grompp}. Afterwards, ions can be added by using L{zgf_genion}.}
 
 How it works
 ============
 	At the command line, type::
-		$ zgf_solvate_nodes bla
+		$ zgf_solvate_nodes
 
 """
 
 
 from ZIBMolPy.pool import Pool
 from ZIBMolPy.internals import LinearCoordinate
-from ZIBMolPy.ui import OptionsList, Option
+from ZIBMolPy.ui import userinput, OptionsList, Option
 
 import sys
 import re
@@ -34,7 +38,7 @@ options_desc = OptionsList([
 	Option("x", "box-x", "float", "Box vector length (x)", default=3.0, min_value=0.0),
 	Option("y", "box-y", "float", "Box vector length (y)", default=3.0, min_value=0.0),
 	Option("z", "box-z", "float", "Box vector length (z)", default=3.0, min_value=0.0),
-	Option("s", "solv-model", "choice", "Solvent model", choices=("tip3p", "tip4p", "tip4pew", "tip5p", "spc", "spce")),
+	Option("s", "solv-model", "choice", "Solvent model", choices=("tip3p", "tip4p", "tip4pew", "tip5p", "spc", "spce", "acetonitrile")),
 ])
 
 sys.modules[__name__].__doc__ += options_desc.epytext() # for epydoc
@@ -70,6 +74,13 @@ def main():
 	elif(options.solv_model == "spce"):
 		solv_box = "spc216.gro"
 		solv_fn = "spce.itp"
+	elif(options.solv_model == "acetonitrile"): # TODO one might change this one to "custom" and let user enter name of template box
+		solv_box = "acetonitrile.pdb"
+		msg = "Topology update for acetonitrile is not supported. Proceed?"
+		if not(userinput(msg, "bool")):
+			for n in needy_nodes:
+				n.unlock()
+			return("Quit by user.")
 	
 	# determine maximum length of linears, if any
 	max_linear = query_linear_length(pool)
@@ -78,7 +89,8 @@ def main():
 	genbox(pool, max_linear, options.bt, (options.box_x, options.box_y, options.box_z), solv_box)
 
 	# update topology files (add solvent model and ions includes)
-	update_tops(pool, solv_fn)
+	if not(options.solv_model == "acetonitrile"):
+		update_tops(pool, solv_fn)
 
 	for n in needy_nodes:
 		n.state = "em-grompp-able"

@@ -275,59 +275,44 @@ def calc_theta(active_nodes):
 	return [np.mean(min_dists), np.median(min_dists)]
 
 
-
-#===============================================================================
-def get_force_constant(node):
-	#gamma = node.gammas[ coordinate.index ]
-	#k = gamma * node.alpha / get_beta(node.temperature) # in kJ/(mol rad^2)
-	#k = node.alpha / get_beta(node.temperature) # in kJ/(mol rad^2)
-	#k = node.pool.alpha / get_beta(node.pool.temperature) # in kJ/(mol rad^2)
-	k = node.pool.alpha / node.pool.thermo_beta # in kJ/(mol rad^2)
-	#TODO: keine node-dependence
-	#TODO: evtl in Pool auslagern
-	return(k)
-
-
 #==========================================================================
 def do_phifit_leastsq(pool):
 	from scipy.optimize import leastsq
 	
 	new_nodes = pool.where("state == 'creating-a-partition'")
+	k0 = pool.get_force_constant()
 		
 	for n in new_nodes:
 		n.restraints = []
-		for c in pool.converter:
-			k0 = get_force_constant(n)
+		for c in pool.converter:			
 			pos0 = n.internals.getcoord(c)
 			all_values = pool.coord_range(c)
 					
 			if(isinstance(c, DihedralCoordinate)):
-				p0 = [pos0, 2, k0] # Initial guess for parameters
+				p0 = [pos0, 2, k0] # initial guess for parameters
 				restraint_class = DihedralRestraint
 				
 			elif(isinstance(c, LinearCoordinate)):
-				p0 = [pos0, pos0, 0.1, k0]  # Initial guess for parameters
+				p0 = [pos0, pos0, 0.1, k0]  # initial guess for parameters
 				restraint_class = DistanceRestraint
 			else:
 				raise(Exception("Unkown Coordinate-Type"))
 			
-			#phi_values = get_phi_contrib(all_values, n, active_nodes, c)
 			phi_values = get_phi_contrib(all_values, n, c)
 			phi_potential = get_phi_contrib_potential(all_values, n, c)
 			node_value = n.internals.getcoord(c)
 			node_index = np.argmin(np.square(c.sub(all_values, node_value)))
-			#phi_potential -= phi_potential[node_index] # gauge: set phi_potential[node] = 0
 
 			# contiguous function = smooth penalty-surface 
 			def heaviside(x): return 1/(1 + np.exp(-500*x))
 			phi_on = heaviside(phi_values - 0.01)
 			
 			def errfunc(p):
-				p[1:] = [ max(i, 0) for i in p[1:] ] #all but p[0] should be positiv
+				p[1:] = [ max(i, 0) for i in p[1:] ] # all but p[0] should be positive
 				
 				restraint = restraint_class.calc_energy(p, all_values)
-				#penalties = (phi_values+0.01)*(phi_potential - restraint) # weich
-				#penalties = (phi_values+0.001)*(phi_potential - restraint) # also weich
+				#penalties = (phi_values+0.01)*(phi_potential - restraint) # soft
+				#penalties = (phi_values+0.001)*(phi_potential - restraint) # soft
 				#penalties = (phi_values+0.1)*(phi_potential - restraint) # hard
 				diff = restraint - phi_potential
 				restr_too_high = heaviside(diff)
@@ -346,10 +331,11 @@ def do_phifit_leastsq(pool):
 #==========================================================================
 def do_phifit_harmonic(pool):
 	new_nodes = pool.where("state == 'creating-a-partition'")
+	k = pool.get_force_constant()
+
 	for n in new_nodes:
 		n.restraints = []
-		for c in pool.converter:
-			k = get_force_constant(n)
+		for c in pool.converter:			
 			if(isinstance(c, DihedralCoordinate)):
 				phi0 = n.internals.getcoord(c)
 				dphi = 0.0
