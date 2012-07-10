@@ -17,10 +17,33 @@ a normalisation-factor:
 This numerator is defined as:
 \[ \chi_i(\vec x) = \exp(- \alpha \operatorname{dist}^2(\vec x, \vec q_i)) \]
 
-Calculation of $\phi_i(\vec x)$ might lead to division by zero for large alpha. In order to calculate $\phi_i(\vec x)$ numerically stable it is helpful to cancel fractions and obtain:
+Calculation of $\phi_i(\vec x)$ might lead to division by zero for large $\alpha$. In order to calculate $\phi_i(\vec x)$ numerically stable, it is helpful to cancel fractions and obtain:
 \[ \phi_i(\vec x) = \frac{1}{\sum_j \exp(- \alpha (\operatorname{dist}^2(\vec x, \vec q_j) - \operatorname{dist}^2(\vec x, \vec q_i)))}= \frac{1}{1 + \sum_{j\neq i} \exp(- \alpha (\operatorname{dist}^2(\vec x, \vec q_j) - \operatorname{dist}^2(\vec x, \vec q_i)))} \]
 
 This is an improvement since the denominator is always greater than one. 
+
+It may happen that $\phi_i(\vec x)$ becomes very small so that it is represented as zero by the computer. In such a case it is not possible to directly obtain the contribution of $\phi_i$ to the potential, namely:
+\[ ln(\phi_i(\vec x)). \]
+
+However, one can compute this expression simply by the following trick. Assume we have $n$ nodes labeled by $1,\dots,n$, define:
+
+\[ m:=\max\limits_{j=1,\dots,n} - \alpha (\operatorname{dist}^2(\vec x, \vec q_j) - \operatorname{dist}^2(\vec x, \vec q_i))\]
+
+then we can rewrite the demanded expression as follows:
+
+\begin{align*} 
+ln(\phi_i(\vec x))&= 
+ln \left( \frac{1}{\sum_{j=1}^n \exp(- \alpha (\operatorname{dist}^2(\vec x, \vec q_j) - \operatorname{dist}^2(\vec x, \vec q_i)))} \right) \\
+&= -ln\left(\sum_{j=1}^n \exp(- \alpha (\operatorname{dist}^2(\vec x, \vec q_j) - \operatorname{dist}^2(\vec x, \vec q_i)))\right) \\
+&= -ln\left(\exp(m) \cdot \sum_{j=1}^n \exp(- \alpha (\operatorname{dist}^2(\vec x, \vec q_j) - \operatorname{dist}^2(\vec x, \vec q_i))-m)\right)\\
+&= -m-ln\left(\cdot \sum_{j=1}^n \exp(- \alpha (\operatorname{dist}^2(\vec x, \vec q_j) - \operatorname{dist}^2(\vec x, \vec q_i))-m)\right)
+\end{align*}
+
+Note that:
+\[ 1 \leq \sum_{j=1}^n \exp(- \alpha (\operatorname{dist}^2(\vec x, \vec q_j) - \operatorname{dist}^2(\vec x, \vec q_i))-m) \leq n \]
+so that it is no problem at all to calculate the needed expression $ln(\phi_i(\vec x))$.
+
+Also note introducing $m$ is essential since the term $\sum_{j=1}^n \exp(- \alpha (\operatorname{dist}^2(\vec x, \vec q_j) - \operatorname{dist}^2(\vec x, \vec q_i)))$ may become infinite.
 
 The node's position $\vec q_i$ is stored in the internal-attribute of the L{Node}-object.
 The $\alpha$-value is stored in the L{Pool}.
