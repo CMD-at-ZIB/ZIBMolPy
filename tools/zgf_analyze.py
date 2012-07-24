@@ -8,17 +8,21 @@ What it does
 
 	This tool will
 
-		1. Calculate the initial S matrix (S{Phi} overlap matrix) and K matrix (S{Phi} transition matrix)
-		2. Symmetrize S and K using the direct node weights obtained by L{zgf_reweight}
-		3. Come up with a second, corrected version of node weights
-		4. Calculate eigenvalues and eigenvectors of the symmetrized S matrix
+		1. Calculate the initial $S$ matrix (the $\phi$ overlap matrix) and $K$ matrix (the $\phi$ transition matrix)
+
+		\[ S_{ij} = \left[ \sum_{n=1}^{N_i} \phi_j(q_n^{(i)}) \cdot \\frac{ \phi_i(q_n^{(i)}) }{ \exp{ (-\\beta} \cdot U_{res}(q_n^{(i)})) } \\right] \cdot \\frac{1}{N_i} 
+		= \left[ \sum_{n=1}^{N_i} \phi_j(q_n^{(i)}) \cdot \mathtt{frame\_weight}_i(q_n^{(i)}) \\right] \cdot \\frac{1}{N_i} \]
+
+		2. Symmetrize $S$ and $K$ using the direct node weights obtained by L{zgf_reweight}
+		3. Calculate the corrected node weights
+		4. Calculate eigenvalues and eigenvectors of the symmetrized $S$ matrix
 		5. Sort the eigenvectors in descending order according to the value of the corresponding eigenvalue
 		6. Orthogonalize the eigenvectors and deal with degeneracies
-		7. Perform PCCA+ on the orthogonalized eigenvectors, yielding S{chi} (chi) matrix and cluster weights
-		8. Calculate the eigenvectors S{xi} (xi) of the Q_c matrix (the Markov state model)
-		9. Calculate Q_c from S{xi} and PCCA+ output
+		7. Perform PCCA+ on the orthogonalized eigenvectors in order to obtain $\chi$ matrix and cluster weights
+		8. Calculate the eigenvectors $\\xi$ of the $Q_c$ matrix
+		9. Calculate $Q_c$ (i.e. the Markov state model) from $\\xi$ and PCCA+ output
 
-	You may continue your analysis by looking at the clustering with L{zgf_browser}. If you like the clustering, you can extract the frames belonging to the metastable conformations by using L{zgf_extract_conformations} for visualization of cluster representatives. If you don't like the clustering, you can rerun L{zgf_analyze} and try a different number of clusters.
+	You may continue your analysis by visualizing the clustering with L{zgf_browser}. If you like the clustering, you can extract the frames belonging to the metastable conformations by using L{zgf_extract_conformations} for visualization of cluster representatives. If you don't like the clustering, you can rerun L{zgf_analyze} and try a different number of clusters.
 
 How it works
 ============
@@ -27,15 +31,15 @@ How it works
 
 PCCA+
 =====
-	You will have to specify a number of clusters for PCCA+. An initial guess for this number will be made based on the largest gap between the calculated eigenvalues. Ideally there is only real eigenvalue one, followed by a number of eigenvalues very close to one (together forming the Perron cluster, which gives the number of metastable conformations), followed by a significant gap to mark the end of the Perron cluster. Eigenvectors belonging to eigenvalues that are not in the Perron cluster are irrelevant for PCCA+. The quality of the clustering result can be evaluated by taking a look at the (stochastic) S{chi} matrix, which for each node gives the membership to the metastable conformations identified during PCCA+. All matrices can also be exported for use in Matlab. The matrices are stored in the analysis/ directory.
+	You will have to specify a number of clusters for PCCA+. An initial guess for this number will be made based on the largest gap between the calculated eigenvalues. Ideally there is only real eigenvalue one, followed by a number of eigenvalues very close to one (together forming the Perron cluster, which gives the number of metastable conformations), followed by a significant gap to mark the end of the Perron cluster. Eigenvectors belonging to eigenvalues that are not in the Perron cluster are irrelevant for PCCA+. The quality of the clustering result can be evaluated by taking a look at the (stochastic) $\chi$ matrix, which for each node gives the membership to the metastable conformations identified during PCCA+. All matrices can also be exported for use in Matlab. The matrices are stored in the analysis/ directory.
 
 K matrix and lag time
 =====================
-	At the moment, the K matrix and its lag time are not used.
+	At the moment, the $K$ matrix and its lag time are not used. Instead, an implementation of the $P(\\tau)$ matrix it on its way.
 
 Symmetrization error threshold
 ==============================
-	This parameter helps to adjust the weighting of overlap regions between S{Phi} functions.
+	This parameter helps to adjust the weighting of overlap regions between $\phi$ functions.
 
 """
 
