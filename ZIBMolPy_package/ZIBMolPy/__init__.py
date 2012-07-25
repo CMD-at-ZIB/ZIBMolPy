@@ -22,6 +22,7 @@ Convenience:
 	- L{zgf_solvate_nodes}
 	- L{zgf_genion}
 	- L{zgf_recover_failed}
+	- L{zgf_discard_solvent}
 
 Testing:
 ========
