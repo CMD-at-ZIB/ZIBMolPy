@@ -7,9 +7,7 @@ What it does
 
 This optional tool will use trjconv to remove everything except group "MOI" from the node sampling trajectories. Periodic boundary conditions will not be treated. It is meant to save disk space and gain speed in data handling after the sampling of the node pool is concluded.
 
-The tool should not be used if you plan on doing further node refinement. 
-
-B{The next step is L{zgf_grompp}. Afterwards, ions can be added by using L{zgf_genion}.}
+The tool should not be used if you plan on doing further node refinement. This includes the generation of unrestrained transition node which are necessary for calculating the $P(\\tau)$ matrix. If you accidentally removed the solvent before you were done, and you do not wish to repeat the sampling, you have to fall back on using L{zgf_solvate_nodes}.
 
 How it works
 ============
@@ -37,7 +35,7 @@ sys.modules[__name__].__doc__ += options_desc.epytext() # for epydoc
 
 def is_applicable():
 	pool = Pool()
-	return( len(pool) > 1  and len(pool.where("is_sampled")) == len(pool) )
+	return( len(pool.where("state in ('converged', 'not-converged', 'refined')")) > 1 )
 
 
 #===============================================================================
@@ -52,7 +50,10 @@ def main():
 
 	needy_nodes = NodeList([n for n in pool.where(choice) if not n == pool.root]) # we won't touch the root
 
-	if not(userinput("Once the solvent has been removed, further refinement of the pool is not possible. Continue?", "bool")):
+	if not(len(needy_nodes)):
+		sys.exit("Nothing to do.")
+
+	if not(userinput("Once the solvent has been removed, further refinement of the pool is not possible. This includes the generation of unrestrained transition nodes! Continue?", "bool")):
 		sys.exit("Quit by user.")
 		
 	assert(len(needy_nodes) == len(needy_nodes.multilock())) # make sure we lock ALL nodes
