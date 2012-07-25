@@ -5,7 +5,13 @@
 from ZIBMolPy.pool import Pool
 from ZIBMolPy.node import Node
 from ZIBMolPy.phi  import get_phi
+from ZIBMolPy.ui import userinput, Option, OptionsList
+
+import sys
+
 import numpy as np
+
+
 
 # upper threshold is threshold_default value has to be between 0.0 and 1.0
 # lower threshold is given as 1-upper_threshold
@@ -14,8 +20,19 @@ threshold_default=0.6
 #how many transition sampling points per node ?
 default_amount_transition_nodes = 1
 
+
+options_desc = OptionsList([
+	
+	Option("n", "num-neighbours", "int", "number of neighbours per node", default=1, min_value=1),
+	
+	])
+
 #===============================================================================
 def main():
+
+	options = options_desc.parse_args(sys.argv)[0]
+
+	default_amount_transition_nodes = options.num_neighbours
 
 	pool = Pool()
 	npz_file = np.load(pool.chi_mat_fn)
@@ -25,6 +42,7 @@ def main():
 	active_nodes = [Node(nn) for nn in node_names]
 	pool = Pool()
 
+	
 	for node_index in range(0,len(active_nodes)):
 			trajectory= active_nodes[node_index].trajectory
 			
@@ -37,6 +55,7 @@ def main():
 			print "			              ---				"
 
 			neighbours=get_neighbours(node_index,trajectory,active_nodes)
+
 			
 			#create transition point for node_index
 			for element in neighbours:
@@ -71,6 +90,7 @@ def get_neighbours(current_node,trajectory,other_nodes):
 
 	# change threshold and search for more neighbours until we found enough, or give up after 1000 steps
 	step_counter = 0
+	mid = 0
 	while len(neighbours)!=default_amount_transition_nodes and step_counter < 1000:
 		if len(neighbours) > default_amount_transition_nodes:
 			print "too many neighbours   - decrease upper_threshold:" +str(upper_threshold)
