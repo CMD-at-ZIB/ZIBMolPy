@@ -6,7 +6,7 @@ What it does
 ============
 	B{This is the third step of ZIBgridfree.}
 
-	After a set of initial nodes has been created by zgf_create_nodes, this tool will, for each node, setup all the files that are necessary for Gromacs to run the sampling. This includes writing the initial geometry to each node directory, and creating a per-node topology file that contains the restraint setup that is used to fit the node's phi function.
+	After a set of initial nodes has been created by L{zgf_create_nodes}, this tool will, for each node, setup all the files that are necessary for Gromacs to run the sampling. This includes writing the initial geometry to each node directory, setting up a costumized mdp file, and creating a per-node topology file that contains the restraint setup that is used to fit the node's $\phi$ function.
 
 	B{The next step is L{zgf_grompp}.}
 
@@ -37,7 +37,6 @@ options_desc = OptionsList()
 
 sys.modules[__name__].__doc__ += options_desc.epytext() # for epydoc
 
-
 def is_applicable():
 	pool = Pool()
 	return(len(pool.where("state == 'created'")) > 0)
@@ -59,12 +58,15 @@ def main():
 		n.save()
 		n.unlock()
 
+
 #===============================================================================
 def generate_mdp(pool):
 	mdp = read_mdp_file(pool.mdp_fn)
 	dt = float(mdp['dt'])
+	gen_seed = int(mdp['gen_seed'])
 	orig_mdp = open(pool.mdp_fn).read()
 	orig_mdp = re.sub("\nnsteps", "\n; zgf_setup_nodes: commented-out the following line\n; nsteps", orig_mdp)
+	orig_mdp = re.sub("\ngen_seed", "\n; zgf_setup_nodes: commented-out the following line\n; gen_seed", orig_mdp)
 	
 	for n in pool.where("state == 'created'"):
 		print("Writing: "+n.mdp_fn)
@@ -73,7 +75,12 @@ def generate_mdp(pool):
 		f.write(orig_mdp)
 		f.write("\n; zgf_setup_nodes:\n") 
 		f.write("nsteps = %d\n"%nsteps)
+		# unrestrained (transition) nodes require a random gen_seed (-1)
+		if not(n.has_restraints):
+			gen_seed = -1
+		f.write("gen_seed = %d\n"%gen_seed)
 		f.close()
+
 
 #===============================================================================
 def extract_frames(pool):
@@ -103,8 +110,8 @@ def extract_frames(pool):
 		trr_in.close()
 	
 	
-	#Check if the right frames where extracted
-	# In principle PDB coordinates should have a precision of 1e-4 nm
+	# Check if the right frames where extracted
+	# In principle, PDB coordinates should have a precision of 1e-4 nm
 	# beause they are given in Angström with three decimal places.
 	
 	for n in needy_nodes:
@@ -112,7 +119,8 @@ def extract_frames(pool):
 		d = np.max(np.abs(n.internals.array - a.array))
 		print n.name+": pdb vs internals deviation: %.2e"%np.max(np.abs(n.internals.array - a.array))
 		assert(1e-2 > d)
-		
+
+
 #===============================================================================
 def generate_topology(pool):
 	for n in pool.where("state == 'created'"):
@@ -181,3 +189,4 @@ if(__name__ == "__main__"):
 	main()
 
 #EOF
+

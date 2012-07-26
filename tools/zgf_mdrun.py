@@ -46,12 +46,16 @@ from ZIBMolPy.utils import check_call
 from ZIBMolPy.pool import Pool
 from ZIBMolPy.algorithms import gelman_rubin
 from ZIBMolPy.ui import Option, OptionsList
-import zgf_refine
 
-from subprocess import call
+import zgf_refine
+import zgf_grompp
+
+from subprocess import call, Popen
 from warnings import warn
 import traceback
 import sys
+import os
+import re
 
 options_desc = OptionsList([ 
 	Option("s", "seq", "bool", "Suppress MPI", default=False),
@@ -172,24 +176,53 @@ def process(node, options):
 	if(node.state == "em-mdrun-able"):
 		node.state = "grompp-able"
 		return
-	
-	# check for convergence
-	converged = conv_check_gelman_rubin(node)
+
+	if(node.has_restraints):
+		# check for convergence
+		converged = conv_check_gelman_rubin(node)
+	else:
+		# stow away sampling data
+		converged = False
+		os.remove(node.dir+"/state.cpt")
+		for fn in [node.trr_fn, node.dir+"/ener.edr", node.dir+"/md.log"]:
+			archive_file(fn, node.extensions_counter)
 
 	# decide what to do next
 	if(converged):
 		node.state = "converged"
 
 	elif(node.extensions_counter >= node.extensions_max):
-		node.state = "not-converged"
+		if(node.has_restraints):
+			node.state = "not-converged"
+		else:
+			#TODO if we need the energies later on, we would have to merge edr-files here, too 
+			# merge sampling trajectories
+			trr_fns = sorted([ fn for fn in os.listdir(node.dir) if re.match(".+run\d.trr", fn) ])
+			cmd2 = ["trjcat", "-f"]
+			cmd2 += trr_fns
+			cmd2 += ["-o", "../../"+node.trr_fn, "-cat"]
+			print("Calling: %s"%" ".join(cmd2))
+			check_call(cmd2, cwd=node.dir)
+			node.state = "ready"
 
 	else:
 		node.extensions_counter += 1
 		node.state = "mdrun-able" # actually it should still be in this state
 	
-		cmd0 = ["tpbconv", "-s", node.tpr_fn, "-o", node.tpr_fn, "-extend", str(node.extensions_length)]
-		print("Calling: %s"%" ".join(cmd0))
-		check_call(cmd0) # tell Gromacs to extend the tpr file for another round
+		if(node.has_restraints):
+			cmd0 = ["tpbconv", "-s", node.tpr_fn, "-o", node.tpr_fn, "-extend", str(node.extensions_length)]
+			print("Calling: %s"%" ".join(cmd0))
+			check_call(cmd0) # tell Gromacs to extend the tpr file for another round
+		else:
+			node.state = "grompp-able"
+			zgf_grompp.call_grompp(node) # re-grompp to obtain new random impulse
+
+
+#===============================================================================
+def archive_file(fn, count):
+	assert( os.path.exists(fn) )
+	out_fn = fn.rsplit(".", 1)[0] + "_run" + str(count) + "." + fn.rsplit(".", 1)[1]
+	os.rename(fn, out_fn)
 
 
 #===============================================================================
