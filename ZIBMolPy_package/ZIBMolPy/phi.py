@@ -57,6 +57,9 @@ If a node participates in the partition is determined by the property L{Node.isa
 
 import numpy as np
 
+# overflow is always accepted and leads here always to real valued solutions
+np.seterr(over='ignore')
+
 #===============================================================================
 def get_phi(x, node_i):
 	r""" Calculates the phi-function $\phi_i(\vec x)$ of node_i at the positions given by x.
