@@ -63,11 +63,13 @@ def main():
 def generate_mdp(pool):
 	mdp = read_mdp_file(pool.mdp_fn)
 	dt = float(mdp['dt'])
-	gen_seed = int(mdp['gen_seed'])
+	gen_seed = int(mdp['gen_seed'])	
+	Tcoupl = mdp['Tcoupl']
 	orig_mdp = open(pool.mdp_fn).read()
 	orig_mdp = re.sub("\nnsteps", "\n; zgf_setup_nodes: commented-out the following line\n; nsteps", orig_mdp)
 	orig_mdp = re.sub("\ngen_seed", "\n; zgf_setup_nodes: commented-out the following line\n; gen_seed", orig_mdp)
-	
+	orig_mdp = re.sub("\nTcoupl", "\n; zgf_setup_nodes: commented-out the following line\n; Tcoupl", orig_mdp)	
+
 	for n in pool.where("state == 'created'"):
 		print("Writing: "+n.mdp_fn)
 		nsteps = int(n.sampling_length / dt)
@@ -78,7 +80,9 @@ def generate_mdp(pool):
 		# unrestrained (transition) nodes require a random gen_seed (-1)
 		if not(n.has_restraints):
 			gen_seed = -1
+			Tcoupl	 = "no"
 		f.write("gen_seed = %d\n"%gen_seed)
+		f.write("Tcoupl = "+Tcoupl+"\n")
 		f.close()
 
 
