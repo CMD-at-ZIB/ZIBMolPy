@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import gtk
+from os import path
+import numpy as np
 
 #===============================================================================
 class StatusPlotManager(object):
@@ -16,11 +18,16 @@ class StatusPlotManager(object):
 	def get_ctrl_panel(self):
 		panel = gtk.VBox()
 		rb = None
-		for x in ("sampling_status", "extension_status", "nodes_vs_alpha"):
+		for x in ("sampling_status", "extension_status", "nodes_vs_alpha", "nodes_vs_chi"):
 			rb = gtk.RadioButton(group=rb, label=x.replace("_"," "))
 			setattr(self, "rb_"+x, rb)
 			rb.connect("toggled", self.update)
 			panel.pack_start(rb, expand=False)
+		cb =  gtk.CheckButton(label="sorted")
+		setattr(self, "cb_sorted", cb)
+		cb.connect("toggled", self.update)
+		panel.pack_start(cb, expand=False)	
+
 		return(panel)
 
 	def begin_session(self):
@@ -35,6 +42,7 @@ class StatusPlotManager(object):
 		self.board.canvas.figure.clear()
 		if(len(self.board.pool)<=1):
 			return
+		self.cb_sorted.set_sensitive(False)
 		if(self.rb_sampling_status.get_active()):
 			self.make_pie(self.node2status, title="Sampling status")
 		if(self.rb_extension_status.get_active()):
@@ -54,6 +62,42 @@ class StatusPlotManager(object):
 			ax.set_xlabel("#Nodes")
 			ax.set_xticks([int(t) for t in ax.get_xticks() if t%1 == 0])
 			ax.set_ylabel("Alpha")
+
+		if(self.rb_nodes_vs_chi.get_active() and path.exists(self.board.pool.chi_mat_fn)):
+			self.cb_sorted.set_sensitive(True)
+
+			npz_file = np.load(self.board.pool.chi_mat_fn)
+			chi_mat = npz_file['matrix']
+			
+			ax = self.board.canvas.figure.gca()
+			if(self.board.cb_show_title.get_active()):
+				ax.set_title("Nodes vs. chi")
+
+			nodeticklabels = [ int(nn.replace("node","")) for nn in npz_file['node_names'] ]
+			plot_range = range( 1, len(nodeticklabels)+1)
+
+			for ic, c in enumerate( chi_mat.transpose() ):				
+				if(self.cb_sorted.get_active()):
+					c = sorted(c, reverse=True)
+				ax.plot(plot_range, c, linewidth=2, label="cluster "+str(ic+1))
+
+			ax.grid()
+			ax.set_ylabel("Chi")
+			ax.set_xticks( plot_range )
+			ax.set_xlim(plot_range[0], plot_range[-1])
+
+			if(self.cb_sorted.get_active()):
+				ax.set_xlabel("#Nodes involved")
+				ax.set_xticklabels(plot_range) 
+			else:
+				ax.set_xlabel("Node")
+				ax.set_xticklabels(nodeticklabels)
+
+			if(self.board.cb_show_legend.get_active()):
+				handles = ax.get_legend_handles_labels()[0]
+				labels = ax.get_legend_handles_labels()[1]
+				self.board.canvas.figure.legend(handles, labels)
+
 		self.board.canvas.figure.canvas.draw_idle()
 
 	def node2status(self, n):
