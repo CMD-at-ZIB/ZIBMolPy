@@ -22,7 +22,7 @@ def kmeans(frames, k, threshold=1e-4, max_iterations=50, fixed_clusters=None):
 		fixed_clusters = []
 	# pick initial means randomly
 	start_frames = np.arange(len(frames))
-	#using numpy-random because python-random differes beetween 32 and 64bit 
+	# using numpy-random because python-random differes beetween 32 and 64bit 
 	np.random.shuffle(start_frames)
 	start_frames = start_frames[:k]
 	means = [ frames.getframe(i) for i in start_frames ]
@@ -56,7 +56,14 @@ def gelman_rubin(frames, n_chains, threshold, log=sys.stdout):
 	assert(frames.n_frames >= n_chains)
 	chains = frames.array_split(n_chains)
 	
-		
+	# catch runaway sampling
+	for c in chains:		
+		if( np.max(c.frameweights) == 0):
+			log.write("### Convergence summary: Gelman-Rubin not possible.\n")
+			log.write("WARNING: This usually means the sampling has left the support of its basis function!\n")
+			log.write("### Convergence not achieved\n")
+			return(False)
+
 	#TODO: evtl. mögliche Vereinfachung: B_total_var = W_chain_var*n_frames 
 	# calculate weighted inter-chain variance B, without factor n
 	var_per_chain = [c.var_weighted().array for c in chains]
@@ -169,7 +176,6 @@ def symmetrize(matrix, weights, correct_weights=False, error=1E-02):
 	matrix_new = np.dot( np.diag( (1/np.sum(matrix_new, axis=1)) ), matrix_new )
 	
 	return(matrix_new, weights_new)
-
 
 
 #===============================================================================
