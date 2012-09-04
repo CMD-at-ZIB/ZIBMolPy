@@ -46,16 +46,18 @@ from ZIBMolPy.utils import check_call
 from ZIBMolPy.pool import Pool
 from ZIBMolPy.algorithms import gelman_rubin
 from ZIBMolPy.ui import Option, OptionsList
+from ZIBMolPy.io.trr import TrrFile
 
 import zgf_refine
 import zgf_grompp
 
-from subprocess import call, Popen
+from subprocess import call, Popen, PIPE
 from warnings import warn
 import traceback
 import sys
 import os
 import re
+import numpy as np
 
 options_desc = OptionsList([ 
 	Option("s", "seq", "bool", "Suppress MPI", default=False),
