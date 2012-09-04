@@ -66,6 +66,7 @@ options_desc = OptionsList([
 	Option("d", "pd", "bool", "Use particle decomposition", default=False),
 	Option("c", "convtest", "bool", "Test if nodes are converged - does not simulate", default=False),
 	Option("a", "auto-refines", "int", "Number of automatic refinements", default=0, min_value=0),
+	Option("m", "multistart", "bool", "Sampling is restarted instead of extended", default=False),
 	])
 
 sys.modules[__name__].__doc__ += options_desc.epytext() # for epydoc
@@ -177,7 +178,7 @@ def process(node, options):
 		node.state = "grompp-able"
 		return
 
-	if(node.has_restraints):
+	if(node.has_restraints and not options.multistart):
 		# check for convergence
 		converged = conv_check_gelman_rubin(node)
 	else:
@@ -192,7 +193,7 @@ def process(node, options):
 		node.state = "converged"
 
 	elif(node.extensions_counter >= node.extensions_max):
-		if(node.has_restraints):
+		if(node.has_restraints and not options.multistart):
 			node.state = "not-converged"
 		else:
 			# merge sampling trajectories
@@ -210,7 +211,7 @@ def process(node, options):
 		node.extensions_counter += 1
 		node.state = "mdrun-able" # actually it should still be in this state
 	
-		if(node.has_restraints):
+		if(node.has_restraints and not options.multistart):
 			cmd0 = ["tpbconv", "-s", node.tpr_fn, "-o", node.tpr_fn, "-extend", str(node.extensions_length)]
 			print("Calling: %s"%" ".join(cmd0))
 			check_call(cmd0) # tell Gromacs to extend the tpr file for another round
