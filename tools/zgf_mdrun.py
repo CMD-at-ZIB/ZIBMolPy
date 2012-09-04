@@ -195,7 +195,6 @@ def process(node, options):
 		if(node.has_restraints):
 			node.state = "not-converged"
 		else:
-			#TODO if we need the energies later on, we would have to merge edr-files here, too 
 			# merge sampling trajectories
 			trr_fns = sorted([ fn for fn in os.listdir(node.dir) if re.match(".+run\d.trr", fn) ])
 			cmd2 = ["trjcat", "-f"]
@@ -203,6 +202,8 @@ def process(node, options):
 			cmd2 += ["-o", "../../"+node.trr_fn, "-cat"]
 			print("Calling: %s"%" ".join(cmd2))
 			check_call(cmd2, cwd=node.dir)
+			# merge edr files
+			get_merged_edr(node)
 			node.state = "ready"
 
 	else:
@@ -234,6 +235,39 @@ def conv_check_gelman_rubin(node):
 	is_converged = gelman_rubin(frames, n_chains, threshold, log)
 	log.close()
 	return(is_converged)
+
+
+#===============================================================================
+def get_merged_edr(node):
+	# get list of edr files
+	edr_fnames = sorted([node.dir+"/"+fn for fn in os.listdir(node.dir) if re.search('.edr', fn)])
+	assert( len(edr_fnames) ==  node.extensions_max+1 )
+
+	# find out about trr time step
+	trr = TrrFile(node.trr_fn)
+	dt = trr.first_frame.next().t - trr.first_frame.t
+	trr.close()
+	# dt is sometimes noisy in the final digits (three digits is femtosecond step = enough)
+	dt = np.around(dt, decimals=3)
+
+	time_offset = node.sampling_length+dt
+
+	for edr_fn in edr_fnames[1:]:	
+		# adapt edr starting times
+		cmd = ["eneconv", "-f", edr_fn, "-o", edr_fn, "-settime"]
+		print("Calling: "+(" ".join(cmd)))
+		p = Popen(cmd, stdin=PIPE)
+		p.communicate(input=(str(time_offset)+"\n"))
+		assert(p.wait() == 0)
+
+		time_offset += node.extensions_length+dt
+
+	# concatenate edr files with adapted starting times
+	cmd = ["eneconv", "-f"] + edr_fnames + ["-o", node.dir+"/ener.edr"]
+	print("Calling: "+(" ".join(cmd)))
+	p = Popen(cmd)
+	retcode = p.wait()
+	assert(retcode == 0)
 
 
 #===============================================================================
