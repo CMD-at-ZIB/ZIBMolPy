@@ -76,7 +76,7 @@ sys.modules[__name__].__doc__ += options_desc.epytext() # for epydoc
 
 def is_applicable():
 	pool = Pool()
-	return(len(pool.where("state in ('em-mdrun-able', 'mdrun-able', 'converged', 'not-converged')")) > 0)
+	return(len(pool.where("state in ('em-mdrun-able', 'mdrun-able', 'converged', 'not-converged', 'rerun-able-converged', 'rerun-able-not-converged')")) > 0)
 	
 
 #===============================================================================
@@ -98,7 +98,7 @@ def main():
 			n.reload()
 
 		active_node = None
-		for n in pool.where("state in ('em-mdrun-able', 'mdrun-able')"):
+		for n in pool.where("state in ('em-mdrun-able', 'mdrun-able', 'rerun-able-converged', 'rerun-able-not-converged')"):
 			if(n.lock()):
 				active_node = n
 				break
@@ -135,6 +135,12 @@ def process(node, options):
 		cmd1 += ["-o", "../../"+node.dir+"/em.trr"]
 		cmd1 += ["-e", "../../"+node.dir+"/em.edr"]
 		cmd1 += ["-g", "../../"+node.dir+"/em.log"]
+	elif(node.state in ('rerun-able-converged','rerun-able-not-converged')):
+		cmd1 += ["-c", "../../"+node.pdb_fn]
+		cmd1 += ["-o", "../../"+node.dir+"/rerun.trr"]
+		cmd1 += ["-e", "../../"+node.dir+"/rerun.edr"]
+		cmd1 += ["-g", "../../"+node.dir+"/rerun.log"]
+		cmd1 += ["-rerun", "../../"+node.trr_fn]
 	else:
 		cmd1 += ["-o", "../../"+node.trr_fn]
 
@@ -175,9 +181,14 @@ def process(node, options):
 	print("Calling: %s"%" ".join(cmd1))
 	check_call(cmd1, cwd=node.dir, preexec_fn=implant_bomb)
 
-	# if we were just minimizing, we go back to grompp-able now
+	# if we were just rerunnning, we go back to original state now
 	if(node.state == "em-mdrun-able"):
 		node.state = "grompp-able"
+		return
+
+	# if we were just minimizing, we go back to grompp-able now
+	if(node.state in ('rerun-able-converged','rerun-able-not-converged')):
+		node.state = node.state.rsplit("rerun-able-", 1)[1]
 		return
 
 	if(node.has_restraints and not options.multistart):
