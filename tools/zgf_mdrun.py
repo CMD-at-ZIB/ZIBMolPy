@@ -210,7 +210,7 @@ def process(node, options):
 			node.state = "not-converged"
 		else:
 			# merge sampling trajectories
-			trr_fns = sorted([ fn for fn in os.listdir(node.dir) if re.match(".+run\d.trr", fn) ])
+			trr_fns = sorted([ fn for fn in os.listdir(node.dir) if re.match("[^#].+run\d+.trr", fn) ])
 			cmd2 = ["trjcat", "-f"]
 			cmd2 += trr_fns
 			cmd2 += ["-o", "../../"+node.trr_fn, "-cat"]
@@ -254,7 +254,7 @@ def conv_check_gelman_rubin(node):
 #===============================================================================
 def get_merged_edr(node):
 	# get list of edr files
-	edr_fnames = sorted([node.dir+"/"+fn for fn in os.listdir(node.dir) if re.search('.edr', fn)])
+	edr_fnames = sorted([ node.dir+"/"+fn for fn in os.listdir(node.dir) if re.match("[^#].+run\d+.edr", fn) ])
 	assert( len(edr_fnames) ==  node.extensions_max+1 )
 
 	# find out about trr time step
