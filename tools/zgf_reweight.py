@@ -72,6 +72,8 @@ CRITICAL_FRAME_WEIGHT = 5.0
 options_desc = OptionsList([
 	Option("s", "sol-energy", "bool", "include SOL energy contribution", default=False),
 	Option("c", "ignore-convergence", "bool", "reweight despite not-converged", default=False),
+	Option("f", "ignore-failed", "bool", "reweight and ignore mdrun-failed nodes", default=False),
+	Option("e", "rerun-energy", "bool", "use edr from rerun", default=False),
 	Option("m", "method", "choice", "reweighting method", choices=("entropy", "direct", "presampling")),
 	Option("t", "presamp-temp", "float", "presampling temp", default=1000),
 	Option("r", "save-refpoints", "bool", "save refpoints in observables", default=False),
@@ -81,9 +83,7 @@ sys.modules[__name__].__doc__ += options_desc.epytext() # for epydoc
 
 def is_applicable():
 	pool = Pool()
-	return( len(pool) > 1  and len(pool.where("is_sampled")) == len(pool) )
-
-
+	return( len(pool) > 1 and len(pool.where("isa_partition and state in ('converged','not-converged','mdrun-failed')")) == len(pool.where("isa_partition")) )
 
 
 #===============================================================================
@@ -94,18 +94,20 @@ def main():
 	
 	pool = Pool()
 
-	#not_reweightable = "state not in ('refined','converged')"
-	not_reweightable = "isa_partition and state!='converged'"
-	if options.ignore_convergence:
-		not_reweightable = "isa_partition and state not in ('converged','not-converged')"
+	not_reweightable = "isa_partition and state not in ('converged'"
+	if(options.ignore_convergence):
+		not_reweightable += ",'not-converged'"
+	if(options.ignore_failed):
+		not_reweightable += ",'mdrun-failed'"
+	not_reweightable += ")"
 
 	if pool.where(not_reweightable):
 		print "Pool can not be reweighted due to the following nodes:"		
 		for bad_guy in pool.where(not_reweightable):
 			print "Node %s with state %s."%(bad_guy.name, bad_guy.state)
 		sys.exit("Aborting.")
-		
-	active_nodes = pool.where("isa_partition")
+
+	active_nodes = pool.where("isa_partition and state != 'mdrun-failed'")
 	assert(len(active_nodes) == len(active_nodes.multilock())) # make sure we lock ALL nodes
 
 	for n in active_nodes:
@@ -114,16 +116,16 @@ def main():
 	# find out about number of energygrps
 	mdp_file = gromacs.read_mdp_file(pool.mdp_fn)
 	energygrps = [str(egrp) for egrp in re.findall('[\S]+', mdp_file["energygrps"])]
-	moi_energies = True	
-	if len(energygrps) < 2:
-		moi_energies = False # Gromacs energies are named differently when there are less than two energygrps :(
+	moi_energy = True	
+	if(len(energygrps) < 2 or options.rerun_energy):
+		moi_energy = False # Gromacs energies are named differently when there are less than two energygrps :(
 
 	if(options.method == "direct"): 
-		reweight_direct(active_nodes, moi_energies, options.sol_energy, options.save_refpoints)
+		reweight_direct(active_nodes, moi_energy, options.sol_energy, options.rerun_energy, options.save_refpoints)
 	elif(options.method == "entropy"):
-		reweight_entropy(active_nodes, moi_energies, options.sol_energy, options.save_refpoints)
+		reweight_entropy(active_nodes, moi_energy, options.sol_energy, options.rerun_energy, options.save_refpoints)
 	elif(options.method == "presampling"):
-		reweight_presampling(active_nodes, options.presamp_temp, moi_energies, options.sol_energy)
+		reweight_presampling(active_nodes, options.presamp_temp, moi_energy, options.sol_energy, options.rerun_energy)
 	else:
 		raise(Exception("Method unkown: "+options.method))
 	
@@ -144,14 +146,14 @@ def main():
 
 
 #===============================================================================
-def reweight_direct(nodes, moi_energies, sol_energy, save_ref=False):
+def reweight_direct(nodes, moi_energy, sol_energy, rerun_energy, save_ref=False):
 	print "Direct free energy reweighting: see Klimm, Bujotzek, Weber 2011"
 	
 	beta = nodes[0].pool.thermo_beta
 	
 	for n in nodes:
 		# get potential V and substract penalty potential
-		energies = load_energies(n, with_penalty=False, with_sol=sol_energy, with_moi_energies=moi_energies)
+		energies = load_energies(n, with_penalty=False, with_sol=sol_energy, with_moi=moi_energy, use_rerun=rerun_energy)
 
 		frame_weights = n.frameweights
 		phi_values = n.phi_values
@@ -202,7 +204,7 @@ def reweight_direct(nodes, moi_energies, sol_energy, save_ref=False):
 
 
 #===============================================================================
-def reweight_entropy(nodes, moi_energies, sol_energy, save_ref=False):
+def reweight_entropy(nodes, moi_energy, sol_energy, rerun_energy, save_ref=False):
 	print "Entropy reweighting: see Klimm, Bujotzek, Weber 2011"
 	
 	# calculate variance of internal coordinates
@@ -218,7 +220,7 @@ def reweight_entropy(nodes, moi_energies, sol_energy, save_ref=False):
 		output("======= Starting node reweighting %s"%datetime.now())
 		
 		# get potential V and substract penalty potential
-		energies = load_energies(n, with_penalty=False, with_sol=sol_energy, with_moi_energies=moi_energies)
+		energies = load_energies(n, with_penalty=False, with_sol=sol_energy, with_moi=moi_energy, use_rerun=rerun_energy)
 
 		frame_weights = n.frameweights
 		phi_values = n.phi_values
@@ -266,7 +268,7 @@ def reweight_entropy(nodes, moi_energies, sol_energy, save_ref=False):
 	
 
 #===============================================================================
-def reweight_presampling(nodes, presamp_temp, moi_energies, sol_energy):
+def reweight_presampling(nodes, presamp_temp, moi_energy, sol_energy, rerun_energy):
 	print "Presampling analysis reweighting: see formula 18 in Fackeldey, Durmaz, Weber 2011"
 	
 	# presampling data
@@ -286,7 +288,7 @@ def reweight_presampling(nodes, presamp_temp, moi_energies, sol_energy):
 		output("======= Starting node reweighting %s"%datetime.now())
 		
 		# get potential V and substract penalty potential
-		energies = load_energies(n, with_penalty=False, with_sol=sol_energy, with_moi_energies=moi_energies)
+		energies = load_energies(n, with_penalty=False, with_sol=sol_energy, with_moi=moi_energy, use_rerun=rerun_energy)
 
 		frame_weights = n.frameweights
 		phi_values = n.phi_values
@@ -321,13 +323,12 @@ def reweight_presampling(nodes, presamp_temp, moi_energies, sol_energy):
 
 
 #===============================================================================
-def load_energies(node, with_penalty=True, with_sol=True, with_moi_energies=True):
+def load_energies(node, with_penalty=True, with_sol=True, with_moi=True, use_rerun=False):
 	# bonded
-	# TODO watch out, bonded terms may become problem for more than one molecule in the system
-	# TODO we will need "mdrun -rerun" here to get the potential for MOI in complexes/waterboxes
+	# bonded become a problem for more than one molecule in the system - use rerun energies
 	energy_terms = ["Bond", "Angle", "Proper-Dih.", "Ryckaert-Bell.", "Improper-Dih."]
 	# non-bonded
-	if(with_moi_energies):
+	if(with_moi):
 		energy_terms += ["Coul-SR:MOI-MOI", "LJ-SR:MOI-MOI", "LJ-LR:MOI-MOI", "Coul-14:MOI-MOI", "LJ-14:MOI-MOI"]
 	else:
 		energy_terms += ["Coulomb-(SR)", "LJ-(SR)", "Coulomb-14", "LJ-14"]
@@ -341,8 +342,13 @@ def load_energies(node, with_penalty=True, with_sol=True, with_moi_energies=True
 		if(any([isinstance(r, DistanceRestraint) for r in node.restraints])):
 			energy_terms += ["Dis.-Rest."]
 	
+	# rerun energies
+	edr_fn = "ener.edr"
+	if(use_rerun):
+		edr_fn = "rerun.edr"
+
 	xvg_fn = mktemp(suffix=".xvg", dir=node.dir)
-	cmd = ["g_energy", "-dp", "-f", node.dir+"/ener.edr", "-o", xvg_fn, "-sum"]
+	cmd = ["g_energy", "-dp", "-f", node.dir+"/"+edr_fn, "-o", xvg_fn, "-sum"]
 
 	print("Calling: "+(" ".join(cmd)))
 	p = Popen(cmd, stdin=PIPE)
@@ -429,14 +435,12 @@ def check_restraint_energy(node):
 		dis_diff = np.max(np.abs(dis_penalty - dis_penalty_gmx))
 		print "dis_diff: ", dis_diff
 		assert(dis_diff < 1e-3)
-		
-			
-	return( dih_penalty_gmx + dis_penalty_gmx ) # values are returned for optinal plotting
+
+	return( dih_penalty_gmx + dis_penalty_gmx ) # values are returned for optional plotting
 
 #===============================================================================
 if(__name__ == "__main__"):
 	main()
-
 
 #EOF
 

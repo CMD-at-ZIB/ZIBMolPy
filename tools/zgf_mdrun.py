@@ -128,20 +128,21 @@ def main():
 def process(node, options):
 	
 	cmd1 = ["mdrun"]
-	cmd1 += ["-s", "../../"+node.tpr_fn]
 	
 	if(node.state == "em-mdrun-able"):
+		cmd1 += ["-s", "../../"+node.tpr_fn]
 		cmd1 += ["-c", "../../"+node.pdb_fn]
 		cmd1 += ["-o", "../../"+node.dir+"/em.trr"]
 		cmd1 += ["-e", "../../"+node.dir+"/em.edr"]
 		cmd1 += ["-g", "../../"+node.dir+"/em.log"]
 	elif(node.state in ('rerun-able-converged','rerun-able-not-converged')):
-		cmd1 += ["-c", "../../"+node.pdb_fn]
+		cmd1 += ["-s", "../../"+node.dir+"/rerun_me.tpr"]
+		cmd1 += ["-rerun", "../../"+node.dir+"/rerun_me.trr"]
 		cmd1 += ["-o", "../../"+node.dir+"/rerun.trr"]
 		cmd1 += ["-e", "../../"+node.dir+"/rerun.edr"]
 		cmd1 += ["-g", "../../"+node.dir+"/rerun.log"]
-		cmd1 += ["-rerun", "../../"+node.trr_fn]
 	else:
+		cmd1 += ["-s", "../../"+node.tpr_fn]
 		cmd1 += ["-o", "../../"+node.trr_fn]
 
 	cmd1 += ["-append", "-cpi", "state.cpt"] # continue previouly state, if exists
@@ -181,12 +182,12 @@ def process(node, options):
 	print("Calling: %s"%" ".join(cmd1))
 	check_call(cmd1, cwd=node.dir, preexec_fn=implant_bomb)
 
-	# if we were just rerunnning, we go back to original state now
+	# if we were just minimizing, we go back to grompp-able now
 	if(node.state == "em-mdrun-able"):
 		node.state = "grompp-able"
 		return
 
-	# if we were just minimizing, we go back to grompp-able now
+	# if we were just rerunnning, we go back to original state now
 	if(node.state in ('rerun-able-converged','rerun-able-not-converged')):
 		node.state = node.state.rsplit("rerun-able-", 1)[1]
 		return

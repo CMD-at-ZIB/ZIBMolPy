@@ -5,7 +5,8 @@
 What it does
 ============
 	
-	Bla
+	This tool will prepare desolvated trajectories and topologies in order to allow energy reruns for your molecule of interest (MOI).
+	Your node samplings can then be rerun with L{zgf_mdrun}. After the rerun is complete, the rerun energies can be used by L{zgf_reweight}.
 
 How it works
 ============
@@ -17,12 +18,15 @@ How it works
 from ZIBMolPy.ui import Option, OptionsList
 from ZIBMolPy.pool import Pool
 
+from subprocess import Popen, PIPE
 import zgf_grompp
 
 import sys
+import re
 
 options_desc = OptionsList([
-	Option("c", "ignore-convergence", "bool", "reweight despite not-converged", default=False),
+	Option("c", "ignore-convergence", "bool", "rerun despite not-converged", default=False),
+	Option("p", "pbc-removal", "choice", "method of pbc removal for desolvation", choices=("none", "mol", "nojump", "whole")),
 	Option("g", "grompp", "file", extension="mdp", default="rerun.mdp"),
 	])
 
@@ -30,7 +34,7 @@ sys.modules[__name__].__doc__ += options_desc.epytext() # for epydoc
 
 def is_applicable():
 	pool = Pool()
-	return( len(pool) > 1  and len(pool.where("is_sampled")) == len(pool) )
+	return( len(pool) > 1 and len(pool.where("isa_partition and state in ('converged','not-converged','mdrun-failed')")) == len(pool.where("isa_partition")) )
 
 
 #===============================================================================
@@ -47,8 +51,54 @@ def main():
 	assert(len(needy_nodes) == len(needy_nodes.multilock())) # make sure we lock ALL nodes
 
 	for node in needy_nodes:
+		# desolvate trr
+		cmd = ["trjconv", "-f", node.trr_fn, "-o", node.dir+"/rerun_me.trr", "-s", node.tpr_fn, "-n", node.pool.ndx_fn, "-pbc", options.pbc_removal]			
+		print("Calling: "+(" ".join(cmd)))
+		p = Popen(cmd, stdin=PIPE)
+		p.communicate(input=("MOI\n"))
+		assert(p.wait() == 0)
+
+		# desolvate pdb
+		cmd = ["trjconv", "-f", node.pdb_fn, "-o", node.dir+"/rerun_me.pdb", "-s", node.tpr_fn, "-n", node.pool.ndx_fn, "-pbc", options.pbc_removal]			
+		print("Calling: "+(" ".join(cmd)))
+		p = Popen(cmd, stdin=PIPE)
+		p.communicate(input=("MOI\n"))
+		assert(p.wait() == 0)
+
+		# desolvate topology
+		infile = open(node.top_fn, "r").readlines()
+		mol_section = False
+		out_top = []
+
+		for line in infile:
+			if( re.match("\s*\[\s*(molecules)\s*\]\s*", line.lower()) ):
+				# we are past the "molecules" section
+				mol_section = True
+			if(mol_section):
+				# comment out lines that belong to solvent (SOL, CL, NA)... add more if necessary
+				if( re.match("\s*(sol|cl|na)\s*\d+", line.lower()) ):
+					line = ";"+line
+			out_top.append(line)
+		outfile = open(node.dir+"/rerun_me.top","w").writelines(out_top)	
+
 		grompp2state = "rerun-able-"+node.state
-		zgf_grompp.call_grompp(node, mdp_file=options.grompp, final_state=grompp2state)
+
+		#zgf_grompp.call_grompp(node, mdp_file=options.grompp, final_state=grompp2state)
+		#TODO code borrowed from zgf_grompp
+		#TODO make the original method fit for grompping reruns
+		cmd = ["grompp"]
+		cmd += ["-f", "../../"+options.grompp]
+		cmd += ["-n", "../../"+node.pool.ndx_fn]
+		cmd += ["-c", "../../"+node.dir+"/rerun_me.pdb"]
+		cmd += ["-p", "../../"+node.dir+"/rerun_me.top"]
+		cmd += ["-o", "../../"+node.dir+"/rerun_me.tpr"]			
+		print("Calling: %s"%" ".join(cmd))
+		p = Popen(cmd, cwd=node.dir)
+		retcode = p.wait()
+		assert(retcode == 0) # grompp should never fail
+		node.state = grompp2state
+		node.save()
+
 		node.unlock()
 
 
@@ -56,5 +106,5 @@ def main():
 if(__name__ == "__main__"):
 	main()
 
-
 #EOF
+
