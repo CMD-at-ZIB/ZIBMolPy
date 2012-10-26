@@ -108,19 +108,29 @@ class Node(object):
 		
 		#avoiding race-condition and respecting time-resoultion of 1s 
 		t = time.time() - 1
+		dummy_text = ""
+		make_me_belive = ""
 		try:
 			from numpy import array, float32, float64
 			from ZIBMolPy.restraint import DihedralRestraint, DistanceRestraint
 			from ZIBMolPy.internals import Converter
-			raw_persistent = eval(open(self.filename).read())
-			self.__dict__.update(raw_persistent)
-								
+			f = open(self.filename)
+			text = f.read()
+			dummy_text= text
+			make_me_belive = "yes, you can"
+			raw_persistent = eval(text)
+			self.__dict__.update(raw_persistent)					
 			if(path.exists(self.observables_fn)):
 				raw_obs = eval(open(self.observables_fn).read())
 				self.obs.update(raw_obs)
 			
 			self._mtime = t
-		except:
+		except:			
+			f = open(self.filename)
+			text = f.read()
+			print "Can I trust my Computer? "+ make_me_belive
+			print "FIRST SYNTAX ERROR: "+ dummy_text
+			print "NOW IT READS LIKE: "+ text
 			traceback.print_exc()
 			raise(Exception("Could not parse: "+self.filename))
 			
@@ -135,8 +145,12 @@ class Node(object):
 			
 		#save persistent node data
 		persistent = dict([ (k,v) for k,v in self.__dict__.items() if k[0]!='_' ])
-		f = open(self.filename, "w")
+		split_temp = (self.filename).rsplit(".")
+		name_temp = split_temp[0] + "temp" + split_temp[1]
+		f = open(name_temp, "w")
+		#f = open(self.filename, "w")
 		f.write(utils.pformat(persistent)+"\n")
+		os.rename(name_temp,self.filename)
 		f.close()
 		
 		# save observables, if there are any

@@ -21,6 +21,9 @@ options_desc = OptionsList([
 	Option("n", "num-neighbours", "int", "number of neighbours per node", default=1, min_value=1),	
 	Option("l", "sampling-length", "int", "length of sampling per run in ps", default=100, min_value=0),
 	Option("r", "num-runs", "int", "number of runs", default=5, min_value=0),
+	Option("s", "save velocity", "bool", "save first and last velocity in trajectory", default=False),
+	Option("o", "only-chi-nodes", "bool", "Select only nodes with high chi value", default=False),
+	Option("u", "only-user-nodes", "bool", "Select only  user nodes", default=False)
 	])
 
 #===============================================================================
@@ -33,41 +36,87 @@ def main():
 	node_names = npz_file['node_names']
 	n_clusters = npz_file['n_clusters']
 	active_nodes = [Node(nn) for nn in node_names]	# TODO make nicer
-	pool = Pool()									# TODO why?
+
+	if options.only_chi_nodes :
+		# extract highest chi nodes
+		arg_sort_cluster=np.argsort(chi_matrix,axis=0)
+
+		epic_row = arg_sort_cluster[len(arg_sort_cluster)-1]
+		new_active_nodes=[]
+		new_internals=[]
+
+		for i in range(0,len(epic_row)):
+			new_active_nodes.append(active_nodes[epic_row[i]])
 	
-	for node_index in range(0,len(active_nodes)):   # TODO make nicer
-		trajectory= active_nodes[node_index].trajectory
+		active_nodes = new_active_nodes
+		print "# CHI NODES #"
+		for i in active_nodes:
+			print i.internals.array
+
+	if options.only_user_nodes :
+		npz_choosen_file = np.load(pool.analysis_dir+"user_cluster.npz")
+		active_nodes = npz_choosen_file['the_choosen_nodes']
+		print active_nodes
+		print "# USER NODES #"
+		for i in active_nodes:
+			print i.internals.array
+
+	
+	
+	for node in active_nodes:   # TODO make nicer
+		trajectory= node.trajectory
 			
 		print "			             ----				"
 		print "			          ----------				"
 		print "			     --------------------			"
-		print "			 printing neighbours for node " + str(node_index)
+		print "			 printing neighbours for node " + str(node)
 		print "			     --------------------			"
 		print "			           ---------				"		
 		print "			              ---				"
 
-		neighbours=get_neighbours(node_index, trajectory, active_nodes, options.num_neighbours)
-	
+		#neighbours=get_neighbours_steinzeit(node_index, trajectory, active_nodes, options.num_neighbours)
+		neighbours=get_neighbours_steinzeit(node, trajectory, options.num_neighbours)
+		
+		print len(trajectory)
 		#create transition point for node_index
-		for element in neighbours:
-			print element
+		for frame_number in neighbours:
+			print frame_number
 			n = Node()
-			n.parent_frame_num = element[1]
-			n.parent = active_nodes[node_index]
+			n.parent_frame_num = frame_number
+			n.parent = node
 			n.state = "created"
 			n.extensions_counter = 0
 			n.extensions_max = options.num_runs
 			n.extensions_length = options.sampling_length
 			n.sampling_length = options.sampling_length
-			n.internals = trajectory.getframe(element[1])
+			n.internals = trajectory.getframe(frame_number)
 			pool.append(n)
 			n.save()
+		print str(options.num_neighbours)+" neighbours found. This program is just absolutly awesome. Be happy that you can use it."
 		print "-----"
 
 	zgf_setup_nodes.main()
 	zgf_grompp.main()
 
+#===============================================================================
+# get amount of neighbours 
+def get_neighbours_steinzeit(current_node,trajectory, num_neighbours):
+	total_length = len(trajectory)
+	step_size = total_length / num_neighbours
+
+	frame_number = 0
+	neighbours=[]
+	while frame_number< total_length:
+		# floor returns an integer in float format
+		# in python 3 it actually returns an integer
+		# since we use pythen 2.x we need to fix it
+		neighbours.append(np.int(np.floor(frame_number)))
+		frame_number += step_size
+	print neighbours
+	return neighbours
 	
+
+
 #===============================================================================
 def get_neighbours(current_node, trajectory, other_nodes, num_neigbours):
 	# neighbours is a list of the type 
