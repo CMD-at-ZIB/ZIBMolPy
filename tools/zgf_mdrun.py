@@ -69,6 +69,8 @@ options_desc = OptionsList([
 	Option("c", "convtest", "bool", "Test if nodes are converged - does not simulate", default=False),
 	Option("a", "auto-refines", "int", "Number of automatic refinements", default=0, min_value=0),
 	Option("m", "multistart", "bool", "Sampling is restarted instead of extended", default=False),
+	Option("x", "delete", "bool", "Neighbours are deleted", default=False),
+	Option("z", "timesteps", "str", "Enter all timesteps for which you want to compute P", default=0)
 	])
 
 sys.modules[__name__].__doc__ += options_desc.epytext() # for epydoc
@@ -89,6 +91,18 @@ def main():
 			print("\n\nRunning Gelman-Rubin on %s"%n)
 			conv_check_gelman_rubin(n)
 		return # exit
+
+	save_mode=""
+	# determine if readynodes should keep all files or only pdb
+	if(os.path.exists(pool.analysis_dir+"instruction.txt")):
+		try:
+			f = open(pool.analysis_dir+"instruction.txt")
+			command = f.read()
+			instructions = eval(command)
+			save_mode = instructions['save_mode']			
+		except:			
+			traceback.print_exc()
+			raise(Exception("Could not parse: "+pool.analysis_dir+"instruction.txt"))
 
 	auto_refines_counter = 0
 	while(True):		
@@ -113,7 +127,7 @@ def main():
 				break # we're done - exit
 	
 		try:
-			process(active_node, options)
+			process(active_node, options,save_mode)
 			active_node.save()
 			active_node.unlock()
 		except:
@@ -125,7 +139,7 @@ def main():
 			
 
 #===============================================================================
-def process(node, options):
+def process(node, options,save_mode):
 	
 	cmd1 = ["mdrun"]
 	
@@ -141,9 +155,11 @@ def process(node, options):
 		cmd1 += ["-o", "../../"+node.dir+"/rerun.trr"]
 		cmd1 += ["-e", "../../"+node.dir+"/rerun.edr"]
 		cmd1 += ["-g", "../../"+node.dir+"/rerun.log"]
+
 	else:
 		cmd1 += ["-s", "../../"+node.tpr_fn]
 		cmd1 += ["-o", "../../"+node.trr_fn]
+		cmd1 += ["-c", "../../"+node.dir+"/outfile.pdb"]
 
 	cmd1 += ["-append", "-cpi", "state.cpt"] # continue previouly state, if exists
 	if(options.npme != -1):
@@ -199,7 +215,7 @@ def process(node, options):
 		# stow away sampling data
 		converged = False
 		os.remove(node.dir+"/state.cpt")
-		for fn in [node.trr_fn, node.dir+"/ener.edr", node.dir+"/md.log"]:
+		for fn in [node.dir+"/outfile.pdb",node.trr_fn, node.dir+"/ener.edr", node.dir+"/md.log"]:
 			archive_file(fn, node.extensions_counter)
 
 	# decide what to do next
@@ -210,16 +226,35 @@ def process(node, options):
 		if(node.has_restraints and not options.multistart):
 			node.state = "not-converged"
 		else:
-			# merge sampling trajectories
-			trr_fns = sorted([ fn for fn in os.listdir(node.dir) if re.match("[^#].+run\d+.trr", fn) ])
-			cmd2 = ["trjcat", "-f"]
-			cmd2 += trr_fns
-			cmd2 += ["-o", "../../"+node.trr_fn, "-cat"]
-			print("Calling: %s"%" ".join(cmd2))
-			check_call(cmd2, cwd=node.dir)
-			# merge edr files
-			get_merged_edr(node)
+			if (save_mode == "only pdb"):
+				#delete all files except pdb and start files
+				for fn in os.listdir(node.dir):
+					if(re.match(".+.pdb",fn)==None 
+					and re.match("[^#].+.mdp",fn)==None
+					and re.match(".+.txt",fn)==None
+					and re.match("[^#].+.tpr",fn)==None
+					and re.match(".+.top",fn)==None
+					and fn!="lock"):					
+						os.remove(node.dir+"/"+str(fn))
+
+			else:
+				#merge sampling trajectories
+				trr_fns = sorted([ fn for fn in os.listdir(node.dir) if re.match("[^#].+run\d+.trr", fn) ])
+				cmd2 = ["trjcat", "-f"]
+				cmd2 += trr_fns
+				cmd2 += ["-o", "../../"+node.trr_fn, "-cat"]
+				print("Calling: %s"%" ".join(cmd2))
+				check_call(cmd2, cwd=node.dir)
+				# merge edr files
+				get_merged_edr(node)
+				#delete backup's assuming each backupfile starts with an #
+				for fn in os.listdir(node.dir):
+					if(re.match("#.+",fn)):					
+						os.remove(node.dir+"/"+str(fn))
+
+			#either case, save as ready node
 			node.state = "ready"
+			
 
 	else:
 		node.extensions_counter += 1
