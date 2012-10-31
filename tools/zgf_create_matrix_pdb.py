@@ -90,15 +90,15 @@ def main():
 				for fn in os.listdir(ready_node.dir):
 					if(re.match(".+.pdb",fn)):
 						# add radius feature in future 
-						#frame_value = pool.converter.read_pdb(ready_node.dir+"/"+fn)
+						frame_value = pool.converter.read_pdb(ready_node.dir+"/"+fn)
 						#calculate distances
-						#temp_val=np.zeros(len(active_nodes))
-						#index_temp=0
-						#for node_temp in active_nodes:
-						#	temp_val[index_temp]=(frame_value - node_temp.internals).norm2()
-						#	index_temp=index_temp +1
+						temp_val=np.zeros(len(active_nodes))
+						index_temp=0
+						for node_temp in active_nodes:
+							temp_val[index_temp]=(frame_value - node_temp.internals).norm2()
+							index_temp=index_temp +1
 					
-						#index_j=np.argsort(temp_val)[0]
+						index_j=np.argsort(temp_val)[0]
 
 						#calc P entry
 						#if(temp_val[index_j] <= p_radius):
