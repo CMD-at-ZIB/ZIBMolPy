@@ -108,16 +108,12 @@ class Node(object):
 		
 		#avoiding race-condition and respecting time-resoultion of 1s 
 		t = time.time() - 1
-		dummy_text = ""
-		make_me_belive = ""
 		try:
 			from numpy import array, float32, float64
 			from ZIBMolPy.restraint import DihedralRestraint, DistanceRestraint
 			from ZIBMolPy.internals import Converter
 			f = open(self.filename)
 			text = f.read()
-			dummy_text= text
-			make_me_belive = "yes, you can"
 			raw_persistent = eval(text)
 			self.__dict__.update(raw_persistent)					
 			if(path.exists(self.observables_fn)):
@@ -126,11 +122,6 @@ class Node(object):
 			
 			self._mtime = t
 		except:			
-			f = open(self.filename)
-			text = f.read()
-			print "Can I trust my Computer? "+ make_me_belive
-			print "FIRST SYNTAX ERROR: "+ dummy_text
-			print "NOW IT READS LIKE: "+ text
 			traceback.print_exc()
 			raise(Exception("Could not parse: "+self.filename))
 			

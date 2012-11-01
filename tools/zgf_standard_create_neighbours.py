@@ -22,8 +22,8 @@ options_desc = OptionsList([
 	Option("l", "sampling-length", "int", "length of sampling per run in ps", default=100, min_value=0),
 	Option("r", "num-runs", "int", "number of runs", default=5, min_value=0),
 	Option("s", "save velocity", "bool", "save first and last velocity in trajectory", default=False),
-	Option("o", "only-chi-nodes", "bool", "Select only nodes with high chi value", default=False),
-	Option("u", "only-user-nodes", "bool", "Select only  user nodes", default=False)
+	Option("c", "select-nodes", "choice", "Which nodes do you want to analyse", choices=("chi", "user","all")),
+	Option("m", "save-mode", "choice", "What files do you want to save", choices=("only pdb","complete") )
 	])
 
 #===============================================================================
@@ -35,9 +35,9 @@ def main():
 	chi_matrix = npz_file['matrix']
 	node_names = npz_file['node_names']
 	n_clusters = npz_file['n_clusters']
-	active_nodes = [Node(nn) for nn in node_names]	# TODO make nicer
+	active_nodes = [Node(nn) for nn in node_names]	# TODO make nicer 
 
-	if options.only_chi_nodes :
+	if options.select_nodes=="chi" :
 		# extract highest chi nodes
 		arg_sort_cluster=np.argsort(chi_matrix,axis=0)
 
@@ -53,10 +53,9 @@ def main():
 		for i in active_nodes:
 			print i.internals.array
 
-	if options.only_user_nodes :
+	if options.select_nodes=="user" :
 		npz_choosen_file = np.load(pool.analysis_dir+"user_cluster.npz")
 		active_nodes = npz_choosen_file['the_choosen_nodes']
-		print active_nodes
 		print "# USER NODES #"
 		for i in active_nodes:
 			print i.internals.array
@@ -77,7 +76,7 @@ def main():
 		#neighbours=get_neighbours_steinzeit(node_index, trajectory, active_nodes, options.num_neighbours)
 		neighbours=get_neighbours_steinzeit(node, trajectory, options.num_neighbours)
 		
-		print len(trajectory)
+		#print len(trajectory)
 		#create transition point for node_index
 		for frame_number in neighbours:
 			print frame_number
@@ -92,11 +91,25 @@ def main():
 			n.internals = trajectory.getframe(frame_number)
 			pool.append(n)
 			n.save()
-		print str(options.num_neighbours)+" neighbours found. This program is just absolutly awesome. Be happy that you can use it."
+		print str(options.num_neighbours)+" neighbours found. This program is just absolutly awesome."
 		print "-----"
 
 	zgf_setup_nodes.main()
 	zgf_grompp.main()
+
+
+	# save important information in instruction.txt
+	nodes=options.select_nodes
+
+	#timestep = userinput("Please enter tau for P (Only Integer allowed, 1 is equivalent to " + str(dt) + " ps).", "int", "x>0")
+	#p_radius = userinput("Please enter distance r, that indicates which state belongs to a certan node", "int", "x>0")
+	
+	instructionFile = "analysis/instruction.txt"	
+
+	f = open(instructionFile, "w")
+	#f.write("{'p_timestep':"+str(timestep)+", 'p_radius':" + str(p_radius)+", 'p_nodes':" + nodes +"}")
+	f.write("{'p_nodes': '"+nodes+"', 'save_mode': '"+options.save_mode+"'}")
+	f.close()
 
 #===============================================================================
 # get amount of neighbours 
