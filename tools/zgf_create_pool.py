@@ -75,7 +75,7 @@ options_desc = OptionsList([
 		Option("T", "temperature", "int", "temperature in Kelvin", default=300, min_value=0),
 		Option("G", "gr-threshold", "float", "Gelman-Rubin threshold", default=1.1),
 		Option("C", "gr-chains", "int", "Gelman-Rubin chains", default=5, min_value=1),
-		Option("L", "balance-linears", "bool", "balance linear weights", default=False), #TODO optional for now, later we just do it without asking :P
+		Option("L", "balance-linears", "bool", "balance linear weights", default=False),
 	])
 
 sys.modules[__name__].__doc__ += options_desc.epytext() # for epydoc
@@ -128,8 +128,9 @@ def main():
 			mdp_options[k] = v
 			mdp_options_dirty = True
 	
-	if(mdp_options.has_key("energygrps")):
-		assert('MOI' in [str(egrp) for egrp in re.findall('[\S]+', mdp_options["energygrps"])]), "group MOI should be among energygrps in mdp file"
+	if(mdp_options.has_key("energygrps") and 'MOI' not in [str(egrp) for egrp in re.findall('[\S]+', mdp_options["energygrps"])]):
+		if not(userinput("'MOI' is not defined as an energy group in your mdp file. Continue?", "bool")):
+			sys.exit("Quit by user.")
 	else:
 		mdp_options["energygrps"] = "MOI"
 		mdp_options_dirty = True
@@ -232,54 +233,7 @@ def main():
 	
 	if(not path.exists("analysis")):
 		os.mkdir("analysis")
-	
-	
 
-#===============================================================================
-	
-	# if(options.balance_linears):
-		# pool.reload_nodes()
-		# span = []
-		# for c in pool.converter.linears:
-			# samples = pool.root.trajectory.getcoord(c.index)
-			# span.append(max(samples)-min(samples))
-# 
-		# print span
-		# weights = max(span)/span
-		# print weights
-		# #TODO nehmen wir zum ausbalancieren das attribut 'weight', oder führen wir ein neues attribut (nur für linears) ein?
-		# #TODO zum testen verwende ich zunächst das reguläre weight-attribut als speicherort
-		# #TODO 1. gefixtes int-file mit ausbalancierten linear-weights speichern
-		# for (i, c) in enumerate(pool.converter.linears):
-			# print c
-			# print id(c)			
-			# c.set_weight(weights[i])
-		# for c in pool.converter:
-			# print c
-			# print id(c)
-			# print c.str_filestyle()
-			# print c.__dict__
-		# #TODO 2. das gefixte int-file zum int-file des pools machen
-
-
-
-	
-# #==========================================================================
-# def check_parameters(options):
-	# """ checks e.g. if the mdp-file looks good """
-	# mdp_file = gromacs.read_mdp_file(options.grompp)
-	# 
-	# assert(mdp_file["dihre"] == "yes")
-	# assert(mdp_file["dihre_fc"] == "1")
-	# assert(mdp_file["disre"] == "simple")
-	# assert(mdp_file["disre_fc"] == "1")
-	# assert(mdp_file["nstxout"] == mdp_file["nstenergy"])
-	# for ref_t in re.findall('[0-9]+', mdp_file["ref_t"]):
-		# assert( int(ref_t) == options.temperature )
-	# assert(mdp_file["energygrps"])
-	# assert('MOI' in [str(egrp) for egrp in re.findall('[\S]+', mdp_file["energygrps"])])
-	# assert('MOI' in gromacs.read_index_file(options.index))
- 
 
 #==========================================================================
 if(__name__=="__main__"):
