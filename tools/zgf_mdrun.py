@@ -55,6 +55,9 @@ from subprocess import call, Popen, PIPE
 from warnings import warn
 import traceback
 import sys
+
+import time
+
 import os
 import re
 import numpy as np
@@ -131,6 +134,7 @@ def main():
 			active_node.save()
 			active_node.unlock()
 		except:
+			print "MDRUN FAILED"
 			active_node.state = "mdrun-failed"
 			active_node.save()
 			active_node.unlock()
@@ -217,11 +221,24 @@ def process(node, options,save_mode):
 		os.remove(node.dir+"/state.cpt")
 		for fn in [node.dir+"/outfile.pdb",node.trr_fn, node.dir+"/ener.edr", node.dir+"/md.log"]:
 			archive_file(fn, node.extensions_counter)
+	
+	#delete in each step
+	if (save_mode == "only pdb"):
+		#delete all files except pdb and start files
+		for fn in os.listdir(node.dir):
+			if(re.match(".+.pdb",fn)==None 
+			and re.match("[^#].+.mdp",fn)==None
+			and re.match(".+.txt",fn)==None
+			and re.match("[^#].+.tpr",fn)==None
+			and re.match(".+.top",fn)==None
+			and fn!="lock"):					
+				os.remove(node.dir+"/"+str(fn))
+
+	
 
 	# decide what to do next
 	if(converged):
 		node.state = "converged"
-
 	elif(node.extensions_counter >= node.extensions_max):
 		if(node.has_restraints and not options.multistart):
 			node.state = "not-converged"
@@ -252,6 +269,23 @@ def process(node, options,save_mode):
 					if(re.match("#.+",fn)):					
 						os.remove(node.dir+"/"+str(fn))
 
+
+			#put all pdb's in one file
+			#collect=[]
+			#pool = Pool()
+			#for fn in os.listdir(node.dir):
+			#		if(re.match("[^#].+.pdb",fn)):
+						# add radius feature in future
+						#print "Filedirectory"
+						#print ready_node.dir+"/"+fn 
+			#			frame_value = pool.converter.read_pdb(node.dir+"/"+fn)
+			#			collect.append((frame_value[0])[0])
+						#os.remove(node.dir+"/"+str(fn))
+			#f = open(node.dir+"/pdbcollection.txt", "w")
+			#f.write("{'p_timestep':"+str(timestep)+", 'p_radius':" + str(p_radius)+", 'p_nodes':" + nodes +"}")
+			#f.write(str(collect))
+			#f.close()
+			
 			#either case, save as ready node
 			node.state = "ready"
 			
@@ -267,7 +301,6 @@ def process(node, options,save_mode):
 		else:
 			node.state = "grompp-able"
 			zgf_grompp.call_grompp(node) # re-grompp to obtain new random impulse
-
 
 #===============================================================================
 def archive_file(fn, count):

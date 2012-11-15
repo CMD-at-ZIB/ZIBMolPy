@@ -72,6 +72,7 @@ def main():
 	#p_radius = 100000
 	
 	P = np.zeros(shape=(len(active_nodes),len(active_nodes)))
+	P_hard = np.zeros(shape=(len(active_nodes),len(active_nodes)))
 
 	index_i=0
 	for node_i in active_nodes:
@@ -84,12 +85,22 @@ def main():
 			frame_value = pool.converter.read_pdb(ready_node.pdb_fn)
 			temp_dist=(frame_value - node_i.internals).norm2()
 			
+			leagel_ready_node=True
+			for node_temp in active_nodes:
+				if (temp_dist>(frame_value - node_temp.internals).norm2()):
+					leagel_ready_node=False
+					print "strange ready node!"				
+			
+			
+			
 			#iterate pdb files
 			#if(temp_dist <= p_radius):
-			if(True):			
+			if(leagel_ready_node):			
 				for fn in os.listdir(ready_node.dir):
-					if(re.match(".+.pdb",fn)):
-						# add radius feature in future 
+					if(re.match("[^#].+.pdb",fn)):
+						# add radius feature in future
+						#print "Filedirectory"
+						#print ready_node.dir+"/"+fn 
 						frame_value = pool.converter.read_pdb(ready_node.dir+"/"+fn)
 						#calculate distances
 						temp_val=np.zeros(len(active_nodes))
@@ -98,15 +109,19 @@ def main():
 							temp_val[index_temp]=(frame_value - node_temp.internals).norm2()
 							index_temp=index_temp +1
 					
+						
+							
 						index_j=np.argsort(temp_val)[0]
-
+				
+							
 						#calc P entry
 						#if(temp_val[index_j] <= p_radius):
 						if(True):						
 							P[index_i,index_j] += weight 
-							P[index_i,index_j] += 1
+							P_hard[index_i,index_j] += 1
 							
 		index_i=index_i+1
+		
 		
 	
 			
@@ -116,8 +131,10 @@ def main():
 		P[i,:] = (1/factor) * P[i,:]
 	print "and normalised"
 	print P
+	print "just counting"
+	print P_hard
 
-	np.savez(pool.analysis_dir+"p_pdb.npz", matrix=P)
+	np.savez(pool.analysis_dir+"p_pdb.npz", matrix=P ,count=P_hard)
 
 		
 #===============================================================================

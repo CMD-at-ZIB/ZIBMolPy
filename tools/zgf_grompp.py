@@ -24,6 +24,8 @@ import traceback
 import sys
 from os import path
 
+import os
+
 
 options_desc = OptionsList()
 
@@ -62,11 +64,12 @@ def call_grompp(node, mdp_file="", final_state="mdrun-able"):
 	cmd += ["-n", "../../"+node.pool.ndx_fn]
 	cmd += ["-c", "../../"+node.pdb_fn]
 	cmd += ["-p", "../../"+node.top_fn]
-	cmd += ["-o", "../../"+node.tpr_fn]			
+	cmd += ["-o", "../../"+node.dir+"/run_temp.tpr"]			
 	print("Calling: %s"%" ".join(cmd))
 	p = Popen(cmd, cwd=node.dir)
 	retcode = p.wait()
 	assert(retcode == 0) # grompp should never fail
+	os.rename(node.dir+"/run_temp.tpr",node.tpr_fn)
 	node.state = final_state
 	node.save()
 
