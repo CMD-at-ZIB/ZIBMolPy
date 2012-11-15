@@ -31,6 +31,7 @@ def main():
 		raise(Exception("Could not parse: "+pool.analysis_dir+"instruction.txt"))
 
 	default_cluster_threshold = instructions['power']
+	amount_neighbour = instructions['neighbour']
 
 	npz_file = np.load(pool.chi_mat_fn)
 	chi_matrix = npz_file['matrix']
@@ -54,15 +55,22 @@ def main():
 
 				node = active_nodes[node_index]	
 
-				# go through at least 3 nodes
-				# and ignore nodes which have a higher chi value then default_cluster_threshold					
-				if( chi_matrix[node_index][i] > default_cluster_threshold and couter>2):
-					P
-					continue
-			
-				ready_nodes = pool.where("state == 'ready' and parent!=None and parent.name=='%s'"%node_i.name)
 				frameweights_of_node_i= node_i.frameweights
 
+				# go through at least 3 nodes
+				# and nodes which have less chi value then default_cluster_threshold					
+				if( chi_matrix[node_index][i] > default_cluster_threshold and couter>2):
+					# for other nodes add correspondig P value - assuming those cluster are metastable
+					trajectory= node.trajectory
+					neighbours=get_neighbours_steinzeit(node, trajectory, amount_neighbour)
+					for frame_number in neighbours:
+						# behave like node would node move in simulation
+						weight = frameweights_of_node_i[frame_number]
+						P[cluster_index_i,cluster_index_i] += weight*node.weight_corrected*chi_matrix[node_index][cluster_index_i]*chi_matrix[node_index][cluster_index_i]
+					continue
+
+				ready_nodes = pool.where("state == 'ready' and parent!=None and parent.name=='%s'"%node_i.name)
+				
 				for ready_node in ready_nodes:	
 					weight = frameweights_of_node_i[ready_node.parent_frame_num]
 					#frame_value = pool.converter.read_pdb(ready_node.pdb_fn)
@@ -88,7 +96,7 @@ def main():
 
 							#calc P entry
 							#if(temp_val[index_j] <= p_radius):	
-							P[cluster_index_i,cluster_index_j] += weight*node.weight_corrected*chi_matrix[node_index][index_i]*chi_matrix[index_j][cluster_index_j]
+							P[cluster_index_i,cluster_index_j] += weight*node.weight_corrected*chi_matrix[node_index][cluster_index_i]*chi_matrix[index_j][cluster_index_j]
 			
 					
 			cluster_index_i=cluster_index_i+1
@@ -103,6 +111,22 @@ def main():
 	
 	np.savez(pool.analysis_dir+"p_pdb.npz", matrix=P)
 		
+#===============================================================================
+# get amount of neighbours 
+def get_neighbours_steinzeit(current_node,trajectory, num_neighbours):
+	total_length = len(trajectory)
+	step_size = total_length / num_neighbours
+
+	frame_number = 0
+	neighbours=[]
+	while frame_number< total_length:
+		# floor returns an integer in float format
+		# in python 3 it actually returns an integer
+		# since we use pythen 2.x we need to fix it
+		neighbours.append(np.int(np.floor(frame_number)))
+		frame_number += step_size
+	return neighbours
+
 #===============================================================================
 if(__name__ == "__main__"):
 	main()
