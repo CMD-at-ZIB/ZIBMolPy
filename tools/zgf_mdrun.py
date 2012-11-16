@@ -130,7 +130,7 @@ def main():
 				break # we're done - exit
 	
 		try:
-			process(active_node, options,save_mode)
+			process(active_node, options, save_mode)
 			active_node.save()
 			active_node.unlock()
 		except:
@@ -143,7 +143,7 @@ def main():
 			
 
 #===============================================================================
-def process(node, options,save_mode):
+def process(node, options, save_mode):
 	
 	cmd1 = ["mdrun"]
 	
@@ -159,7 +159,6 @@ def process(node, options,save_mode):
 		cmd1 += ["-o", "../../"+node.dir+"/rerun.trr"]
 		cmd1 += ["-e", "../../"+node.dir+"/rerun.edr"]
 		cmd1 += ["-g", "../../"+node.dir+"/rerun.log"]
-
 	else:
 		cmd1 += ["-s", "../../"+node.tpr_fn]
 		cmd1 += ["-o", "../../"+node.trr_fn]
@@ -222,9 +221,9 @@ def process(node, options,save_mode):
 		for fn in [node.dir+"/outfile.pdb",node.trr_fn, node.dir+"/ener.edr", node.dir+"/md.log"]:
 			archive_file(fn, node.extensions_counter)
 	
-	#delete in each step
+	# delete in each step
 	if (save_mode == "only pdb"):
-		#delete all files except pdb and start files
+		# delete all files except pdb and start files
 		for fn in os.listdir(node.dir):
 			if(re.match(".+.pdb",fn)==None 
 			and re.match("[^#].+.mdp",fn)==None
@@ -234,8 +233,6 @@ def process(node, options,save_mode):
 			and fn!="lock"):					
 				os.remove(node.dir+"/"+str(fn))
 
-	
-
 	# decide what to do next
 	if(converged):
 		node.state = "converged"
@@ -244,7 +241,7 @@ def process(node, options,save_mode):
 			node.state = "not-converged"
 		else:
 			if (save_mode == "only pdb"):
-				#delete all files except pdb and start files
+				# delete all files except pdb and start files
 				for fn in os.listdir(node.dir):
 					if(re.match(".+.pdb",fn)==None 
 					and re.match("[^#].+.mdp",fn)==None
@@ -253,9 +250,8 @@ def process(node, options,save_mode):
 					and re.match(".+.top",fn)==None
 					and fn!="lock"):					
 						os.remove(node.dir+"/"+str(fn))
-
 			else:
-				#merge sampling trajectories
+				# merge sampling trajectories
 				trr_fns = sorted([ fn for fn in os.listdir(node.dir) if re.match("[^#].+run\d+.trr", fn) ])
 				cmd2 = ["trjcat", "-f"]
 				cmd2 += trr_fns
@@ -264,7 +260,7 @@ def process(node, options,save_mode):
 				check_call(cmd2, cwd=node.dir)
 				# merge edr files
 				get_merged_edr(node)
-				#delete backup's assuming each backupfile starts with an #
+				# delete backups, assuming each backup file starts with '#'
 				for fn in os.listdir(node.dir):
 					if(re.match("#.+",fn)):					
 						os.remove(node.dir+"/"+str(fn))
@@ -301,6 +297,7 @@ def process(node, options,save_mode):
 		else:
 			node.state = "grompp-able"
 			zgf_grompp.call_grompp(node) # re-grompp to obtain new random impulse
+
 
 #===============================================================================
 def archive_file(fn, count):

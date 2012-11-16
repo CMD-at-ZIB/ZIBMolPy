@@ -153,7 +153,7 @@ Node node0010 is converged and not locked.
   energy region (=weighted V standard deviation): 75.035140 [kJ/mol]
   evaluation region (=conjugate variance): 0.000631
   number of refpoints: 7
-Thermodynamic weights calculated by method 'entropy' (sol-energy=False):
+Thermodynamic weights calculated by method 'entropy':
   node0006 with A: 90.475741 [kJ/mol] and weight: 0.999943
   node0007 with A: 115.040078 [kJ/mol] and weight: 0.000053
   node0001 with A: 121.425411 [kJ/mol] and weight: 0.000004

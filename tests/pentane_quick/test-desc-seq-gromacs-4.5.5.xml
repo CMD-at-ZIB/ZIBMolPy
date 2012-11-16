@@ -67,7 +67,7 @@ Node node0003 is converged and not locked.
   evaluation region (=conjugate variance): 0.117987
   number of refpoints: 3
 WARNING: No nearpoints found for refpoint 1! (node0003)
-Thermodynamic weights calculated by method 'entropy' (sol-energy=False):
+Thermodynamic weights calculated by method 'entropy':
   node0003 with A: 85.740766 [kJ/mol] and weight: 0.999988
   node0002 with A: 113.915155 [kJ/mol] and weight: 0.000012
   node0001 with A: 129.778020 [kJ/mol] and weight: 0.000000

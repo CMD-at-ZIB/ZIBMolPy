@@ -23,10 +23,11 @@ import zgf_grompp
 
 import sys
 import re
+from os import path
 
 options_desc = OptionsList([
 	Option("c", "ignore-convergence", "bool", "rerun despite not-converged", default=False),
-	Option("p", "pbc-removal", "choice", "method of pbc removal for desolvation", choices=("none", "mol", "nojump", "whole")),
+	Option("p", "pbc-removal", "choice", "method of pbc removal for desolvation", choices=("whole", "mol", "nojump", "none")),
 	Option("g", "grompp", "file", extension="mdp", default="rerun.mdp"),
 	])
 
@@ -52,18 +53,20 @@ def main():
 
 	for node in needy_nodes:
 		# desolvate trr
-		cmd = ["trjconv", "-f", node.trr_fn, "-o", node.dir+"/rerun_me.trr", "-s", node.tpr_fn, "-n", node.pool.ndx_fn, "-pbc", options.pbc_removal]			
-		print("Calling: "+(" ".join(cmd)))
-		p = Popen(cmd, stdin=PIPE)
-		p.communicate(input=("MOI\n"))
-		assert(p.wait() == 0)
+		if not( path.exists(node.dir+"/rerun_me.trr") ):
+			cmd = ["trjconv", "-f", node.trr_fn, "-o", node.dir+"/rerun_me.trr", "-s", node.tpr_fn, "-n", node.pool.ndx_fn, "-pbc", options.pbc_removal]			
+			print("Calling: "+(" ".join(cmd)))
+			p = Popen(cmd, stdin=PIPE)
+			p.communicate(input=("MOI\n"))
+			assert(p.wait() == 0)
 
 		# desolvate pdb
-		cmd = ["trjconv", "-f", node.pdb_fn, "-o", node.dir+"/rerun_me.pdb", "-s", node.tpr_fn, "-n", node.pool.ndx_fn, "-pbc", options.pbc_removal]			
-		print("Calling: "+(" ".join(cmd)))
-		p = Popen(cmd, stdin=PIPE)
-		p.communicate(input=("MOI\n"))
-		assert(p.wait() == 0)
+		if not( path.exists(node.dir+"/rerun_me.pdb") ):
+			cmd = ["trjconv", "-f", node.pdb_fn, "-o", node.dir+"/rerun_me.pdb", "-s", node.tpr_fn, "-n", node.pool.ndx_fn, "-pbc", options.pbc_removal]			
+			print("Calling: "+(" ".join(cmd)))
+			p = Popen(cmd, stdin=PIPE)
+			p.communicate(input=("MOI\n"))
+			assert(p.wait() == 0)
 
 		# desolvate topology
 		infile = open(node.top_fn, "r").readlines()
@@ -76,12 +79,16 @@ def main():
 				mol_section = True
 			if(mol_section):
 				# comment out lines that belong to solvent (SOL, CL, NA)... add more if necessary
-				if( re.match("\s*(sol|cl|na)\s*\d+", line.lower()) ):
+				if( re.match("\s*(sol|cl|na|tsl|tcm|mth)\s*\d+", line.lower()) ):
 					line = ";"+line
 			out_top.append(line)
 		outfile = open(node.dir+"/rerun_me.top","w").writelines(out_top)	
 
 		grompp2state = "rerun-able-"+node.state
+
+		# get rid of old checkpoint file (it might mess up the rerun)
+		if( path.exists(node.dir+"/state.cpt") ):
+			os.remove(node.dir+"/state.cpt")
 
 		#zgf_grompp.call_grompp(node, mdp_file=options.grompp, final_state=grompp2state)
 		#TODO code borrowed from zgf_grompp
