@@ -33,7 +33,7 @@ Automatic refinement
 
 Nodes with state "mdrun-failed"
 ===============================
-	If something goes wrong during the sampling of a node, it will adapt the state "mdrun-failed". After the problem is resolved (see below), you have to recover the node back to state "mdrun-able" by calling the tool L{zgf_recover_failed}. Failed node samplings are often related to domain decomposition problems in systems with explicit solvent and L{linear coordinates<ZIBMolPy.internals>}:
+	If something goes wrong during the sampling of a node, it will adapt the state "mdrun-failed". After the problem is resolved (see below), you have to recover the node back to state "mdrun-able" by calling the tool L{zgf_recover_state}. Failed node samplings are often related to domain decomposition problems in systems with explicit solvent and L{linear coordinates<ZIBMolPy.internals>}:
 
 		- B{Problem:} Domain decomposition does not fit number of nodes/PME nodes. B{Solution:} Change number of nodes/PME nodes, or change PME grid dimension, or use particle decomposition.
 		- B{Problem:} Domain decomposition does not work due to (long) distance restraints (L{linear coordinates<ZIBMolPy.internals>}). B{Solution:} Change number of nodes/PME nodes, or change PME grid dimension, or use particle decomposition. Using particle decomposition and a relatively low number of processors per node (preferably sharing the same memory) works best in difficult cases.

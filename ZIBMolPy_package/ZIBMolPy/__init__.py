@@ -21,6 +21,7 @@ Convenience:
 	- L{zgf_remove_nodes}
 	- L{zgf_solvate_nodes}
 	- L{zgf_genion}
+	- L{zgf_rerun}
 	- L{zgf_recover_state}
 	- L{zgf_discard_solvent}
 
