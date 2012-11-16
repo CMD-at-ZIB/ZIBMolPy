@@ -130,8 +130,8 @@
     the state &quot;mdrun-failed&quot;. After the problem is resolved (see 
     below), you have to recover the node back to state 
     &quot;mdrun-able&quot; by calling the tool <a 
-    href="zgf_recover_failed-module.html" 
-    class="link">zgf_recover_failed</a>. Failed node samplings are often 
+    href="zgf_recover_state-module.html" 
+    class="link">zgf_recover_state</a>. Failed node samplings are often 
     related to domain decomposition problems in systems with explicit 
     solvent and <a href="ZIBMolPy.internals-module.html" 
     class="link">linear coordinates</a>:</p>
@@ -239,6 +239,33 @@
  long_name: auto-refines
 </pre>
       </li>
+      <li>
+        <b>multistart</b>:
+<pre class="literalblock">
+ help: Sampling is restarted instead of extended
+ short_name: m
+ datatype: bool
+ long_name: multistart
+</pre>
+      </li>
+      <li>
+        <b>delete</b>:
+<pre class="literalblock">
+ help: Neighbours are deleted
+ short_name: x
+ datatype: bool
+ long_name: delete
+</pre>
+      </li>
+      <li>
+        <b>timesteps</b>:
+<pre class="literalblock">
+ help: Enter all timesteps for which you want to compute P
+ short_name: z
+ datatype: str
+ long_name: timesteps
+</pre>
+      </li>
     </ul>
 
 <!-- ==================== FUNCTIONS ==================== -->
@@ -288,9 +315,27 @@
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
           <td><span class="summary-sig"><a name="process"></a><span class="summary-sig-name">process</span>(<span class="summary-sig-arg">node</span>,
-        <span class="summary-sig-arg">options</span>)</span></td>
+        <span class="summary-sig-arg">options</span>,
+        <span class="summary-sig-arg">save_mode</span>)</span></td>
           <td align="right" valign="top">
             <span class="codelink"><a href="zgf_mdrun-pysrc.html#process">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="archive_file"></a><span class="summary-sig-name">archive_file</span>(<span class="summary-sig-arg">fn</span>,
+        <span class="summary-sig-arg">count</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="zgf_mdrun-pysrc.html#archive_file">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -314,6 +359,22 @@
       
     </td>
   </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="get_merged_edr"></a><span class="summary-sig-name">get_merged_edr</span>(<span class="summary-sig-arg">node</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="zgf_mdrun-pysrc.html#get_merged_edr">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
 </table>
 <!-- ==================== VARIABLES ==================== -->
 <a name="section-Variables"></a>
@@ -330,7 +391,8 @@
         <a href="zgf_mdrun-module.html#options_desc" class="summary-name">options_desc</a> = <code title="[&lt;ZIBMolPy.ui.Option seq&gt;, &lt;ZIBMolPy.ui.Option np&gt;, &lt;ZIBMolPy.ui.Optio\
 n nt&gt;, &lt;ZIBMolPy.ui.Option npme&gt;, &lt;ZIBMolPy.ui.Option reprod&gt;, &lt;ZIBMol\
 Py.ui.Option pd&gt;, &lt;ZIBMolPy.ui.Option convtest&gt;, &lt;ZIBMolPy.ui.Option a\
-uto-refines&gt;]">[&lt;ZIBMolPy.ui.Option seq&gt;, &lt;ZIBMolPy.ui.Option <code class="variable-ellipsis">...</code></code>
+uto-refines&gt;, &lt;ZIBMolPy.ui.Option multistart&gt;, &lt;ZIBMolPy.ui.Option del\
+ete&gt;, &lt;ZIBMolPy.ui.Option timesteps&gt;]">[&lt;ZIBMolPy.ui.Option seq&gt;, &lt;ZIBMolPy.ui.Option <code class="variable-ellipsis">...</code></code>
     </td>
   </tr>
 <tr>
@@ -366,7 +428,8 @@ uto-refines&gt;]">[&lt;ZIBMolPy.ui.Option seq&gt;, &lt;ZIBMolPy.ui.Option <code 
 [&lt;ZIBMolPy.ui.Option seq&gt;, &lt;ZIBMolPy.ui.Option np&gt;, &lt;ZIBMolPy.ui.Optio<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
 n nt&gt;, &lt;ZIBMolPy.ui.Option npme&gt;, &lt;ZIBMolPy.ui.Option reprod&gt;, &lt;ZIBMol<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
 Py.ui.Option pd&gt;, &lt;ZIBMolPy.ui.Option convtest&gt;, &lt;ZIBMolPy.ui.Option a<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
-uto-refines&gt;]
+uto-refines&gt;, &lt;ZIBMolPy.ui.Option multistart&gt;, &lt;ZIBMolPy.ui.Option del<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+ete&gt;, &lt;ZIBMolPy.ui.Option timesteps&gt;]
 </pre></td></tr></table>
 </dd>
   </dl>
@@ -404,7 +467,7 @@ uto-refines&gt;]
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Tue Jul 17 10:26:00 2012
+    Generated by Epydoc 3.0.1 on Fri Nov 16 15:54:17 2012
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

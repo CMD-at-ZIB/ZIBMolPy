@@ -148,21 +148,21 @@
   <h1 class="heading">Options</h1>
     <ul>
       <li>
-        <b>sol-energy</b>:
-<pre class="literalblock">
- help: include SOL energy contribution
- short_name: s
- datatype: bool
- long_name: sol-energy
-</pre>
-      </li>
-      <li>
         <b>ignore-convergence</b>:
 <pre class="literalblock">
  help: reweight despite not-converged
  short_name: c
  datatype: bool
  long_name: ignore-convergence
+</pre>
+      </li>
+      <li>
+        <b>ignore-failed</b>:
+<pre class="literalblock">
+ help: reweight and ignore mdrun-failed nodes
+ short_name: f
+ datatype: bool
+ long_name: ignore-failed
 </pre>
       </li>
       <li>
@@ -174,6 +174,38 @@
  datatype: choice
  choices: ('entropy', 'direct', 'presampling')
  long_name: method
+</pre>
+      </li>
+      <li>
+        <b>e-bonded</b>:
+<pre class="literalblock">
+ default: run_standard
+ help: bonded energy type
+ short_name: b
+ datatype: choice
+ choices: ('run_standard', 'rerun_standard')
+ long_name: e-bonded
+</pre>
+      </li>
+      <li>
+        <b>e-nonbonded</b>:
+<pre class="literalblock">
+ default: run_standard
+ help: nonbonded energy type
+ short_name: n
+ datatype: choice
+ choices: ('run_standard', 'run_moi', 'run_moi_sol', 'run_custom', 'rerun_standard', 'rerun_moi', 'rerun_moi_sol', 'rerun_custom')
+ long_name: e-nonbonded
+</pre>
+      </li>
+      <li>
+        <b>custom-energy</b>:
+<pre class="literalblock">
+ default: custom_energy.txt
+ short_name: e
+ datatype: file
+ long_name: custom-energy
+ extension: txt
 </pre>
       </li>
       <li>
@@ -244,9 +276,7 @@
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
           <td><span class="summary-sig"><a name="reweight_direct"></a><span class="summary-sig-name">reweight_direct</span>(<span class="summary-sig-arg">nodes</span>,
-        <span class="summary-sig-arg">moi_energies</span>,
-        <span class="summary-sig-arg">sol_energy</span>,
-        <span class="summary-sig-arg">save_ref</span>=<span class="summary-sig-default">False</span>)</span></td>
+        <span class="summary-sig-arg">options</span>)</span></td>
           <td align="right" valign="top">
             <span class="codelink"><a href="zgf_reweight-pysrc.html#reweight_direct">source&nbsp;code</a></span>
             
@@ -263,9 +293,7 @@
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
           <td><span class="summary-sig"><a name="reweight_entropy"></a><span class="summary-sig-name">reweight_entropy</span>(<span class="summary-sig-arg">nodes</span>,
-        <span class="summary-sig-arg">moi_energies</span>,
-        <span class="summary-sig-arg">sol_energy</span>,
-        <span class="summary-sig-arg">save_ref</span>=<span class="summary-sig-default">False</span>)</span></td>
+        <span class="summary-sig-arg">options</span>)</span></td>
           <td align="right" valign="top">
             <span class="codelink"><a href="zgf_reweight-pysrc.html#reweight_entropy">source&nbsp;code</a></span>
             
@@ -282,9 +310,7 @@
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
           <td><span class="summary-sig"><a name="reweight_presampling"></a><span class="summary-sig-name">reweight_presampling</span>(<span class="summary-sig-arg">nodes</span>,
-        <span class="summary-sig-arg">presamp_temp</span>,
-        <span class="summary-sig-arg">moi_energies</span>,
-        <span class="summary-sig-arg">sol_energy</span>)</span></td>
+        <span class="summary-sig-arg">options</span>)</span></td>
           <td align="right" valign="top">
             <span class="codelink"><a href="zgf_reweight-pysrc.html#reweight_presampling">source&nbsp;code</a></span>
             
@@ -300,12 +326,12 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="load_energies"></a><span class="summary-sig-name">load_energies</span>(<span class="summary-sig-arg">node</span>,
-        <span class="summary-sig-arg">with_penalty</span>=<span class="summary-sig-default">True</span>,
-        <span class="summary-sig-arg">with_sol</span>=<span class="summary-sig-default">True</span>,
-        <span class="summary-sig-arg">with_moi_energies</span>=<span class="summary-sig-default">True</span>)</span></td>
+          <td><span class="summary-sig"><a name="load_energy"></a><span class="summary-sig-name">load_energy</span>(<span class="summary-sig-arg">node</span>,
+        <span class="summary-sig-arg">e_bonded_type</span>,
+        <span class="summary-sig-arg">e_nonbonded_type</span>,
+        <span class="summary-sig-arg">custom_e_terms</span>=<span class="summary-sig-default">None</span>)</span></td>
           <td align="right" valign="top">
-            <span class="codelink"><a href="zgf_reweight-pysrc.html#load_energies">source&nbsp;code</a></span>
+            <span class="codelink"><a href="zgf_reweight-pysrc.html#load_energy">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -356,9 +382,10 @@
     <td width="15%" align="right" valign="top" class="summary">
       <span class="summary-type">&nbsp;</span>
     </td><td class="summary">
-        <a href="zgf_reweight-module.html#options_desc" class="summary-name">options_desc</a> = <code title="[&lt;ZIBMolPy.ui.Option sol-energy&gt;, &lt;ZIBMolPy.ui.Option ignore-convergen\
-ce&gt;, &lt;ZIBMolPy.ui.Option method&gt;, &lt;ZIBMolPy.ui.Option presamp-temp&gt;, &lt;\
-ZIBMolPy.ui.Option save-refpoints&gt;]">[&lt;ZIBMolPy.ui.Option sol-energy&gt;, &lt;ZIBMolPy.ui.<code class="variable-ellipsis">...</code></code>
+        <a href="zgf_reweight-module.html#options_desc" class="summary-name">options_desc</a> = <code title="[&lt;ZIBMolPy.ui.Option ignore-convergence&gt;, &lt;ZIBMolPy.ui.Option ignore-f\
+ailed&gt;, &lt;ZIBMolPy.ui.Option method&gt;, &lt;ZIBMolPy.ui.Option e-bonded&gt;, &lt;Z\
+IBMolPy.ui.Option e-nonbonded&gt;, &lt;ZIBMolPy.ui.Option custom-energy&gt;, &lt;Z\
+IBMolPy.ui.Option presamp-temp&gt;, &lt;ZIBMolPy.ui.Option save-refpoints&gt;]">[&lt;ZIBMolPy.ui.Option ignore-convergence&gt;, &lt;ZIBM<code class="variable-ellipsis">...</code></code>
     </td>
   </tr>
 <tr>
@@ -428,9 +455,10 @@ ZIBMolPy.ui.Option save-refpoints&gt;]">[&lt;ZIBMolPy.ui.Option sol-energy&gt;, 
   <dl class="fields">
     <dt>Value:</dt>
       <dd><table><tr><td><pre class="variable">
-[&lt;ZIBMolPy.ui.Option sol-energy&gt;, &lt;ZIBMolPy.ui.Option ignore-convergen<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
-ce&gt;, &lt;ZIBMolPy.ui.Option method&gt;, &lt;ZIBMolPy.ui.Option presamp-temp&gt;, &lt;<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
-ZIBMolPy.ui.Option save-refpoints&gt;]
+[&lt;ZIBMolPy.ui.Option ignore-convergence&gt;, &lt;ZIBMolPy.ui.Option ignore-f<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+ailed&gt;, &lt;ZIBMolPy.ui.Option method&gt;, &lt;ZIBMolPy.ui.Option e-bonded&gt;, &lt;Z<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+IBMolPy.ui.Option e-nonbonded&gt;, &lt;ZIBMolPy.ui.Option custom-energy&gt;, &lt;Z<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+IBMolPy.ui.Option presamp-temp&gt;, &lt;ZIBMolPy.ui.Option save-refpoints&gt;]
 </pre></td></tr></table>
 </dd>
   </dl>
@@ -468,7 +496,7 @@ ZIBMolPy.ui.Option save-refpoints&gt;]
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Tue Jul 17 10:26:00 2012
+    Generated by Epydoc 3.0.1 on Fri Nov 16 15:54:17 2012
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"
