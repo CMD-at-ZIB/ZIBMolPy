@@ -347,6 +347,11 @@ class Node(object):
 		return(
 			(self.has_restraints and self.state != 'refined') 
 			or self.state=='creating-a-partition' ) # used by zgf_create_node.calc_theta()
+
+	@property
+	def isa_transition(self):
+		"""Indicates that this node is a transition node."""
+		return not(self.has_restraints or self == self.pool.root) 
 	
 	@property
 	def is_sampled(self):

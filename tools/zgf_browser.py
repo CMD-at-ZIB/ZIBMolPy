@@ -256,30 +256,35 @@ class Statusbar(gtk.Statusbar):
 			return
 		
 		msg_parts = []
-
-		size_msg = "pool-size=1"
-		n_refined = len(self.board.pool.where("state == 'refined'"))
-		if(n_refined > 1):
-			size_msg += "+%d"%(n_refined-1)
-		n_active = len(self.board.pool)-n_refined
-		if(n_active > 0):
-			size_msg += "+%d"%n_active
-		n_needy = len(self.board.pool.where("state != 'converged'")) - n_refined
-		if(n_needy > 0):
-			size_msg += "(%d)"%n_needy
+	
+		size_msg = "pool-size=1R"
+		n_dnodes = len(self.board.pool.where("isa_partition"))
+		n_dneedy = len(self.board.pool.where("isa_partition and state != 'converged'"))
+		if(n_dnodes):
+			size_msg += "+%d"%(n_dnodes)
+			if(n_dneedy):
+				size_msg += "(%d)"%(n_dneedy)
+			size_msg += "D"
+		n_tnodes = len(self.board.pool.where("isa_transition"))
+		n_tneedy = len(self.board.pool.where("isa_transition and state != 'ready'"))
+		if(n_tnodes):
+			size_msg += "+%d"%(n_tnodes)
+			if(n_tneedy):
+				size_msg += "(%d)"%(n_tneedy)
+			size_msg += "T"
 
 		msg_parts.append(size_msg)
 	
 		if(self.board.pool.alpha!=None):
 			msg_parts.append("α=%.2f"%self.board.pool.alpha)
 		
-		t_left = 0 #time still needed (estimate) 
-		t_used = 0 #time already used
+		t_left = 0 # time still needed (estimate) 
+		t_used = 0 # time already used
 		
 		for n in self.board.pool:
-			if(not hasattr(n,"extensions_max")):
-				continue #this is probably the root-node
-			expected_exts = n.extensions_max/2.0 #how many extension do we expect?
+			if(n == self.board.pool.root):
+				continue
+			expected_exts = n.extensions_max/2.0 # how many extension do we expect?
 			if n.is_sampled:
 				t_used += n.sampling_length + n.extensions_length * n.extensions_counter
 			elif(n.extensions_counter == 0):
@@ -817,7 +822,7 @@ class CoordinateList(gtk.TreeView):
 #===============================================================================
 class NodeList(gtk.TreeView):
 	def __init__(self, board):
-		liststore = gtk.ListStore(str, str, str, bool, str, bool, str, str, bool, bool, bool)
+		liststore = gtk.ListStore(str, str, str, str, str, bool, str, str, bool, bool, bool)
 		gtk.TreeView.__init__(self, liststore)
 		self.board = board
 		self.board.listeners.append(self.update)
@@ -840,12 +845,10 @@ class NodeList(gtk.TreeView):
 		
 		renderer5 = gtk.CellRendererToggle()
 		renderer5.connect('toggled', self.on_toggled_mdlog)
-		
-		renderer6 = gtk.CellRendererToggle()
 				
 		self.append_column(gtk.TreeViewColumn("Name", renderer1, text=1))
 		self.append_column(gtk.TreeViewColumn("State", renderer1, text=2))
-		self.append_column(gtk.TreeViewColumn("Restrained", renderer6, active=3))
+		self.append_column(gtk.TreeViewColumn("", renderer1, text=3))
 		self.append_column(gtk.TreeViewColumn("Extension", renderer1, text=4))
 		self.append_column(gtk.TreeViewColumn("ConvLog", renderer2, active=5))
 		self.append_column(gtk.TreeViewColumn("Weight (dir.)", renderer1, text=6))
@@ -930,7 +933,13 @@ class NodeList(gtk.TreeView):
 						color = self.colors['stale']
 			elif(n.state == 'refined'):
 				color = self.colors['refined']
-						
+
+			ntype = "D"
+			if(n == self.board.pool.root):
+				ntype = "R"
+			elif(n.isa_transition):
+				ntype = "T"
+			
 			weight_direct = "n/a"
 			if('weight_direct' in n.obs):
 				weight_direct = "%1.10f"%n.obs.weight_direct
@@ -939,7 +948,7 @@ class NodeList(gtk.TreeView):
 			if('weight_corrected' in n.obs):
 				weight_corrected = "%1.10f"%n.obs.weight_corrected
 				
-			row = [color, n.name, n.state, n.has_restraints, ext_txt, n.has_convergence_log, weight_direct, weight_corrected, n.has_reweighting_log, n.has_trajectory, n.has_mdrun_log]
+			row = [color, n.name, n.state, ntype, ext_txt, n.has_convergence_log, weight_direct, weight_corrected, n.has_reweighting_log, n.has_trajectory, n.has_mdrun_log]
 			
 			# Updating the entire list, without clearing it. 
 			# This preserves the selection and the up/down-keys still work :-)
@@ -954,15 +963,12 @@ class NodeList(gtk.TreeView):
 			if(n == self.board.selected_node): 
 				self.get_selection().select_path((i,))
 	
-		#delete_list must not be a generator
+		# delete_list must not be a generator
 		delete_list = list(reversed(range(len(self.board.pool), len(M))))
 		for i in delete_list:
 			M.remove( M.get_iter((i,)) )
 		
 		self.updateing = False
-		
-		#TODO: is this call really nessecary???
-		#self.on_select() # just in case the selected node got remove
 		
   	#---------------------------------------------------------------------------
 	def on_select(self, dummy_widget=None):

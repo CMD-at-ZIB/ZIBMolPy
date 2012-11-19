@@ -74,8 +74,8 @@ options_desc = OptionsList([
 	Option("c", "ignore-convergence", "bool", "reweight despite not-converged", default=False),
 	Option("f", "ignore-failed", "bool", "reweight and ignore mdrun-failed nodes", default=False),
 	Option("m", "method", "choice", "reweighting method", choices=("entropy", "direct", "presampling")),
-	Option("b", "e-bonded", "choice", "bonded energy type", choices=("run_standard", "rerun_standard")),
-	Option("n", "e-nonbonded", "choice", "nonbonded energy type", choices=("run_standard", "run_moi", "run_moi_sol", "run_custom", "rerun_standard", "rerun_moi", "rerun_moi_sol", "rerun_custom")),
+	Option("b", "e-bonded", "choice", "bonded energy type", choices=("run_standard", "rerun_standard", "none")),
+	Option("n", "e-nonbonded", "choice", "nonbonded energy type", choices=("run_standard", "run_moi", "run_moi_sol_sr", "run_moi_sol_lr", "run_custom", "rerun_standard", "rerun_moi", "rerun_moi_sol_sr", "rerun_moi_sol_lr", "rerun_custom", "none")),
 	Option("e", "custom-energy", "file", extension="txt", default="custom_energy.txt"),
 	Option("t", "presamp-temp", "float", "presampling temp", default=1000), #TODO maybe drop this and ask user instead... method has to be reworked anyway
 	Option("r", "save-refpoints", "bool", "save refpoints in observables", default=False),	
@@ -133,6 +133,7 @@ def main():
 			print("  %s with mean_V: %f [kJ/mol], %d refpoints and weight: %f" % (n.name, n.obs.mean_V, n.tmp['n_refpoints'], n.obs.weight_direct))
 		else:
 			print("  %s with A: %f [kJ/mol] and weight: %f" % (n.name, n.obs.A, n.obs.weight_direct))
+	print "The above weighting uses bonded energies='%s' and nonbonded energies='%s'."%(options.e_bonded, options.e_nonbonded)
 
 	for n in active_nodes:
 		n.save()
@@ -333,60 +334,69 @@ def reweight_presampling(nodes, options):
 #===============================================================================
 def load_energy(node, e_bonded_type, e_nonbonded_type, custom_e_terms=None):
 	
-	# get bonded energy
-	if(e_bonded_type == "run_standard"):
-		edr_fn = "ener.edr"
-	elif(e_bonded_type == "rerun_standard"):
-		edr_fn = "rerun.edr"
+	if(e_bonded_type != "none"):
+		# get bonded energy
+		if(e_bonded_type == "run_standard"):
+			edr_fn = "ener.edr"
+		elif(e_bonded_type == "rerun_standard"):
+			edr_fn = "rerun.edr"
+		else:
+			raise(Exception("Method unkown: "+e_bonded_type))
+
+		e_bonded_terms = ["Bond", "Angle", "Proper-Dih.", "Ryckaert-Bell.", "Improper-Dih."]
+
+		xvg_fn = mktemp(suffix=".xvg", dir=node.dir)
+		cmd = ["g_energy", "-dp", "-f", node.dir+"/"+edr_fn, "-o", xvg_fn, "-sum"]
+
+		print("Calling: "+(" ".join(cmd)))
+		p = Popen(cmd, stdin=PIPE)
+		p.communicate(input=("\n".join(e_bonded_terms)+"\n"))
+		assert(p.wait() == 0)
+
+		# skipping over "#"-comments at the beginning of xvg-file 
+		e_bonded = np.loadtxt(xvg_fn, comments="@", usecols=(1,), skiprows=10) 
+		os.remove(xvg_fn)
 	else:
-		raise(Exception("Method unkown: "+e_bonded_type))
+		e_bonded = np.zeros(node.trajectory.n_frames)
 
-	e_bonded_terms = ["Bond", "Angle", "Proper-Dih.", "Ryckaert-Bell.", "Improper-Dih."]
+	if(e_nonbonded_type != "none"):
+		# get non-bonded energy
+		if(e_nonbonded_type in ("run_standard","run_moi","run_moi_sol_sr","run_moi_sol_lr","run_custom")):
+			edr_fn = "ener.edr"
+		elif(e_nonbonded_type in ("rerun_standard","rerun_moi","rerun_moi_sol_sr","rerun_moi_sol_lr","rerun_custom")):
+			edr_fn = "rerun.edr"
+		else:
+			raise(Exception("Method unkown: "+e_nonbonded_type))
 
-	xvg_fn = mktemp(suffix=".xvg", dir=node.dir)
-	cmd = ["g_energy", "-dp", "-f", node.dir+"/"+edr_fn, "-o", xvg_fn, "-sum"]
+		if(e_nonbonded_type in ("run_standard", "rerun_standard")):
+			e_nonbonded_terms = ["LJ-14", "Coulomb-14", "LJ-(SR)", "LJ-(LR)", "Disper.-corr.", "Coulomb-(SR)", "Coul.-recip."]
 
-	print("Calling: "+(" ".join(cmd)))
-	p = Popen(cmd, stdin=PIPE)
-	p.communicate(input=("\n".join(e_bonded_terms)+"\n"))
-	assert(p.wait() == 0)
+		if(e_nonbonded_type in ("run_moi", "rerun_moi")):
+			e_nonbonded_terms = ["Coul-SR:MOI-MOI", "LJ-SR:MOI-MOI", "LJ-LR:MOI-MOI", "Coul-14:MOI-MOI", "LJ-14:MOI-MOI"]
 
-	# skipping over "#"-comments at the beginning of xvg-file 
-	e_bonded = np.loadtxt(xvg_fn, comments="@", usecols=(1,), skiprows=10) 
-	os.remove(xvg_fn)
+		if(e_nonbonded_type in ("run_moi_sol_sr", "rerun_moi_sol_sr")):
+			e_nonbonded_terms = ["Coul-SR:MOI-MOI", "LJ-SR:MOI-MOI", "LJ-LR:MOI-MOI", "Coul-14:MOI-MOI", "LJ-14:MOI-MOI", "Coul-SR:MOI-SOL", "LJ-SR:MOI-SOL"]
 
-	# get non-bonded energy
-	if(e_nonbonded_type in ("run_standard","run_moi","run_moi_sol","run_custom")):
-		edr_fn = "ener.edr"
-	elif(e_nonbonded_type in ("rerun_standard","rerun_moi","rerun_moi_sol","rerun_custom")):
-		edr_fn = "rerun.edr"
+		if(e_nonbonded_type in ("run_moi_sol_lr", "rerun_moi_sol_lr")):
+			e_nonbonded_terms = ["Coul-SR:MOI-MOI", "LJ-SR:MOI-MOI", "LJ-LR:MOI-MOI", "Coul-14:MOI-MOI", "LJ-14:MOI-MOI", "Coul-SR:MOI-SOL", "LJ-SR:MOI-SOL", "LJ-LR:MOI-SOL"]
+
+		if(e_nonbonded_type in ("run_custom", "rerun_custom")):
+			assert(custom_e_terms)
+			e_nonbonded_terms = custom_e_terms
+	
+		xvg_fn = mktemp(suffix=".xvg", dir=node.dir)
+		cmd = ["g_energy", "-dp", "-f", node.dir+"/"+edr_fn, "-o", xvg_fn, "-sum"]
+
+		print("Calling: "+(" ".join(cmd)))
+		p = Popen(cmd, stdin=PIPE)
+		p.communicate(input=("\n".join(e_nonbonded_terms)+"\n"))
+		assert(p.wait() == 0)
+	
+		# skipping over "#"-comments at the beginning of xvg-file 
+		e_nonbonded = np.loadtxt(xvg_fn, comments="@", usecols=(1,), skiprows=10) 
+		os.remove(xvg_fn)
 	else:
-		raise(Exception("Method unkown: "+e_nonbonded_type))
-
-	if(e_nonbonded_type in ("run_standard", "rerun_standard")):
-		e_nonbonded_terms = ["LJ-14", "Coulomb-14", "LJ-(SR)", "LJ-(LR)", "Disper.-corr.", "Coulomb-(SR)", "Coul.-recip."]
-
-	if(e_nonbonded_type in ("run_moi", "rerun_moi")):
-		e_nonbonded_terms = ["Coul-SR:MOI-MOI", "LJ-SR:MOI-MOI", "LJ-LR:MOI-MOI", "Coul-14:MOI-MOI", "LJ-14:MOI-MOI"]
-
-	if(e_nonbonded_type in ("run_moi_sol", "rerun_moi_sol")):
-		e_nonbonded_terms = ["Coul-SR:MOI-MOI", "LJ-SR:MOI-MOI", "LJ-LR:MOI-MOI", "Coul-14:MOI-MOI", "LJ-14:MOI-MOI", "Coul-SR:MOI-SOL", "LJ-SR:MOI-SOL", "LJ-LR:MOI-SOL"]
-
-	if(e_nonbonded_type in ("run_custom", "rerun_custom")):
-		assert(custom_e_terms)
-		e_nonbonded_terms = custom_e_terms
-	
-	xvg_fn = mktemp(suffix=".xvg", dir=node.dir)
-	cmd = ["g_energy", "-dp", "-f", node.dir+"/"+edr_fn, "-o", xvg_fn, "-sum"]
-
-	print("Calling: "+(" ".join(cmd)))
-	p = Popen(cmd, stdin=PIPE)
-	p.communicate(input=("\n".join(e_nonbonded_terms)+"\n"))
-	assert(p.wait() == 0)
-	
-	# skipping over "#"-comments at the beginning of xvg-file 
-	e_nonbonded = np.loadtxt(xvg_fn, comments="@", usecols=(1,), skiprows=10) 
-	os.remove(xvg_fn)
+		e_nonbonded = np.zeros(node.trajectory.n_frames)
 
 	assert(len(e_bonded) == len(e_nonbonded) == node.trajectory.n_frames)
 
