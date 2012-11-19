@@ -10,6 +10,7 @@ from ZIBMolPy.ui import userinput, Option, OptionsList
 import sys
 
 import os
+import re
 
 import numpy as np
 
@@ -30,8 +31,8 @@ def main():
 	except:			
 		raise(Exception("Could not parse: "+pool.analysis_dir+"instruction.txt"))
 
-	default_cluster_threshold = instructions['power']
-	amount_neighbour = instructions['neighbour']
+	default_cluster_threshold = float(instructions['power'])
+	amount_neighbour = float(instructions['neighbour'])
 
 	npz_file = np.load(pool.chi_mat_fn)
 	chi_matrix = npz_file['matrix']
@@ -45,31 +46,52 @@ def main():
 	# transition matrix
 	P = np.zeros(shape=(len(cluster),len(cluster)))
 
-	
-	#start calculating matrix	
+	print "Chi Matrix:"
+	print chi_matrix
+	print "Cluster:"
+	print cluster
+	#start calculating matrix
+	cluster_index_i=0	
 	for i in range(len(cluster)):
-			continue
+			print ""
+			print " CLUSTER "+str(i)
+			print cluster[i]
 			counter = 0
-			cluster_index_i=0
 			for node_index in cluster[i]:
-
+				counter=counter+1
 				node = active_nodes[node_index]	
-
-				frameweights_of_node_i= node_i.frameweights
+				frameweights_of_node_i= node.frameweights
 
 				# go through at least 3 nodes
-				# and nodes which have less chi value then default_cluster_threshold					
-				if( chi_matrix[node_index][i] > default_cluster_threshold and couter>2):
+				# and nodes which have less chi value then default_cluster_threshold	
+				if( chi_matrix[node_index][i] > default_cluster_threshold and counter>3):
+					print "Node "+str(node_index)+" has no sampling."
+					print "chi value: "+str(chi_matrix[node_index][i])
+					print "counter:   "+str(counter)
+					print "cluster:   "+str(cluster_index_i)
+					print "- - - -"
 					# for other nodes add correspondig P value - assuming those cluster are metastable
 					trajectory= node.trajectory
 					neighbours=get_neighbours_steinzeit(node, trajectory, amount_neighbour)
 					for frame_number in neighbours:
-						# behave like node would node move in simulation
+						# behave like node would not move in simulation
 						weight = frameweights_of_node_i[frame_number]
-						P[cluster_index_i,cluster_index_i] += weight*node.weight_corrected*chi_matrix[node_index][cluster_index_i]*chi_matrix[node_index][cluster_index_i]
+						P[cluster_index_i,cluster_index_i] += weight*node.obs.weight_corrected*chi_matrix[node_index][cluster_index_i]*chi_matrix[node_index][cluster_index_i]
+						print "fram_weight "+str(weight)
+						print "node_weight "+str(node.obs.weight_corrected)
+						print "chi_start   "+str(chi_matrix[node_index][cluster_index_i])
+						print "chi_end     "+str(chi_matrix[node_index][cluster_index_i])
+						print "result:     "+str(weight*node.obs.weight_corrected*chi_matrix[node_index][cluster_index_i]*chi_matrix[node_index][cluster_index_i])	
+					
 					continue
+				
+				print "Node "+str(node_index)+" has sampling."
+				print "chi value: "+str(chi_matrix[node_index][i])
+				print "counter:   "+str(counter)
+				print "cluster:   "+str(cluster_index_i)
+				print "- - - -"
 
-				ready_nodes = pool.where("state == 'ready' and parent!=None and parent.name=='%s'"%node_i.name)
+				ready_nodes = pool.where("state == 'ready' and parent!=None and parent.name=='%s'"%node.name)
 				
 				for ready_node in ready_nodes:	
 					weight = frameweights_of_node_i[ready_node.parent_frame_num]
@@ -91,12 +113,17 @@ def main():
 							# which node has closest distance?
 							index_j=np.argsort(temp_val)[0]
 							
-							#which node has highest chi value?
-							cluster_index_j = np.argsort(chi_matrix[index_j][:])[len(clusters)]
+							#which cluster has highest chi value?
+							cluster_index_j = np.argsort(chi_matrix[index_j][:])[len(cluster)-1]
 
 							#calc P entry
+							print "fram_weight "+str(weight)
+							print "node_weight "+str(node.obs.weight_corrected)
+							print "chi_start   "+str(chi_matrix[node_index][cluster_index_i])
+							print "chi_end     "+str(chi_matrix[index_j][cluster_index_j])
+							print "result:     "+str(weight*node.obs.weight_corrected*chi_matrix[node_index][cluster_index_i]*chi_matrix[index_j][cluster_index_j])
 							#if(temp_val[index_j] <= p_radius):	
-							P[cluster_index_i,cluster_index_j] += weight*node.weight_corrected*chi_matrix[node_index][cluster_index_i]*chi_matrix[index_j][cluster_index_j]
+							P[cluster_index_i,cluster_index_j] += weight*node.obs.weight_corrected*chi_matrix[node_index][cluster_index_i]*chi_matrix[index_j][cluster_index_j]
 			
 					
 			cluster_index_i=cluster_index_i+1
