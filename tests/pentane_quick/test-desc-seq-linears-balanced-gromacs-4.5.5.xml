@@ -129,7 +129,7 @@ Node node0010 is converged and not locked.
 
 <run>zgf_reweight -c</run>
 <match-stdout>
-Thermodynamic weights calculated by method 'entropy' (sol-energy=False):
+Thermodynamic weights calculated by method 'entropy':
   node0007 with A: 89.248519 [kJ/mol] and weight: 0.609052
   node0009 with A: 90.407690 [kJ/mol] and weight: 0.382675
   node0001 with A: 100.038658 [kJ/mol] and weight: 0.008053

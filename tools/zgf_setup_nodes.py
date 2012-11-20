@@ -63,12 +63,16 @@ def main():
 def generate_mdp(pool):
 	mdp = read_mdp_file(pool.mdp_fn)
 	dt = float(mdp['dt'])
+	gen_vel = mdp['gen_vel']
 	gen_seed = int(mdp['gen_seed'])	
-	Tcoupl = mdp['Tcoupl']
+	tcoupl = mdp['tcoupl']
+	pcoupl = mdp['pcoupl']
 	orig_mdp = open(pool.mdp_fn).read()
-	orig_mdp = re.sub("\nnsteps", "\n; zgf_setup_nodes: commented-out the following line\n; nsteps", orig_mdp)
-	orig_mdp = re.sub("\ngen_seed", "\n; zgf_setup_nodes: commented-out the following line\n; gen_seed", orig_mdp)
-	orig_mdp = re.sub("\nTcoupl", "\n; zgf_setup_nodes: commented-out the following line\n; Tcoupl", orig_mdp)	
+	orig_mdp = re.sub("\n(?i)nsteps", "\n; zgf_setup_nodes: commented-out the following line\n; nsteps", orig_mdp)
+	orig_mdp = re.sub("\n(?i)gen_vel", "\n; zgf_setup_nodes: commented-out the following line\n; gen_vel", orig_mdp)
+	orig_mdp = re.sub("\n(?i)gen_seed", "\n; zgf_setup_nodes: commented-out the following line\n; gen_seed", orig_mdp)
+	orig_mdp = re.sub("\n(?i)tcoupl", "\n; zgf_setup_nodes: commented-out the following line\n; tcoupl", orig_mdp)
+	orig_mdp = re.sub("\n(?i)pcoupl(?!type)", "\n; zgf_setup_nodes: commented-out the following line\n; pcoupl", orig_mdp)
 
 	for n in pool.where("state == 'created'"):
 		print("Writing: "+n.mdp_fn)
@@ -77,12 +81,19 @@ def generate_mdp(pool):
 		f.write(orig_mdp)
 		f.write("\n; zgf_setup_nodes:\n") 
 		f.write("nsteps = %d\n"%nsteps)
-		# unrestrained (transition) nodes require a random gen_seed (-1)
+		# unrestrained (transition) nodes require
+		# 1. gen_vel = yes
+		# 2. random gen_seed (-1)
+		# tcoupl = pcoupl = no
 		if not(n.has_restraints):
+			gen_vel = "yes"
 			gen_seed = -1
-			Tcoupl	 = "no"
+			tcoupl = "no"
+			pcoupl = "no"
+		f.write("gen_vel = "+gen_vel+"\n")
 		f.write("gen_seed = %d\n"%gen_seed)
-		f.write("Tcoupl = "+Tcoupl+"\n")
+		f.write("tcoupl = "+tcoupl+"\n")
+		f.write("pcoupl = "+pcoupl+"\n")
 		f.close()
 
 

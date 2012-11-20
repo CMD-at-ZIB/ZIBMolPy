@@ -131,7 +131,7 @@ WARNING: No nearpoints found for refpoint 4! (node0004)
   number of refpoints: 4
 </match-stdout>
 <match-stdout>
-Thermodynamic weights calculated by method 'entropy' (sol-energy=False):
+Thermodynamic weights calculated by method 'entropy':
   node0003 with A: 92.983912 [kJ/mol] and weight: 0.419921
   node0001 with A: 93.231389 [kJ/mol] and weight: 0.380259
   node0005 with A: 94.892786 [kJ/mol] and weight: 0.195349

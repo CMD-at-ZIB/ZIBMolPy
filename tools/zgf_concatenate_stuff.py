@@ -36,7 +36,7 @@ sys.modules[__name__].__doc__ += options_desc.epytext() # for epydoc
 
 def is_applicable():
 	pool = Pool()
-	return( len(pool.where("state == 'ready'")) > 0 )
+	return( len(pool.where("state == 'merge-able'")) > 0 )
 
 #===============================================================================
 def main():
@@ -44,7 +44,7 @@ def main():
 	options = options_desc.parse_args(sys.argv)[0]
 	pool = Pool()
 
-	needy_nodes = pool.where("state == 'ready'").multilock()
+	needy_nodes = pool.where("state == 'merge-able'").multilock()
 
 	if(len(needy_nodes) == 0):
 		return

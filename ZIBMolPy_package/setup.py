@@ -8,7 +8,7 @@ setup(name = 'ZIBMolPy',
        description = "This is ZIBMolPy",
 	   packages = ['ZIBMolPy','ZIBMolPy.plots','ZIBMolPy.io'],
 	   author = 'Ole Schütt',
-       author_email = 'ole.schuett@zib.de',
+       author_email = 'ole@schuett.name',
 	   )
 
 #EOF
