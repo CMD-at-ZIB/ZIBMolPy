@@ -33,6 +33,7 @@ def main():
 
 	default_cluster_threshold = float(instructions['power'])
 	amount_neighbour = float(instructions['neighbour'])
+	runs = float(instructions['runs'])
 
 	npz_file = np.load(pool.chi_mat_fn)
 	chi_matrix = npz_file['matrix']
@@ -50,6 +51,8 @@ def main():
 	print chi_matrix
 	print "Cluster:"
 	print cluster
+
+	print " For each node sample "+str(amount_neighbour)+" neighbours, with "+str(runs)+" runs"
 	#start calculating matrix
 	cluster_index_i=0	
 	for i in range(len(cluster)):
@@ -65,10 +68,11 @@ def main():
 				# go through at least 3 nodes
 				# and nodes which have less chi value then default_cluster_threshold	
 				if( chi_matrix[node_index][i] > default_cluster_threshold and counter>3):
-					print "Node "+str(node_index)+" has no sampling."
+					print "Node "+str(node_index)
 					print "chi value: "+str(chi_matrix[node_index][i])
 					print "counter:   "+str(counter)
 					print "cluster:   "+str(cluster_index_i)
+					print "no neighbours"
 					print "- - - -"
 					# for other nodes add correspondig P value - assuming those cluster are metastable
 					trajectory= node.trajectory
@@ -76,22 +80,25 @@ def main():
 					for frame_number in neighbours:
 						# behave like node would not move in simulation
 						weight = frameweights_of_node_i[frame_number]
-						P[cluster_index_i,cluster_index_i] += weight*node.obs.weight_corrected*chi_matrix[node_index][cluster_index_i]*chi_matrix[node_index][cluster_index_i]
-						print "fram_weight "+str(weight)
-						print "node_weight "+str(node.obs.weight_corrected)
-						print "chi_start   "+str(chi_matrix[node_index][cluster_index_i])
-						print "chi_end     "+str(chi_matrix[node_index][cluster_index_i])
-						print "result:     "+str(weight*node.obs.weight_corrected*chi_matrix[node_index][cluster_index_i]*chi_matrix[node_index][cluster_index_i])	
+						P[cluster_index_i,cluster_index_i] += runs*weight*node.obs.weight_corrected*chi_matrix[node_index][cluster_index_i]*chi_matrix[node_index][cluster_index_i]
+						#print "fram_weight "+str(weight)
+						#print "node_weight "+str(node.obs.weight_corrected)
+						#print "chi_start   "+str(chi_matrix[node_index][cluster_index_i])
+						#print "chi_end     "+str(chi_matrix[node_index][cluster_index_i])
+						#print "result:     "+str(weight*node.obs.weight_corrected*chi_matrix[node_index][cluster_index_i]*chi_matrix[node_index][cluster_index_i])	
 					
 					continue
 				
-				print "Node "+str(node_index)+" has sampling."
+				
+				ready_nodes = pool.where("state == 'ready' and parent!=None and parent.name=='%s'"%node.name)
+
+				print "Node "+str(node_index)
 				print "chi value: "+str(chi_matrix[node_index][i])
 				print "counter:   "+str(counter)
 				print "cluster:   "+str(cluster_index_i)
+				print "Amount neighbours: "+str(len(ready_nodes))
 				print "- - - -"
 
-				ready_nodes = pool.where("state == 'ready' and parent!=None and parent.name=='%s'"%node.name)
 				
 				for ready_node in ready_nodes:	
 					weight = frameweights_of_node_i[ready_node.parent_frame_num]
@@ -117,11 +124,11 @@ def main():
 							cluster_index_j = np.argsort(chi_matrix[index_j][:])[len(cluster)-1]
 
 							#calc P entry
-							print "fram_weight "+str(weight)
-							print "node_weight "+str(node.obs.weight_corrected)
-							print "chi_start   "+str(chi_matrix[node_index][cluster_index_i])
-							print "chi_end     "+str(chi_matrix[index_j][cluster_index_j])
-							print "result:     "+str(weight*node.obs.weight_corrected*chi_matrix[node_index][cluster_index_i]*chi_matrix[index_j][cluster_index_j])
+							#print "fram_weight "+str(weight)
+							#print "node_weight "+str(node.obs.weight_corrected)
+							#print "chi_start   "+str(chi_matrix[node_index][cluster_index_i])
+							#print "chi_end     "+str(chi_matrix[index_j][cluster_index_j])
+							#print "result:     "+str(weight*node.obs.weight_corrected*chi_matrix[node_index][cluster_index_i]*chi_matrix[index_j][cluster_index_j])
 							#if(temp_val[index_j] <= p_radius):	
 							P[cluster_index_i,cluster_index_j] += weight*node.obs.weight_corrected*chi_matrix[node_index][cluster_index_i]*chi_matrix[index_j][cluster_index_j]
 			

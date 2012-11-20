@@ -129,7 +129,7 @@ def main():
 	instructionFile = "analysis/instruction-cluster.txt"	
 
 	f = open(instructionFile, "w")
-	f.write("{'power': '"+str(options.coreset_power)+"','neighbour': '"+str(options.num_neighbours)+"'}")
+	f.write("{'power': '"+str(options.coreset_power)+"','neighbour': '"+str(options.num_neighbours)+"','runs': '"+str(options.num_runs)+"'}")
 	f.close()
 
 	#save cluster
