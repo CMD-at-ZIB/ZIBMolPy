@@ -86,10 +86,16 @@ class MainWindow(gtk.Window):
 
 		#self.modify_bg(gtk.STATE_NORMAL, gtk.gdk.Color(6400, 6400, 6440))
 		self.set_position(gtk.WIN_POS_CENTER)
+
+		# semi-smart positioning TODO pass on width and slack to children
+		if(screen.get_width() >= width+10+600):
+			(x,y) = self.get_position()
+			x = (screen.get_width()-(width+10+600))/2
+			self.move(x,y)
+
 		self.set_icon(get_logo_pixbuf())
 		self.connect("destroy", gtk.main_quit)
-		
-		
+				
 		accel_group = gtk.AccelGroup()
 		self.add_accel_group(accel_group)
 		
@@ -99,7 +105,6 @@ class MainWindow(gtk.Window):
 		vbox.pack_start(self.menu_bar, expand=False)
 		#vbox.pack_start(Toolbar(board), expand=False)
 
-							
 		vpaned = gtk.VPaned()
 		vpaned.set_position(vpaned_pos)
 		vbox.pack_start(vpaned)
@@ -124,9 +129,9 @@ class MainWindow(gtk.Window):
 		self.managed_plots_panel = ManagedPlotsPanel(board, managers)
 		hpaned.add1(self.managed_plots_panel)
 		
-		
 		self.show_all()
 	
+
 #===============================================================================
 class Blackboard(object):
 	#---------------------------------------------------------------------------	
@@ -310,7 +315,6 @@ class ScrolledWindow(gtk.ScrolledWindow):
 		gtk.ScrolledWindow.__init__(self)
 		self.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
 		self.add(inner_widget)
-
 
 
 #===============================================================================
@@ -691,6 +695,14 @@ class RunDialog(gtk.Dialog):
 		if(screen.get_height() < 940):
 			height = 660
 		self.resize(width, height)
+
+		self.set_position(gtk.WIN_POS_CENTER)
+
+		# semi-smart positioning TODO get width and slack from parent
+		if(screen.get_width() >= 1210+10+width):
+			(x,y) = self.get_position()
+			x = (screen.get_width()-(1210+10+width))/2
+			self.move(x+1210+10,y)
 
 		self.vbox.pack_start(sw)
 		
