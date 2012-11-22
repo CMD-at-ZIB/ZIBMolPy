@@ -196,6 +196,34 @@ def main():
 		
 	zgf_cleanup.main()
 
+	# show summary
+	chi_threshold = 1E-3
+	from pprint import pformat
+	
+	for i in range(n_clusters):
+		involved_nodes = [active_nodes[ni] for ni in np.argwhere(chi_matrix[:,i] > chi_threshold)]
+		c_max = []
+
+		for c in  pool.converter:
+			coord_range = pool.coord_range(c)
+			scale = c.plot_scale
+			edges = scale(np.linspace(np.min(coord_range), np.max(coord_range), num=50))
+			hist_cluster = np.zeros(edges.size-1)
+
+			for (n, chi) in zip([n for n in active_nodes], chi_matrix[:,i]):
+				samples = scale( n.trajectory.getcoord(c) )
+				hist_node = np.histogram(samples, bins=edges, weights=n.frameweights, normed=True)[0]
+				hist_cluster += n.obs.weight_corrected * hist_node * chi
+
+			c_max.append( scale(np.linspace(np.min(coord_range), np.max(coord_range), num=50))[np.argmax(hist_cluster)] )
+
+		msg = "### Cluster %d (weight=%.4f, #involved nodes=%d):"%(i+1, np.fabs(cluster_weights[i]), len(involved_nodes))
+		print "\n"+msg
+		print "%s"%pformat(["%.2f"%cm for cm in c_max])
+		print "involved nodes:"
+		print "%s"%pformat([n.name for n in involved_nodes])
+		print "-"*len(msg)
+
 
 #===============================================================================
 # "cache" specialized for "calc_matrix" in order to save a proper npz
