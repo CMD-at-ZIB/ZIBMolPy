@@ -46,6 +46,17 @@ Frame weights
 	Overweight frames are possible if S{Phi}_i(q) is high (meaning that q is well within its native basis function) while the penalty_potential_i(q) is high, as well. Hence, q is punished wrongly, as q should only be punished by the penalty potential if it attempts to leave its native basis function.
 
 	When overweight frames occur, this probably means that your approximation of the S{Phi} function for the corresponding node is bad. You can check this by using L{zgf_browser}. If the penalty potential kicks in where S{Phi} is still good, you have got a bad approximation of the S{Phi} function. Overweight frame weights will trigger a WARNING. Furthermore, any occurence of overweight frame weights will be stored in the reweighting log file.
+
+Choice of energy observables for reweighting
+============================================
+
+You can pick from various options. You can decide if you want to use observables from the standard run (as stored in 'ener.edr') or from a rerun (as stored in 'rerun.edr') that you did with L{zgf_rerun}. You can also read bonded and non-bonded energy observables from different edr-files. If you are not happy with the standard choice of energy observables, you can provide a file with costum observables (non-bonded only).
+
+Check restraint energy
+======================
+
+This option is mainly for debugging. It compares wether ZIBMolPy internally calculates the same restraint energies as Gromacs (as stored in the edr-file of the run). You can also compare ZIBMolPy and Gromacs restraint energies visually by using the FrameWeightPlot in L{zgf_browser}.
+
 """
 
 from ZIBMolPy.constants import AVOGADRO, BOLTZMANN
@@ -78,7 +89,8 @@ options_desc = OptionsList([
 	Option("n", "e-nonbonded", "choice", "nonbonded energy type", choices=("run_standard", "run_moi", "run_moi_sol_sr", "run_moi_sol_lr", "run_custom", "rerun_standard", "rerun_moi", "rerun_moi_sol_sr", "rerun_moi_sol_lr", "rerun_custom", "none")),
 	Option("e", "custom-energy", "file", extension="txt", default="custom_energy.txt"),
 	Option("t", "presamp-temp", "float", "presampling temp", default=1000), #TODO maybe drop this and ask user instead... method has to be reworked anyway
-	Option("r", "save-refpoints", "bool", "save refpoints in observables", default=False),	
+	Option("r", "save-refpoints", "bool", "save refpoints in observables", default=False),
+	Option("R", "check-restraint", "bool", "check if ZIBMolPy calculates the same restraint energy as Gromacs", default=False),
 	])
 
 sys.modules[__name__].__doc__ += options_desc.epytext() # for epydoc
@@ -112,8 +124,9 @@ def main():
 	active_nodes = pool.where("isa_partition and state != 'mdrun-failed'")
 	assert(len(active_nodes) == len(active_nodes.multilock())) # make sure we lock ALL nodes
 
-	for n in active_nodes:
-		check_restraint_energy(n)
+	if(options.check_restraint):
+		for n in active_nodes:
+			check_restraint_energy(n)
 
 	if(options.method == "direct"):
 		reweight_direct(active_nodes, options)
