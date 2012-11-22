@@ -33,9 +33,9 @@ PCCA+
 =====
 	You will have to specify a number of clusters for PCCA+. An initial guess for this number will be made based on the largest gap between the calculated eigenvalues. Ideally there is only real eigenvalue one, followed by a number of eigenvalues very close to one (together forming the Perron cluster, which gives the number of metastable conformations), followed by a significant gap to mark the end of the Perron cluster. Eigenvectors belonging to eigenvalues that are not in the Perron cluster are irrelevant for PCCA+. The quality of the clustering result can be evaluated by taking a look at the (stochastic) $\chi$ matrix, which for each node gives the membership to the metastable conformations identified during PCCA+. All matrices can also be exported for use in Matlab. The matrices are stored in the analysis/ directory.
 
-K matrix and lag time
-=====================
-	At the moment, the $K$ matrix and its lag time are not used. Instead, an implementation of the $P(\\tau)$ matrix it on its way.
+K matrix
+========
+	At the moment, a $K$ matrix is not calculated. Instead, an implementation of the $P(\\tau)$ matrix it on its way.
 
 Symmetrization error threshold
 ==============================
@@ -43,6 +43,7 @@ Symmetrization error threshold
 
 """
 
+import os
 from os import path
 import sys
 from ZIBMolPy.utils import register_file_dependency
@@ -60,7 +61,6 @@ options_desc = OptionsList([
 	Option("e", "error", "choice", "error threshold for symmetrize", choices=("1E-02", "1E-03", "1E-04", "1E-05", "1E-06", "1E-07", "1E-08", "1E-09", "1E-10")),
 	Option("m", "export-matlab", "bool", "export matrices as mat-files", default=False),
 	Option("c", "auto-cluster", "bool", "choose number of clusters automatically", default=False),
-	#Option("l", "lag-time", "int", "lag time for K matrix", default=1, min_value=0),
 	Option("o", "overwrite-mat", "bool", "overwrite existing matrices", default=False),
 	Option("f", "fast-mat", "bool", "fast but less stable matrix calculation", default=False),
 	Option("i", "ignore-failed", "bool", "reweight and ignore mdrun-failed nodes", default=False),
@@ -93,28 +93,20 @@ def main():
 	s_matrix = cache_matrix(pool.s_mat_fn, active_nodes, overwrite=options.overwrite_mat, fast=options.fast_mat)
 	register_file_dependency(pool.s_mat_fn, pool.filename)
 
-	#print "\n### Getting K matrix ..."
-	#k_matrix = cache_matrix(pool.k_mat_fn, active_nodes, shift=options.lag_time, overwrite=options.overwrite_mat, fast=options.fast_mat)
-	#register_file_dependency(pool.k_mat_fn, pool.filename)	
-
 	node_weights = np.array([node.obs.weight_direct for node in active_nodes])
 	
 	print "\n### Symmetrizing S matrix ..."
 	(corr_s_matrix, corr_node_weights) = symmetrize(s_matrix, node_weights, correct_weights=True, error=float(options.error))
-	#print "\n### Symmetrizing K matrix ..."
-	#(corr_k_matrix, corr_node_weights) = symmetrize(k_matrix, corr_node_weights)
 
 	# store intermediate results
 	register_file_dependency(pool.s_corr_mat_fn, pool.s_mat_fn)
-	#register_file_dependency(pool.k_corr_mat_fn, pool.k_mat_fn)
+
 	np.savez(pool.s_corr_mat_fn, matrix=corr_s_matrix, node_names=[n.name for n in active_nodes])
-	#np.savez(pool.k_corr_mat_fn, matrix=corr_k_matrix, node_names=[n.name for n in active_nodes])
 	
 	if options.export_matlab:
 		savemat(pool.analysis_dir+"node_weights.mat", {"node_weights":node_weights, "node_weights_corrected":corr_node_weights})
 		savemat(pool.analysis_dir+"s_mats.mat", {"s_matrix":s_matrix, "s_matrix_corrected":corr_s_matrix})
-		#savemat(pool.analysis_dir+"k_mats.mat", {"k_matrix":k_matrix, "k_matrix_corrected":corr_k_matrix})
-	
+
 	for (n, cw) in zip(active_nodes, corr_node_weights):
 		n.obs.weight_corrected = cw
 		
@@ -159,7 +151,6 @@ def main():
 	# First two return-values "c_f" and "indicator" are not needed
 	(chi_matrix, rot_matrix) = cluster_by_isa(eigvectors, n_clusters)[2:]
 	
-	#TODO at the moment, K-matrix is not used
 	#xi = [] # calculate eigenvalues of Q_c, xi
 	#for eigvec in np.transpose(eigvectors)[: n_clusters]:
 	#	num = np.dot( np.dot( np.transpose(eigvec), corr_k_matrix ), eigvec )
@@ -194,10 +185,14 @@ def main():
 
 	register_file_dependency(pool.chi_mat_fn, pool.s_corr_mat_fn)
 	register_file_dependency(pool.qc_mat_fn, pool.s_corr_mat_fn)
-	#for fn in (pool.s_mat_fn, pool.s_corr_mat_fn, pool.k_mat_fn, pool.k_corr_mat_fn):
+
 	for fn in (pool.s_mat_fn, pool.s_corr_mat_fn):
 		register_file_dependency(pool.chi_mat_fn, fn)
 		register_file_dependency(pool.qc_mat_fn, fn)
+
+	# touch analysis directory (triggering update in zgf_browser)
+	atime = mtime = time.time()
+	os.utime(pool.analysis_dir, (atime, mtime))
 		
 	zgf_cleanup.main()
 

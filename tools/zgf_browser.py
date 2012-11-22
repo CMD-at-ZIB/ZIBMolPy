@@ -21,6 +21,7 @@ import gobject
 import gtk
 import webbrowser
 import ctypes
+import re
 
 gobject.threads_init()
 gtk.gdk.threads_init()
@@ -220,7 +221,10 @@ class FileChangesObserver:
 				print("Directory changed: analysis")
 				self.mtime_analysis_dir = mt				
 				found_changes = True
-		
+
+			#npz_fns = [fn for fn in os.listdir(self.board.pool.analysis_dir) if re.match("[^.].+.npz", fn)]
+			#print npz_fns
+
 		if(found_changes):
 			gtk.gdk.threads_enter()
 			self.board.fire_listeners()		
