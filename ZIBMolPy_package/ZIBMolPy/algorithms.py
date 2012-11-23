@@ -213,7 +213,64 @@ def orthogonalize(eigenvalues, eigenvectors, weights):
 		weighted_norm = np.dot( np.dot( np.transpose(eigvec), np.diag(weights) ), eigvec )
 		eigvec /= np.sqrt(weighted_norm)
 
+	eigenvectors[:,0] = np.ones(eigenvectors.shape[1])
 	return eigenvectors
+
+
+#===============================================================================
+def opt_soft(eigvectors, rot_matrix, n_clusters):
+
+	# only consider first n_clusters eigenvectors
+	eigvectors = eigvectors[:,:n_clusters]
+	
+	# crop first row and first column from rot_matrix
+	rot_crop_matrix = rot_matrix[1:,1:]
+	
+	(x, y) = rot_crop_matrix.shape
+	
+	# reshape rot_crop_matrix into linear vector
+	rot_crop_vec = np.reshape(rot_crop_matrix, x*y)
+
+	from scipy.optimize import fmin
+	#TODO optimize rot_crop_vec
+	#fmin( susanna_f(rot_crop_vec) )
+	
+	rot_crop_matrix = np.reshape(rot_crop_vec, (x, y))
+	rot_matrix = fill_matrix(rot_crop_matrix, eigvectors)
+	chi_matrix = np.dot(eigvectors, rot_matrix)
+
+	return(chi_matrix, rot_matrix)
+
+
+#===============================================================================
+def fill_matrix(rot_crop_matrix, eigvectors):
+
+	(x, y) = rot_crop_matrix.shape
+
+	row_sums = np.sum(rot_crop_matrix, axis=1)	
+	row_sums = np.reshape(row_sums, (x,1))
+
+	# add -row_sums as leftmost column to rot_crop_matrix 
+	rot_crop_matrix = np.concatenate((-row_sums, rot_crop_matrix), axis=1 )
+
+	tmp = -np.dot(eigvectors[:,1:], rot_crop_matrix)
+
+	tmp_col_max = np.max(tmp, axis=0)
+	tmp_col_max = np.reshape(tmp_col_max, (1,y+1))
+
+	tmp_col_max_sum = np.sum(tmp_col_max)
+
+	# add col_max as top row to rot_crop_matrix and normalize
+	rot_matrix = np.concatenate((tmp_col_max, rot_crop_matrix), axis=0 )
+	rot_matrix /= tmp_col_max_sum
+
+	return rot_matrix
+
+
+#===============================================================================
+# target function for optimization
+def susanna_f(rot_crop_vec, eigvectors):
+	return "implement me"
 
 
 #===============================================================================

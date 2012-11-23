@@ -49,7 +49,7 @@ import sys
 from ZIBMolPy.utils import register_file_dependency
 from ZIBMolPy.phi import get_phi_num, get_phi_denom, get_phi
 from ZIBMolPy.pool import Pool
-from ZIBMolPy.algorithms import cluster_by_isa, orthogonalize, symmetrize
+from ZIBMolPy.algorithms import cluster_by_isa, orthogonalize, symmetrize, opt_soft
 from ZIBMolPy.ui import userinput, Option, OptionsList
 from scipy.io import savemat
 import numpy as np
@@ -64,6 +64,7 @@ options_desc = OptionsList([
 	Option("o", "overwrite-mat", "bool", "overwrite existing matrices", default=False),
 	Option("f", "fast-mat", "bool", "fast but less stable matrix calculation", default=False),
 	Option("i", "ignore-failed", "bool", "reweight and ignore mdrun-failed nodes", default=False),
+	Option("n", "optimize-chi", "bool", "optimize chi function", default=False),
 	])
 
 sys.modules[__name__].__doc__ += options_desc.epytext() # for epydoc
@@ -138,9 +139,6 @@ def main():
 		n_clusters = userinput("Please enter the number of clusters for PCCA+", "int", "x>0")
 	print "### Using %d clusters for PCCA+ ..."%n_clusters
 
-	print "eigenvectors"
-	print eigvectors[:, :n_clusters]
-
 	if options.export_matlab:
 		savemat(pool.analysis_dir+"evs.mat", {"evs":eigvectors})
 	
@@ -150,6 +148,10 @@ def main():
 	# perform PCCA+
 	# First two return-values "c_f" and "indicator" are not needed
 	(chi_matrix, rot_matrix) = cluster_by_isa(eigvectors, n_clusters)[2:]
+
+	if(options.optimize_chi):
+		print "implement me"
+		(chi_matrix, rot_matrix) = opt_soft(eigvectors, rot_matrix, n_clusters)
 	
 	#xi = [] # calculate eigenvalues of Q_c, xi
 	#for eigvec in np.transpose(eigvectors)[: n_clusters]:
@@ -193,10 +195,9 @@ def main():
 	# touch analysis directory (triggering update in zgf_browser)
 	atime = mtime = time.time()
 	os.utime(pool.analysis_dir, (atime, mtime))
-		
-	zgf_cleanup.main()
 
 	# show summary
+	print "\n### Preparing cluster summary ..."
 	chi_threshold = 1E-3
 	from pprint import pformat
 	
