@@ -64,7 +64,7 @@ options_desc = OptionsList([
 	Option("o", "overwrite-mat", "bool", "overwrite existing matrices", default=False),
 	Option("f", "fast-mat", "bool", "fast but less stable matrix calculation", default=False),
 	Option("i", "ignore-failed", "bool", "reweight and ignore mdrun-failed nodes", default=False),
-	Option("n", "optimize-chi", "bool", "optimize chi function", default=False),
+	Option("n", "optimize-chi", "bool", "optimize chi matrix", default=False),
 	Option("s", "summary", "bool", "print cluster summary", default=False),
 	])
 
@@ -151,72 +151,46 @@ def main():
 	(chi_matrix, rot_matrix) = cluster_by_isa(eigvectors, n_clusters)[2:]
 
 	if(options.optimize_chi):
-		print "### Optimizing chi function ..."
-
+		print "\n### Optimizing chi matrix ..."
+		
+		outliers = 5
 		mean_weight = np.mean(corr_node_weights)
-		print mean_weight
-		print mean_weight/100*5
-		threshold = mean_weight/100*5
+		threshold = mean_weight/100*outliers
+		print "Light-weight node threshold (%d%% of mean corrected node weight): %.4f."%(outliers, threshold)
 
-		# find out edges of simplex
-		edges = np.where(np.max(chi_matrix, axis=1) > 0.9999)[0]
-		heavies = np.where( corr_node_weights > threshold)[0]
-	
-		filtered_eigvec = eigvectors[ np.union1d(edges, heavies) ]
+		# accumulate nodes for optimization
+		edges = np.where(np.max(chi_matrix, axis=1) > 0.9999)[0] # edges of simplex
+		heavies = np.where( corr_node_weights > threshold)[0] # heavy-weight nodes
+		filtered_eigvectors = eigvectors[ np.union1d(edges, heavies) ]
 
-		#print filtered_eigvec
-		print filtered_eigvec.shape
-		#sys.exit(1)
+		# perform the actual optimization
+		rot_matrix = opt_soft(filtered_eigvectors, rot_matrix, n_clusters)
 
-
-		#np.where(np.abs(phi_weighted_energies - n.obs.mean_V) < energy_region)[0]
-
-		#(chi_matrix, rot_matrix) = opt_soft(eigvectors, rot_matrix, n_clusters)
-		rot_matrix = opt_soft(filtered_eigvec, rot_matrix, n_clusters)
 		chi_matrix = np.dot(eigvectors[:,:n_clusters], rot_matrix)
-		#TODO deal with bad nodes: shift and scale
-
-		idx = np.where(corr_node_weights <= threshold)[0]
-		print idx
-
-		for i in idx:
+		
+		# deal with light-weight nodes: shift and scale
+		for i in np.where(corr_node_weights <= threshold)[0]:
 			if(i in edges):
+				print "Column %d belongs to (potentially dangerous) light-weight node, but its node is a simplex edge."%(i+1)
 				continue
-			print chi_matrix[i,:]
+			print "Column %d is shifted and scaled."%(i+1)
 			col_min = np.min( chi_matrix[i,:] )
 			chi_matrix[i,:] -= col_min
-			print col_min
-			
 			chi_matrix[i,:] /= 1-(n_clusters*col_min)
 			
-		
-	
-	#xi = [] # calculate eigenvalues of Q_c, xi
-	#for eigvec in np.transpose(eigvectors)[: n_clusters]:
-	#	num = np.dot( np.dot( np.transpose(eigvec), corr_k_matrix ), eigvec )
-	#	denom = np.dot( np.dot( np.transpose(eigvec), corr_s_matrix ), eigvec )
-	#	xi.append(num/denom-1)
-
-	#print np.diag(xi) #TODO what does this tell us? Marcus-check
-
 	qc_matrix = np.dot( np.dot( np.linalg.inv(rot_matrix), np.diag(eigvalues[range(n_clusters)]) ), rot_matrix ) - np.eye(n_clusters)
-
 	cluster_weights = rot_matrix[0]
-	#print np.sum(rot_matrix[0])
-
-
-	print "Q_c matrix row sums:"
-	print np.sum(qc_matrix, axis=1)
-	print "cluster weights (calculated twice for checking):"
-	print cluster_weights
-	print np.dot(corr_node_weights, chi_matrix)
 	
-	print "===================="
+	print "\n### Matrix numerics check"
+	print "-- Q_c matrix row sums --"
+	print np.sum(qc_matrix, axis=1)
+	print "-- cluster weights: first column of rot_matrix --"
+	print cluster_weights
+	print "-- cluster weights: numpy.dot(node_weights, chi_matrix) --"
+	print np.dot(corr_node_weights, chi_matrix)
+	print "-- chi matrix column max values --"
 	print np.max(chi_matrix, axis=0)
-
-	print "chi matrix column sums:"
-	print np.sum(chi_matrix, axis=0)
-	print "chi matrix row sums:"
+	print "-- chi matrix row sums --"
 	print np.sum(chi_matrix, axis=1)
 
 	# store final results
@@ -261,10 +235,11 @@ def main():
 
 				c_max.append( scale(np.linspace(np.min(coord_range), np.max(coord_range), num=50))[np.argmax(hist_cluster)] )
 
-			msg = "### Cluster %d (weight=%.4f, #involved nodes=%d):"%(i+1, np.fabs(cluster_weights[i]), len(involved_nodes))
+			msg = "### Cluster %d (weight=%.4f, #involved nodes=%d):"%(i+1, cluster_weights[i], len(involved_nodes))
 			print "\n"+msg
+			print "-- internal coordinates --"
 			print "%s"%pformat(["%.2f"%cm for cm in c_max])
-			print "involved nodes:"
+			print "-- involved nodes --"
 			print "%s"%pformat([n.name for n in involved_nodes])
 			print "-"*len(msg)
 

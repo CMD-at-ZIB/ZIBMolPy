@@ -87,12 +87,9 @@ eigenvalue 2: 0.803603, gap to next eigenvalue: 0.149098
 eigenvalue 3: 0.654505, gap to next eigenvalue: 0.000000
 </match-stdout>
 <match-stdout>
-Q_c matrix:
-[[  2.22044605e-16]]
-</match-stdout>
-<match-stdout>
-cluster weights (calculated twice for checking):
-[-1.]
+-- cluster weights: first column of rot_matrix --
+[ 1.]
+-- cluster weights: numpy.dot(node_weights, chi_matrix) --
 [ 1.]
 </match-stdout>
 

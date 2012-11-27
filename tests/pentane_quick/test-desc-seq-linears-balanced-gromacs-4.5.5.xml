@@ -170,9 +170,10 @@ EV0009: 0.535059, gap to next: 0.146907, EV-weighted gap to next: 0.078604
 EV0010: 0.388152, gap to next: 0.000000, EV-weighted gap to next: 0.000000
 </match-stdout>
 <match-stdout>
-cluster weights (calculated twice for checking):
+-- cluster weights: first column of rot_matrix --
 [ 0.00737079  0.01962904  0.03824999  0.05098137  0.06177334  0.15890554
   0.20111099  0.21425237  0.24772647]
+-- cluster weights: numpy.dot(node_weights, chi_matrix) --
 [ 0.00737115  0.01961154  0.03819513  0.05097047  0.06175357  0.15895781
   0.20118286  0.21413446  0.2478228 ]
 </match-stdout>
