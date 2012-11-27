@@ -65,6 +65,7 @@ options_desc = OptionsList([
 	Option("f", "fast-mat", "bool", "fast but less stable matrix calculation", default=False),
 	Option("i", "ignore-failed", "bool", "reweight and ignore mdrun-failed nodes", default=False),
 	Option("n", "optimize-chi", "bool", "optimize chi function", default=False),
+	Option("s", "summary", "bool", "print cluster summary", default=False),
 	])
 
 sys.modules[__name__].__doc__ += options_desc.epytext() # for epydoc
@@ -150,8 +151,45 @@ def main():
 	(chi_matrix, rot_matrix) = cluster_by_isa(eigvectors, n_clusters)[2:]
 
 	if(options.optimize_chi):
-		print "implement me"
-		(chi_matrix, rot_matrix) = opt_soft(eigvectors, rot_matrix, n_clusters)
+		print "### Optimizing chi function ..."
+
+		mean_weight = np.mean(corr_node_weights)
+		print mean_weight
+		print mean_weight/100*5
+		threshold = mean_weight/100*5
+
+		# find out edges of simplex
+		edges = np.where(np.max(chi_matrix, axis=1) > 0.9999)[0]
+		heavies = np.where( corr_node_weights > threshold)[0]
+	
+		filtered_eigvec = eigvectors[ np.union1d(edges, heavies) ]
+
+		#print filtered_eigvec
+		print filtered_eigvec.shape
+		#sys.exit(1)
+
+
+		#np.where(np.abs(phi_weighted_energies - n.obs.mean_V) < energy_region)[0]
+
+		#(chi_matrix, rot_matrix) = opt_soft(eigvectors, rot_matrix, n_clusters)
+		rot_matrix = opt_soft(filtered_eigvec, rot_matrix, n_clusters)
+		chi_matrix = np.dot(eigvectors[:,:n_clusters], rot_matrix)
+		#TODO deal with bad nodes: shift and scale
+
+		idx = np.where(corr_node_weights <= threshold)[0]
+		print idx
+
+		for i in idx:
+			if(i in edges):
+				continue
+			print chi_matrix[i,:]
+			col_min = np.min( chi_matrix[i,:] )
+			chi_matrix[i,:] -= col_min
+			print col_min
+			
+			chi_matrix[i,:] /= 1-(n_clusters*col_min)
+			
+		
 	
 	#xi = [] # calculate eigenvalues of Q_c, xi
 	#for eigvec in np.transpose(eigvectors)[: n_clusters]:
@@ -164,14 +202,18 @@ def main():
 	qc_matrix = np.dot( np.dot( np.linalg.inv(rot_matrix), np.diag(eigvalues[range(n_clusters)]) ), rot_matrix ) - np.eye(n_clusters)
 
 	cluster_weights = rot_matrix[0]
+	#print np.sum(rot_matrix[0])
 
-	print "Q_c matrix:"
-	print qc_matrix
+
 	print "Q_c matrix row sums:"
 	print np.sum(qc_matrix, axis=1)
 	print "cluster weights (calculated twice for checking):"
 	print cluster_weights
 	print np.dot(corr_node_weights, chi_matrix)
+	
+	print "===================="
+	print np.max(chi_matrix, axis=0)
+
 	print "chi matrix column sums:"
 	print np.sum(chi_matrix, axis=0)
 	print "chi matrix row sums:"
@@ -197,33 +239,34 @@ def main():
 	os.utime(pool.analysis_dir, (atime, mtime))
 
 	# show summary
-	print "\n### Preparing cluster summary ..."
-	chi_threshold = 1E-3
-	from pprint import pformat
+	if(options.summary):
+		print "\n### Preparing cluster summary ..."
+		chi_threshold = 1E-3
+		from pprint import pformat
 	
-	for i in range(n_clusters):
-		involved_nodes = [active_nodes[ni] for ni in np.argwhere(chi_matrix[:,i] > chi_threshold)]
-		c_max = []
+		for i in range(n_clusters):
+			involved_nodes = [active_nodes[ni] for ni in np.argwhere(chi_matrix[:,i] > chi_threshold)]
+			c_max = []
 
-		for c in  pool.converter:
-			coord_range = pool.coord_range(c)
-			scale = c.plot_scale
-			edges = scale(np.linspace(np.min(coord_range), np.max(coord_range), num=50))
-			hist_cluster = np.zeros(edges.size-1)
+			for c in  pool.converter:
+				coord_range = pool.coord_range(c)
+				scale = c.plot_scale
+				edges = scale(np.linspace(np.min(coord_range), np.max(coord_range), num=50))
+				hist_cluster = np.zeros(edges.size-1)
 
-			for (n, chi) in zip([n for n in active_nodes], chi_matrix[:,i]):
-				samples = scale( n.trajectory.getcoord(c) )
-				hist_node = np.histogram(samples, bins=edges, weights=n.frameweights, normed=True)[0]
-				hist_cluster += n.obs.weight_corrected * hist_node * chi
+				for (n, chi) in zip([n for n in active_nodes], chi_matrix[:,i]):
+					samples = scale( n.trajectory.getcoord(c) )
+					hist_node = np.histogram(samples, bins=edges, weights=n.frameweights, normed=True)[0]
+					hist_cluster += n.obs.weight_corrected * hist_node * chi
 
-			c_max.append( scale(np.linspace(np.min(coord_range), np.max(coord_range), num=50))[np.argmax(hist_cluster)] )
+				c_max.append( scale(np.linspace(np.min(coord_range), np.max(coord_range), num=50))[np.argmax(hist_cluster)] )
 
-		msg = "### Cluster %d (weight=%.4f, #involved nodes=%d):"%(i+1, np.fabs(cluster_weights[i]), len(involved_nodes))
-		print "\n"+msg
-		print "%s"%pformat(["%.2f"%cm for cm in c_max])
-		print "involved nodes:"
-		print "%s"%pformat([n.name for n in involved_nodes])
-		print "-"*len(msg)
+			msg = "### Cluster %d (weight=%.4f, #involved nodes=%d):"%(i+1, np.fabs(cluster_weights[i]), len(involved_nodes))
+			print "\n"+msg
+			print "%s"%pformat(["%.2f"%cm for cm in c_max])
+			print "involved nodes:"
+			print "%s"%pformat([n.name for n in involved_nodes])
+			print "-"*len(msg)
 
 
 #===============================================================================

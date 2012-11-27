@@ -231,15 +231,27 @@ def opt_soft(eigvectors, rot_matrix, n_clusters):
 	# reshape rot_crop_matrix into linear vector
 	rot_crop_vec = np.reshape(rot_crop_matrix, x*y)
 
-	from scipy.optimize import fmin
-	#TODO optimize rot_crop_vec
-	#fmin( susanna_f(rot_crop_vec) )
-	
-	rot_crop_matrix = np.reshape(rot_crop_vec, (x, y))
-	rot_matrix = fill_matrix(rot_crop_matrix, eigvectors)
-	chi_matrix = np.dot(eigvectors, rot_matrix)
+	# target function for optimization
+	def susanna_func(rot_crop_vec, eigvectors):
+		# reshape into matrix
+		rot_crop_matrix = np.reshape(rot_crop_vec, (x, y))
+		# fill matrix
+		rot_matrix = fill_matrix(rot_crop_matrix, eigvectors)
 
-	return(chi_matrix, rot_matrix)
+		result = 0
+		for i in range(0, n_clusters):
+			for j in range(1, n_clusters):
+				result += np.power(rot_matrix[j,i], 2) / rot_matrix[0,i]
+		return(-result)
+
+
+	from scipy.optimize import fmin
+	rot_crop_vec_opt = fmin( susanna_func, rot_crop_vec, args=(eigvectors,) )
+	
+	rot_crop_matrix = np.reshape(rot_crop_vec_opt, (x, y))
+	rot_matrix = fill_matrix(rot_crop_matrix, eigvectors)
+
+	return(rot_matrix)
 
 
 #===============================================================================
@@ -265,12 +277,6 @@ def fill_matrix(rot_crop_matrix, eigvectors):
 	rot_matrix /= tmp_col_max_sum
 
 	return rot_matrix
-
-
-#===============================================================================
-# target function for optimization
-def susanna_f(rot_crop_vec, eigvectors):
-	return "implement me"
 
 
 #===============================================================================
