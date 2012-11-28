@@ -220,6 +220,7 @@ def main():
 	
 		for i in range(n_clusters):
 			involved_nodes = [active_nodes[ni] for ni in np.argwhere(chi_matrix[:,i] > chi_threshold)]
+			max_chi_node = active_nodes[ np.argmax(chi_matrix[:,i]) ]
 			c_max = []
 
 			for c in  pool.converter:
@@ -235,12 +236,12 @@ def main():
 
 				c_max.append( scale(np.linspace(np.min(coord_range), np.max(coord_range), num=50))[np.argmax(hist_cluster)] )
 
-			msg = "### Cluster %d (weight=%.4f, #involved nodes=%d):"%(i+1, cluster_weights[i], len(involved_nodes))
+			msg = "### Cluster %d (weight=%.4f, #involved nodes=%d, representative='%s'):"%(i+1, cluster_weights[i], len(involved_nodes), max_chi_node.name)
 			print "\n"+msg
 			print "-- internal coordinates --"
 			print "%s"%pformat(["%.2f"%cm for cm in c_max])
 			print "-- involved nodes --"
-			print "%s"%pformat([n.name for n in involved_nodes])
+			print "%s"%pformat([n.name for n in involved_nodes])			
 			print "-"*len(msg)
 
 
