@@ -71,9 +71,7 @@ options_desc = OptionsList([
 	Option("d", "pd", "bool", "Use particle decomposition", default=False),
 	Option("c", "convtest", "bool", "Test if nodes are converged - does not simulate", default=False),
 	Option("a", "auto-refines", "int", "Number of automatic refinements", default=0, min_value=0),
-	Option("m", "multistart", "bool", "Sampling is restarted instead of extended", default=False),
-	Option("x", "delete", "bool", "Neighbours are deleted", default=False),
-	Option("z", "timesteps", "str", "Enter all timesteps for which you want to compute P", default=0)
+	Option("m", "multistart", "bool", "Sampling is restarted instead of extended", default=False)
 	])
 
 sys.modules[__name__].__doc__ += options_desc.epytext() # for epydoc
@@ -95,17 +93,17 @@ def main():
 			conv_check_gelman_rubin(n)
 		return # exit
 
-	save_mode=""
-	# determine if readynodes should keep all files or only pdb
-	if(os.path.exists(pool.analysis_dir+"instruction.txt")):
-		try:
-			f = open(pool.analysis_dir+"instruction.txt")
-			command = f.read()
-			instructions = eval(command)
-			save_mode = instructions['save_mode']			
-		except:			
-			traceback.print_exc()
-			raise(Exception("Could not parse: "+pool.analysis_dir+"instruction.txt"))
+	#save_mode=""
+	## determine if readynodes should keep all files or only pdb
+	#if(os.path.exists(pool.analysis_dir+"instruction.txt")):
+	#	try:
+	#		f = open(pool.analysis_dir+"instruction.txt")
+	#		command = f.read()
+	#		instructions = eval(command)
+	#		save_mode = instructions['save_mode']			
+	#	except:			
+	#		traceback.print_exc()
+	#		raise(Exception("Could not parse: "+pool.analysis_dir+"instruction.txt"))
 
 	auto_refines_counter = 0
 	while(True):		
@@ -130,7 +128,7 @@ def main():
 				break # we're done - exit
 	
 		try:
-			process(active_node, options, save_mode)
+			process(active_node, options)
 			active_node.save()
 			active_node.unlock()
 		except:
@@ -143,7 +141,7 @@ def main():
 			
 
 #===============================================================================
-def process(node, options, save_mode):
+def process(node, options):
 	
 	cmd1 = ["mdrun"]
 	
@@ -220,19 +218,22 @@ def process(node, options, save_mode):
 		os.remove(node.dir+"/state.cpt")
 		for fn in [node.dir+"/outfile.pdb",node.trr_fn, node.dir+"/ener.edr", node.dir+"/md.log"]:
 			archive_file(fn, node.extensions_counter)
-	
-	# delete in each step
-	if (save_mode == "only pdb"):
-		# delete all files except pdb and start files
-		for fn in os.listdir(node.dir):
-			if(re.match(".+.pdb",fn)==None 
-			and re.match("[^#].+.mdp",fn)==None
-			and re.match(".+.txt",fn)==None
-			and re.match("[^#].+.tpr",fn)==None
-			and re.match(".+.top",fn)==None
-			and fn!="lock"):					
-				os.remove(node.dir+"/"+str(fn))
 
+	# check if user wants to delete files except pdb
+	try:
+		if (node.save_mode == "only pdb"):
+			#delete all files except pdb and start files
+			for fn in os.listdir(node.dir):
+				if(re.match(".+.pdb",fn)==None
+				and re.match("[^#].+.mdp",fn)==None
+				and re.match(".+.txt",fn)==None
+				and re.match("[^#].+.tpr",fn)==None
+				and re.match(".+.top",fn)==None
+				and fn!="lock"):
+					os.remove(node.dir+"/"+str(fn))
+	except AttributeError:
+		pass
+	
 	# decide what to do next
 	if(converged):
 		node.state = "converged"
@@ -240,30 +241,25 @@ def process(node, options, save_mode):
 		if(node.has_restraints and not options.multistart):
 			node.state = "not-converged"
 		else:
-			if (save_mode == "only pdb"):
-				# delete all files except pdb and start files
-				for fn in os.listdir(node.dir):
-					if(re.match(".+.pdb",fn)==None 
-					and re.match("[^#].+.mdp",fn)==None
-					and re.match(".+.txt",fn)==None
-					and re.match("[^#].+.tpr",fn)==None
-					and re.match(".+.top",fn)==None
-					and fn!="lock"):					
-						os.remove(node.dir+"/"+str(fn))
-			else:
-				# merge sampling trajectories
-				trr_fns = sorted([ fn for fn in os.listdir(node.dir) if re.match("[^#].+run\d+.trr", fn) ])
-				cmd2 = ["trjcat", "-f"]
-				cmd2 += trr_fns
-				cmd2 += ["-o", "../../"+node.trr_fn, "-cat"]
-				print("Calling: %s"%" ".join(cmd2))
-				check_call(cmd2, cwd=node.dir)
-				# merge edr files
-				get_merged_edr(node)
-				# delete backups, assuming each backup file starts with '#'
-				for fn in os.listdir(node.dir):
-					if(re.match("#.+",fn)):					
-						os.remove(node.dir+"/"+str(fn))
+			# if user wants to keep everthing we at merge trajectorie and edr files
+			# and delete backups
+			try:			
+				if (node.save_mode != "only pdb"):
+					# merge sampling trajectories
+					trr_fns = sorted([ fn for fn in os.listdir(node.dir) if re.match("[^#].+run\d+.trr", fn) ])
+					cmd2 = ["trjcat", "-f"]
+					cmd2 += trr_fns
+					cmd2 += ["-o", "../../"+node.trr_fn, "-cat"]
+					print("Calling: %s"%" ".join(cmd2))
+					check_call(cmd2, cwd=node.dir)
+					# merge edr files
+					get_merged_edr(node)
+					# delete backups, assuming each backup file starts with '#'
+					for fn in os.listdir(node.dir):
+						if(re.match("#.+",fn)):					
+							os.remove(node.dir+"/"+str(fn))
+			except AttributeError:
+				pass
 
 
 			#put all pdb's in one file
