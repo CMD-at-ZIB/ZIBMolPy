@@ -244,7 +244,7 @@ def process(node, options):
 			# if user wants to keep everthing we at merge trajectorie and edr files
 			# and delete backups
 			try:			
-				if (node.save_mode != "only pdb"):
+				if (node.save_mode == "complete"):
 					# merge sampling trajectories
 					trr_fns = sorted([ fn for fn in os.listdir(node.dir) if re.match("[^#].+run\d+.trr", fn) ])
 					cmd2 = ["trjcat", "-f"]
