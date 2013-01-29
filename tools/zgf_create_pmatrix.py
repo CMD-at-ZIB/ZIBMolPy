@@ -12,6 +12,7 @@ from ZIBMolPy.node import Node
 from ZIBMolPy.phi  import get_phi
 from ZIBMolPy.ui import userinput, Option, OptionsList
 
+
 import sys
 
 import os
@@ -152,6 +153,11 @@ def main():
 			
 					
 				cluster_index_i=cluster_index_i+1
+
+		for i in range(0,len(cluster)):
+			factor = sum(P[i,:])
+			P[i,:] = (1/factor) * P[i,:]
+
 	elif grid=="nodes":
 		P = np.zeros(shape=(len(active_nodes),len(active_nodes)))
 		P_hard = np.zeros(shape=(len(active_nodes),len(active_nodes)))
@@ -193,16 +199,15 @@ def main():
 							
 							#calc P entry
 							#if(temp_val[index_j] <= p_radius):					
-							P[index_i,index_j] += weight*node.obs.weight_corrected 
+							P[index_i,index_j] += weight*node_i.obs.weight_corrected 
 							P_hard[index_i,index_j] += 1
 							
 			index_i=index_i+1
 		
-			
-	for i in range(0,len(cluster)):
-		factor = sum(P[i,:])
-		P[i,:] = (1/factor) * P[i,:]
-
+		for i in range(0,len(active_nodes)):
+			factor = sum(P[i,:])
+			P[i,:] = (1/factor) * P[i,:]	
+	
 	if grid=="cluster":
 		print "Cluster :" + str(cluster)
 	elif grid=="nodes":
@@ -210,7 +215,6 @@ def main():
 
 	print "Transitionmatrix :" + str(P) #TODO some info about tau would be nice
 	
-	np.savez(pool.pc_mat_fn, matrix=P, node_names=node_names)
 
 		
 #===============================================================================
