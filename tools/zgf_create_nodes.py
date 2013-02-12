@@ -6,11 +6,11 @@ What it does
 ============
 	B{This is the second step of ZIBgridfree.}
 
-	This tool will generate a discretization of conformational space specified by certain internal coordinates from a supplied ZIBgridfree sampling node. If the node pool is empty, the root node (i. e. the presampling) will be used in order to generate an initial discretization. Later on, new nodes can be created from arbitrary nodes in the node pool: L{zgf_create_nodes} is also called from L{zgf_refine}. 
+	This tool will generate a discretization of conformational space specified by certain internal coordinates from a supplied ZIBgridfree sampling node. If the node pool is empty, the root node (i.e. the presampling) will be used in order to generate an initial discretization. Later on, new nodes can be created from arbitrary nodes in the node pool: L{zgf_create_nodes} is also called from L{zgf_refine}. 
 
-	Radial basis functions are used to form a (more or less) soft partitioning of the conformational space. The function S{Phi}_i(q) (taking values between zero and one) gives the membership of configuration q to basis function i. The potential modifications representing the basis functions during the sampling are approximated by standard Gromacs restraint potentials. 
+	Radial basis functions are used to form a (more or less) soft partitioning of the conformational space. The function $\phi_i(q)$ (taking values between zero and one) gives the membership of configuration $q$ to basis function $i$. The potential modifications representing the basis functions during the sampling are approximated by standard GROMACS restraint potentials. 
 
-	You should use L{zgf_browser} to check if you are happy with the discretization (coverage of conformational space, i. e. the number of nodes), and the quality of the S{Phi} function fit.
+	You should use L{zgf_browser} to check if you are happy with the discretization (coverage of conformational space, i.e. the number of nodes), and the quality of the $\phi$ function fit.
 
 	B{The next step is L{zgf_setup_nodes}.}
 
@@ -21,12 +21,12 @@ How it works
 
 Discretization parameters
 =========================
-  - B{S{alpha} (alpha)} specifies the stiffness of the discretization: Larger S{alpha} values mean harder basis functions and less overlap. S{alpha} is either specified directly by the user or calculated via S{theta}. In general, S{alpha} will increase with the number of nodes, as with increasing number of nodes, each individual node has to cover less conformational space. Under normal conditions, higher S{alpha} values will lead to better convergence of the sampling.
-	
-  - B{S{theta} (theta)} is calculated as the average of the distances of each node to its nearest neighbor: High minimum distances will lead to soft basis funtions, small minimum distances will lead to hard basis functions.
+  - $\\alpha$ specifies the stiffness of the discretization: Larger $\\alpha$ values mean harder basis functions and less overlap. $\\alpha$ is either specified directly by the user or calculated via $\\theta$. In general, $\\alpha$ will increase with the number of nodes, as with increasing number of nodes, each individual node has to cover less conformational space. Under normal conditions, higher $\\alpha$ values will lead to better convergence of the sampling.
 
-	Note that very large S{alpha} values may lead to infinitely large force constants in the Gromacs restraint potentials. This indicates that the density of nodes (which is usually strongly related to the number of nodes) is too high.
-	
+  - $\\theta$ is calculated as the average of the distances of each node to its nearest neighbor: High minimum distances will lead to soft basis funtions, small minimum distances will lead to hard basis functions.
+
+	Note that very large $\\alpha$ values may lead to infinitely large force constants in the Gromacs restraint potentials. This indicates that the density of nodes (which is usually strongly related to the number of nodes) is too high.
+
 	Currently, for averaging we use the B{median} of minimum distances. This will result in harder basis functions compared to when using the B{mean}, as exceptionally large minimum distances do not weigh in.
 """
 

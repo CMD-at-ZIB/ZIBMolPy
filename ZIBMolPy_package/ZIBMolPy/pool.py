@@ -240,6 +240,10 @@ class Pool(NodeList):
 		return(self.analysis_dir+"pc_mat.npz")
 
 	@property
+	def p_mat_fn(self): 
+		return(self.analysis_dir+"p_mat.npz")
+
+	@property
 	def thermo_beta(self):
 		return 1/(self.temperature*BOLTZMANN*AVOGADRO)
 

@@ -18,7 +18,7 @@ class MatrixPlotManager(object):
 	def get_ctrl_panel(self):
 		panel = gtk.VBox()
 		rb = None                                                     
-		for x in ("s_matrix", "s_matrix_corrected", "chi_matrix", "qc_matrix", "pc_matrix"):
+		for x in ("s_matrix", "s_matrix_corrected", "chi_matrix", "qc_matrix", "pc_matrix", "p_matrix"):
 			rb = gtk.RadioButton(group=rb, label=x.replace("_"," "))
 			setattr(self, "rb_show_"+x, rb)
 			rb.connect("toggled", self.update)
@@ -44,6 +44,8 @@ class MatrixPlotManager(object):
 			self.plot_matrix(self.board.pool.qc_mat_fn, "Qc matrix")
 		elif(self.rb_show_pc_matrix.get_active()):
 			self.plot_matrix(self.board.pool.pc_mat_fn, "Pc matrix")
+		elif(self.rb_show_pc_matrix.get_active()):
+			self.plot_matrix(self.board.pool.p_mat_fn, "P matrix")
 		self.board.canvas.draw_idle()
 
 	def plot_matrix(self, matrix_path, title):

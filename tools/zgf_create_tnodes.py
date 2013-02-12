@@ -6,28 +6,32 @@ What it does
 ============
 	B{This is the ninth step of ZIBgridfree.}
 
-	This tool creates additional nodes to the pool called transition nodes. They are essential to find out the probability to move from one set of conformations to another set of conformation. In general one assumes that more transition nodes lead to closer probability information. After creating transition nodes one may start  L{zgf_mdrun} and finally to observe the probability between sets one may call L{zgf_create_pmatrix}. If one starts L{zgf_mdrun} then from each transition node there are going to be L{num-runs} trajectories calculated of L{sampling-length} ps. The amount of created transition nodes depends on the user input and is described in the following. 
+	This tool adds additional nodes to the pool called transition (or 'T') nodes. They are essential to find out the probability to move either
+		1. from one metastable cluster to another (transition-level 'clusters', matrix $P_c(\\tau)$) or
+		2. from one node to another (transition-level 'nodes', matrix $P(\\tau)$).
+
+	If one decides to choose 'cluster', one gets soft clusters in the spirit of PCCA+, where each configuration belongs to a specific cluster with a certain probability. If one chooses 'nodes', than one gets a hard clustering in terms of a Voronoi tesselation, where the center of each Voronoi cell is represented by a node of the pool.
+
+	In general, one assumes that more transition nodes lead to more accurate probability information. After creating transition nodes, L{zgf_mdrun} has to be run again in order to perform the transition sampling, namely 'num-runs' trajectories of 'sampling-length' ps length. Finally, the transition matrix can be computed by calling L{zgf_create_pmatrix}. The amount of transition nodes that is created depends on the user input and is described in the following.
+
+	B{The next step is L{zgf_create_pmatrix}.}
 
 How it works
 ============
 	At the command line, type::
 		$ zgf_create_tnodes [options]
 
-Grid Mode
+Clusters
+========
+	The clusters identified by PCCA+ are described in terms of the $\chi$ matrix. For the transition probability computation, a node is assumed to belong to such a cluster if its $\chi$-Value is larger than 0.5. For each node that belongs to a given cluster, this method generates 'num-tnodes' transition nodes. To avoid unnecessary computational cost, one can avoid creating 'num-tnodes' for those nodes where the $\chi$-Value is already very close to 1 since one can assume that trajectories starting from those points will most likely not undergo a transition. The user may only generate 'num-tnodes' for a node that belongs to a cluster with a percentage between 0.5 and X where X is the 'coreset-power'. Each node that belongs to a cluster will spawn 'num-tnodes' transition nodes.
+
+Nodes (Voronoi cells)
+=====================
+	Each Voronoi cell gets 'num-tnodes' transition nodes.	
+
+Save mode
 =========
-	Grid Mode determines the set of conformations where you may calculate the probability between. If one decide's to choose L{cluster} then one gets soft sets where each conformation does only belong with a certain probability to a specific set. If one chooses L{nodes} than one gets a hard clustering in a voronoi diagram, where the center of each voronoi cell is represented by a node of the pool.
-
-Cluster
-=======
-	After execution of L{zgf_analyse} ZIBGridFree determines $n$ Chi-Functions. Each Chi-Function represents a cluster. A node belongs to such a cluster if his corresponding Chi-Value is above 0.5. In general for each node that belongs to a cluster this method generates L{num-tnodes}. To avoid unnecessary computing power one can avoid creating L{num-tnodes} for those nodes where the Chi-Value is already very close to 1 since one can assume that trajectories starting from those points may not move. The user may only gernerate L{num-tnodes} for a node that belongs to a cluster with a percantage between 0.5 and X where X is the L{coreset-power}. Each node that belongs to a cluster will get L{num-tnodes} transition nodes.
-
-Voronoi Cells
-=============
-	Each Voronoi Cell becomes L{num-tnodes} transition nodes.	
-
-Save Mode
-=========
-	After execution of L{zgf_mdrun} each transition node creates .trr, .edr and log files. These files are not needed to calcultae the mentioned probability. If one is going to choose the L{only pdb} option than the .tt,.edr and log files are deleted. If for any reasons those files are needed that one can avoid deletion by the L{complete} option. 
+	After execution of L{zgf_mdrun}, each transition node creates trr, edr and log files. These files require disk space, but are not needed to calculate the transition probability. If one is going to choose the 'only pdb' option, then the trr, edr and log files are deleted. If for any reasons those files are needed, deletion can be avoided by choosing the value 'complete'. 
 """
 
 
@@ -45,14 +49,17 @@ import os
 
 import numpy as np
 
-options_desc = OptionsList([	
-	Option("c", "coreset-power", "float", "ignore nodes with chi value higher than coreset-power", default=0.9, min_value=0.5),	
-	Option("n", "num-tnodes", "int", "number of tnodes per node", default=1, min_value=1),	
-	Option("l", "sampling-length", "int", "length of sampling per run in ps", default=100, min_value=0),
+options_desc = OptionsList([
+	Option("t", "transition-level", "choice", "transition level", choices=("clusters","nodes") ),
+	Option("n", "num-tnodes", "int", "number of tnodes per node", default=1, min_value=1),
 	Option("r", "num-runs", "int", "number of runs", default=5, min_value=0),
-	Option("s", "save-mode", "choice", "What files do you want to save", choices=("only pdb","complete") ),
-	Option("g", "grid-mode", "choice", "Get Transitionpropability of nodes or clusters?", choices=("cluster","nodes") )
+	Option("l", "sampling-length", "int", "length of sampling per run in ps", default=100, min_value=0),
+	Option("s", "save-mode", "choice", "files to store", choices=("only pdb","complete") ),
+	Option("c", "coreset-power", "float", "ignore nodes with chi value higher than coreset-power ('clusters' only)", default=0.9, min_value=0.5),	
+	Option("m", "min-nodes", "int", "min number of nodes to consider ('clusters' only)", default=3, min_value=1),
 	])
+
+sys.modules[__name__].__doc__ += options_desc.epytext() # for epydoc
 
 def is_applicable():
 	pool = Pool()
@@ -63,19 +70,18 @@ def is_applicable():
 def main():
 	options = options_desc.parse_args(sys.argv)[0]
 
-	default_cluster_threshold = options.coreset_power
-
 	pool = Pool()
-	npz_file = np.load(pool.chi_mat_fn)
-	chi_matrix = npz_file['matrix']
-	node_names = npz_file['node_names']
-	n_clusters = npz_file['n_clusters']
-	active_nodes = [Node(nn) for nn in node_names]
-	
+	active_nodes = pool.where("isa_partition")
 
-	if options.grid_mode == "cluster":
-		#determine Cluster
-		#amount_phi[j]=amount of phi in cluster j #TODO discrete value? So amount of basis functions per cluster??? -- Answer:Yes!
+	if options.transition_level == "clusters":
+		npz_file = np.load(pool.chi_mat_fn)
+		chi_matrix = npz_file['matrix']
+		n_clusters = npz_file['n_clusters']
+
+		default_cluster_threshold = options.coreset_power
+
+		# determine cluster
+		# amount_phi[j] = amount of basis functions per cluster j
 		amount_phi=np.ones(n_clusters,dtype=np.uint64)
 		amount_phi=amount_phi*len(chi_matrix)
 		amount_phi_total=len(chi_matrix)	
@@ -117,24 +123,22 @@ def main():
 		for i in range(len(cluster)):
 			counter = 0
 			for node_index in cluster[i]:
-				# go through at least 3 nodes
+				counter += 1
 				# and ignore nodes which have a higher chi value then default_cluster_threshold
-				if( chi_matrix[node_index][i] > default_cluster_threshold and counter>2):
+				if( chi_matrix[node_index][i] > default_cluster_threshold and counter>options.min_nodes):
 					continue
 				
-				counter = counter + 1
-
 				node = active_nodes[node_index]
 				trajectory= node.trajectory
 			
 				print "-----"
-				print "printing neighbours for node %s"%node.name
+				print "Generating transition nodes for node %s..."%node.name
 			
 				neighbour_frames = get_indices_equidist(node, options.num_tnodes)
 		
 				# create transition node for node_index
 				for frame_number in neighbour_frames:
-					print frame_number
+					print "Using frame %d as starting configuration."%frame_number
 					n = Node()
 					n.parent_frame_num = frame_number
 					n.parent = node
@@ -147,7 +151,7 @@ def main():
 					n.save_mode = options.save_mode
 					pool.append(n)
 					n.save()
-				print "%d neighbour nodes generated."%options.num_tnodes
+				print "%d transition nodes generated."%options.num_tnodes
 				print "-----"
 
 		zgf_setup_nodes.main()
@@ -160,18 +164,19 @@ def main():
 		# save cluster
 		np.savez(pool.analysis_dir+"core_set_cluster.npz", **cluster_dict)
 
-	elif options.grid_mode == "nodes":
-		for node in active_nodes:   # TODO make nicer
+	elif options.transition_level == "nodes":
+		for node in active_nodes:
 			trajectory= node.trajectory
 			
+			# TODO duplicate code... use the one above
 			print "-----"
-			print "printing neighbours for node %s"%node.name
+			print "Generating transition nodes for node %s..."%node.name
 
 			neighbour_frames = get_indices_equidist(node, options.num_tnodes)
 
-			#create transition point for node_index
+			# create transition point for node_index
 			for frame_number in neighbour_frames:
-				print frame_number
+				print "Using frame %d as starting configuration."%frame_number
 				n = Node()
 				n.parent_frame_num = frame_number
 				n.parent = node
@@ -184,17 +189,17 @@ def main():
 				n.save_mode = options.save_mode
 				pool.append(n)
 				n.save()
-			print "%d neighbour nodes generated."%options.num_tnodes
+			print "%d transition nodes generated."%options.num_tnodes
 			print "-----"
 
 		zgf_setup_nodes.main()
 		zgf_grompp.main()
 
-	
-	instructionFile = "analysis/instruction.txt"	
+
+	instructionFile = pool.analysis_dir+"instruction.txt"
 
 	f = open(instructionFile, "w")
-	f.write("{'power': '"+str(options.coreset_power)+"','tnodes': '"+str(options.num_tnodes)+"','grid': '"+str(options.grid_mode)+"'}")
+	f.write("{'power': %f, 'tnodes': %d, 'level': '%s', 'min_nodes': %d}"%(options.coreset_power, options.num_tnodes, options.transition_level, options.min_nodes))
 	f.close()
 
 

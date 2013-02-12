@@ -13,6 +13,8 @@ ZIBgridfree essential pipeline:
 	6. L{zgf_refine}
 	7. L{zgf_reweight}
 	8. L{zgf_analyze}
+	9. L{zgf_create_tnodes}
+	10. L{zgf_create_pmatrix}
 
 Convenience:
 ============

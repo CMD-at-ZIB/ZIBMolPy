@@ -327,7 +327,7 @@ class Menubar(gtk.MenuBar):
 		self.tool_buttons = []
 		all_tools = [path.basename(fn)[:-3] for fn in glob(path.dirname(sys.argv[0])+"/zgf_*.py")]
 		 
-		PIPELINE_TOOLS = ("zgf_create_pool", "zgf_create_nodes", "zgf_setup_nodes", "zgf_grompp", "zgf_mdrun", "zgf_refine", "zgf_reweight", "zgf_analyze")
+		PIPELINE_TOOLS = ("zgf_create_pool", "zgf_create_nodes", "zgf_setup_nodes", "zgf_grompp", "zgf_mdrun", "zgf_refine", "zgf_reweight", "zgf_analyze", "zgf_create_tnodes", "zgf_create_pmatrix")
 		other_tools = sorted([t for t in all_tools if t not in PIPELINE_TOOLS and t!="zgf_browser"])
 		self.mk_tools_menu(PIPELINE_TOOLS, "Pipeline", accelerate=True)
 		self.mk_tools_menu(other_tools, "Tools")

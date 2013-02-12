@@ -37,15 +37,15 @@ Direct reweighting strategies
 Frame weights
 =============
 
-	As in Gromacs we use simple harmonic restraint potentials to approximate the original radial basis functions used in ZIBgridfree, we have to perform a frame reweighting of the sampling trajectories afterwards. The frame weight of each individual frame q belonging to node i is calculated as:
+	As in Gromacs we use simple harmonic restraint potentials to approximate the original radial basis functions used in ZIBgridfree, we have to perform a frame reweighting of the sampling trajectories afterwards. The frame weight of each individual frame $q$ belonging to node $i$ is calculated as:
 
-	frame_weight(q) = S{Phi}_i(q) / exp( -S{beta} * penalty_potential_i(q) )
+	\[ \mathtt{frame\_weight}_i(q)=\\frac{\phi_i(q)}{\exp(-\\beta \cdot U_{res}(q))}, \]
 
-	Frame weights should yield values between zero and one. Slightly higher values than one are feasible. Note that frame weights are not normalized to one.
+	where $U_{res}(q)$ is the GROMACS restraint potential in frame $q$. Frame weights should yield values between zero and one. Slightly higher values than one are feasible. Note that frame weights are not normalized to one.
 
-	Overweight frames are possible if S{Phi}_i(q) is high (meaning that q is well within its native basis function) while the penalty_potential_i(q) is high, as well. Hence, q is punished wrongly, as q should only be punished by the penalty potential if it attempts to leave its native basis function.
+	Overweight frames are possible if $\phi_i(q)$ is high (meaning that $q$ is well within its native basis function) while the penalty_potential $U_{res}(q)$ is high, as well. Hence, $q$ is punished wrongly, as $q$ should only be punished by the penalty potential if it attempts to leave its native basis function.
 
-	When overweight frames occur, this probably means that your approximation of the S{Phi} function for the corresponding node is bad. You can check this by using L{zgf_browser}. If the penalty potential kicks in where S{Phi} is still good, you have got a bad approximation of the S{Phi} function. Overweight frame weights will trigger a WARNING. Furthermore, any occurence of overweight frame weights will be stored in the reweighting log file.
+	When overweight frames occur, this probably means that your approximation of the $\phi$ function for the corresponding node is bad. You can check this by using L{zgf_browser}. If the penalty potential kicks in where $\phi$ is still good, you have got a bad approximation of the $\phi$ function. Overweight frame weights will trigger a WARNING. Furthermore, any occurence of overweight frame weights will be stored in the reweighting log file.
 
 Choice of energy observables for reweighting
 ============================================
