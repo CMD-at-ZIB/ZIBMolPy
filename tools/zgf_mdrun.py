@@ -93,18 +93,6 @@ def main():
 			conv_check_gelman_rubin(n)
 		return # exit
 
-	#save_mode=""
-	## determine if readynodes should keep all files or only pdb
-	#if(os.path.exists(pool.analysis_dir+"instruction.txt")):
-	#	try:
-	#		f = open(pool.analysis_dir+"instruction.txt")
-	#		command = f.read()
-	#		instructions = eval(command)
-	#		save_mode = instructions['save_mode']			
-	#	except:			
-	#		traceback.print_exc()
-	#		raise(Exception("Could not parse: "+pool.analysis_dir+"instruction.txt"))
-
 	auto_refines_counter = 0
 	while(True):		
 		pool.reload()
@@ -221,8 +209,8 @@ def process(node, options):
 
 	# check if user wants to delete files except pdb
 	try:
-		if (node.save_mode == "only pdb"):
-			#delete all files except pdb and start files
+		if (node.save_mode == "pdb"):
+			# delete all files except pdb and start files
 			for fn in os.listdir(node.dir):
 				if(re.match(".+.pdb",fn)==None
 				and re.match("[^#].+.mdp",fn)==None
@@ -260,25 +248,8 @@ def process(node, options):
 							os.remove(node.dir+"/"+str(fn))
 			except AttributeError:
 				pass
-
-
-			#put all pdb's in one file
-			#collect=[]
-			#pool = Pool()
-			#for fn in os.listdir(node.dir):
-			#		if(re.match("[^#].+.pdb",fn)):
-						# add radius feature in future
-						#print "Filedirectory"
-						#print ready_node.dir+"/"+fn 
-			#			frame_value = pool.converter.read_pdb(node.dir+"/"+fn)
-			#			collect.append((frame_value[0])[0])
-						#os.remove(node.dir+"/"+str(fn))
-			#f = open(node.dir+"/pdbcollection.txt", "w")
-			#f.write("{'p_timestep':"+str(timestep)+", 'p_radius':" + str(p_radius)+", 'p_nodes':" + nodes +"}")
-			#f.write(str(collect))
-			#f.close()
 			
-			#either case, save as ready node
+			# in either case, save as ready node
 			node.state = "ready"
 			
 

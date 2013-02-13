@@ -31,7 +31,7 @@ Nodes (Voronoi cells)
 
 Save mode
 =========
-	After execution of L{zgf_mdrun}, each transition node creates trr, edr and log files. These files require disk space, but are not needed to calculate the transition probability. If one is going to choose the 'only pdb' option, then the trr, edr and log files are deleted. If for any reasons those files are needed, deletion can be avoided by choosing the value 'complete'. 
+	After execution of L{zgf_mdrun}, each transition node creates trr, edr and log files. These files require disk space, but are not needed to calculate the transition probability. If one is going to choose the 'pdb' option, then the trr, edr and log files are deleted. If for any reasons those files are needed, deletion can be avoided by choosing the value 'complete'. 
 """
 
 
@@ -54,7 +54,7 @@ options_desc = OptionsList([
 	Option("n", "num-tnodes", "int", "number of tnodes per node", default=1, min_value=1),
 	Option("r", "num-runs", "int", "number of runs", default=5, min_value=0),
 	Option("l", "sampling-length", "int", "length of sampling per run in ps", default=100, min_value=0),
-	Option("s", "save-mode", "choice", "files to store", choices=("only pdb","complete") ),
+	Option("s", "save-mode", "choice", "files to store", choices=("pdb","complete") ),
 	Option("c", "coreset-power", "float", "ignore nodes with chi value higher than coreset-power ('clusters' only)", default=0.9, min_value=0.5),	
 	Option("m", "min-nodes", "int", "min number of nodes to consider ('clusters' only)", default=3, min_value=1),
 	])
@@ -81,6 +81,7 @@ def main():
 		default_cluster_threshold = options.coreset_power
 
 		# determine cluster
+		#TODO this part is too cryptic
 		# amount_phi[j] = amount of basis functions per cluster j
 		amount_phi=np.ones(n_clusters,dtype=np.uint64)
 		amount_phi=amount_phi*len(chi_matrix)
@@ -103,7 +104,6 @@ def main():
 		# [y i] in show_cluster we have x>y 
 		# we define amount_phi[i]=x	
 		for element in show_cluster:
-			print element
 			index=element[0]
 			cluster=element[1]
 			if amount_phi[cluster]>index:

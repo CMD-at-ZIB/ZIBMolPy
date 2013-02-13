@@ -87,7 +87,7 @@ def main():
 
 					# and nodes which have a higher chi value then default_cluster_threshold	
 					if( chi_matrix[node_index][i] > default_cluster_threshold and counter>min_nodes):
-						print "Node "+str(node_index)
+						print "Node "+str(node_index) #TODO this index is not the global node index... somewhat misleading
 						print "chi value: "+str(chi_matrix[node_index][i])
 						print "counter:   "+str(counter)
 						print "cluster:   "+str(cluster_index_i)
@@ -106,7 +106,7 @@ def main():
 				
 					ready_nodes = pool.where("state == 'ready' and parent!=None and parent.name=='%s'"%node.name)
 
-					print "Node "+str(node_index)
+					print "Node "+str(node_index) #TODO this index is not the global node index... somewhat misleading
 					print "chi value: "+str(chi_matrix[node_index][i])
 					print "counter:   "+str(counter)
 					print "cluster:   "+str(cluster_index_i)
