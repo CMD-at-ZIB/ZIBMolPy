@@ -9,7 +9,7 @@ This optional tool will put unsolvated node configurations (e.g. obtained by hig
 
 All solvent boxes will be filled with the same number of solvent molecules. The node topologies will be updated accordingly. For known solvent models, the necessary force field include statements will be added to the node topologies. If the specified box size is too small to fit in the specified linear coordinates (if any), the box size will be increased automatically.
 
-B{The next step is L{zgf_grompp}. Afterwards, ions can be added by using L{zgf_genion}.}
+B{If required, ions can be added by using L{zgf_genion}. Otherwise, the next step is L{zgf_mdrun}, or L{zgf_submit_job_HLRN}, if you are working on HLRN.}
 
 How it works
 ============
@@ -18,10 +18,11 @@ How it works
 
 """
 
-
 from ZIBMolPy.pool import Pool
 from ZIBMolPy.internals import LinearCoordinate
 from ZIBMolPy.ui import userinput, OptionsList, Option
+
+import zgf_grompp
 
 import sys
 import re
@@ -39,6 +40,7 @@ options_desc = OptionsList([
 	Option("y", "box-y", "float", "Box vector length (y)", default=3.0, min_value=0.0),
 	Option("z", "box-z", "float", "Box vector length (z)", default=3.0, min_value=0.0),
 	Option("s", "solv-model", "choice", "Solvent model", choices=("tip3p", "tip4p", "tip4pew", "tip5p", "spc", "spce", "acetonitrile")),
+	Option("g", "grompp", "file", extension="mdp", default="em.mdp"),
 ])
 
 sys.modules[__name__].__doc__ += options_desc.epytext() # for epydoc
@@ -94,8 +96,9 @@ def main():
 
 	for n in needy_nodes:
 		n.state = "em-grompp-able"
-		n.save()
+		zgf_grompp.call_grompp(n, mdp_file=options.grompp, final_state="em-mdrun-able") # re-grompp to get a tpr for energy minimization
 		n.unlock()
+
 
 #===============================================================================
 def query_linear_length(pool):
@@ -211,3 +214,4 @@ if(__name__ == "__main__"):
 	main()
 
 #EOF
+

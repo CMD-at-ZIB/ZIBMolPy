@@ -13,9 +13,9 @@ What's this?
 
 <p align="justify">This implementation represents an evolution of the original ZIBgridfree as it couples the original algorithm to the state-of-the-art molecular dynamics engine <a href="http://www.gromacs.org">Gromacs</a>. This creates the possibility to apply ZIBgridfree to very large molecular systems.</p>
 
-<p align="justify">ZIBMolPy is currently being developed by Alexander Bujotzek and Ole Schütt in the working group of Marcus Weber at Zuse-Institute Berlin. A manuscript for publication is in preparation:</p>
+<p align="justify">ZIBMolPy is currently being developed by Alexander Bujotzek, Ole Schütt and Adam Nielsen in the working group of Marcus Weber at Zuse-Institute Berlin. A manuscript for publication is in preparation:</p>
 
-* <p align="justify">A. Bujotzek, O. Schütt, M. Weber: ZIBgridfree: Efficient conformational analysis by meshless uncoupling-coupling</p>
+* <p align="justify">A. Bujotzek, O. Schütt, K. Fackeldey, M. Weber: ZIBgridfree: Efficient conformational analysis by meshless uncoupling-coupling</p>
 
 License
 -------

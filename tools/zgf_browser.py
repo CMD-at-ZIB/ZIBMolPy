@@ -21,6 +21,7 @@ import gobject
 import gtk
 import webbrowser
 import ctypes
+import re
 
 gobject.threads_init()
 gtk.gdk.threads_init()
@@ -85,10 +86,16 @@ class MainWindow(gtk.Window):
 
 		#self.modify_bg(gtk.STATE_NORMAL, gtk.gdk.Color(6400, 6400, 6440))
 		self.set_position(gtk.WIN_POS_CENTER)
+
+		# semi-smart positioning TODO pass on width and slack to children
+		if(screen.get_width() >= width+10+600):
+			(x,y) = self.get_position()
+			x = (screen.get_width()-(width+10+600))/2
+			self.move(x,y)
+
 		self.set_icon(get_logo_pixbuf())
 		self.connect("destroy", gtk.main_quit)
-		
-		
+				
 		accel_group = gtk.AccelGroup()
 		self.add_accel_group(accel_group)
 		
@@ -98,7 +105,6 @@ class MainWindow(gtk.Window):
 		vbox.pack_start(self.menu_bar, expand=False)
 		#vbox.pack_start(Toolbar(board), expand=False)
 
-							
 		vpaned = gtk.VPaned()
 		vpaned.set_position(vpaned_pos)
 		vbox.pack_start(vpaned)
@@ -123,9 +129,9 @@ class MainWindow(gtk.Window):
 		self.managed_plots_panel = ManagedPlotsPanel(board, managers)
 		hpaned.add1(self.managed_plots_panel)
 		
-		
 		self.show_all()
 	
+
 #===============================================================================
 class Blackboard(object):
 	#---------------------------------------------------------------------------	
@@ -220,7 +226,10 @@ class FileChangesObserver:
 				print("Directory changed: analysis")
 				self.mtime_analysis_dir = mt				
 				found_changes = True
-		
+
+			#npz_fns = [fn for fn in os.listdir(self.board.pool.analysis_dir) if re.match("[^.].+.npz", fn)]
+			#print npz_fns
+
 		if(found_changes):
 			gtk.gdk.threads_enter()
 			self.board.fire_listeners()		
@@ -256,30 +265,35 @@ class Statusbar(gtk.Statusbar):
 			return
 		
 		msg_parts = []
-
-		size_msg = "pool-size=1"
-		n_refined = len(self.board.pool.where("state == 'refined'"))
-		if(n_refined > 1):
-			size_msg += "+%d"%(n_refined-1)
-		n_active = len(self.board.pool)-n_refined
-		if(n_active > 0):
-			size_msg += "+%d"%n_active
-		n_needy = len(self.board.pool.where("state != 'converged'")) - n_refined
-		if(n_needy > 0):
-			size_msg += "(%d)"%n_needy
+	
+		size_msg = "pool-size=1R"
+		n_dnodes = len(self.board.pool.where("isa_partition"))
+		n_dneedy = len(self.board.pool.where("isa_partition and state != 'converged'"))
+		if(n_dnodes):
+			size_msg += "+%d"%(n_dnodes)
+			if(n_dneedy):
+				size_msg += "(%d)"%(n_dneedy)
+			size_msg += "D"
+		n_tnodes = len(self.board.pool.where("isa_transition"))
+		n_tneedy = len(self.board.pool.where("isa_transition and state != 'ready'"))
+		if(n_tnodes):
+			size_msg += "+%d"%(n_tnodes)
+			if(n_tneedy):
+				size_msg += "(%d)"%(n_tneedy)
+			size_msg += "T"
 
 		msg_parts.append(size_msg)
 	
 		if(self.board.pool.alpha!=None):
 			msg_parts.append("α=%.2f"%self.board.pool.alpha)
 		
-		t_left = 0 #time still needed (estimate) 
-		t_used = 0 #time already used
+		t_left = 0 # time still needed (estimate) 
+		t_used = 0 # time already used
 		
 		for n in self.board.pool:
-			if(not hasattr(n,"extensions_max")):
-				continue #this is probably the root-node
-			expected_exts = n.extensions_max/2.0 #how many extension do we expect?
+			if(n == self.board.pool.root):
+				continue
+			expected_exts = n.extensions_max/2.0 # how many extension do we expect?
 			if n.is_sampled:
 				t_used += n.sampling_length + n.extensions_length * n.extensions_counter
 			elif(n.extensions_counter == 0):
@@ -303,7 +317,6 @@ class ScrolledWindow(gtk.ScrolledWindow):
 		self.add(inner_widget)
 
 
-
 #===============================================================================
 class Menubar(gtk.MenuBar):
 	def __init__(self, board, accel_group):
@@ -314,7 +327,7 @@ class Menubar(gtk.MenuBar):
 		self.tool_buttons = []
 		all_tools = [path.basename(fn)[:-3] for fn in glob(path.dirname(sys.argv[0])+"/zgf_*.py")]
 		 
-		PIPELINE_TOOLS = ("zgf_create_pool", "zgf_create_nodes", "zgf_setup_nodes", "zgf_grompp", "zgf_mdrun", "zgf_refine", "zgf_reweight", "zgf_analyze")
+		PIPELINE_TOOLS = ("zgf_create_pool", "zgf_create_nodes", "zgf_setup_nodes", "zgf_grompp", "zgf_mdrun", "zgf_refine", "zgf_reweight", "zgf_analyze", "zgf_create_tnodes", "zgf_create_pmatrix")
 		other_tools = sorted([t for t in all_tools if t not in PIPELINE_TOOLS and t!="zgf_browser"])
 		self.mk_tools_menu(PIPELINE_TOOLS, "Pipeline", accelerate=True)
 		self.mk_tools_menu(other_tools, "Tools")
@@ -683,6 +696,14 @@ class RunDialog(gtk.Dialog):
 			height = 660
 		self.resize(width, height)
 
+		self.set_position(gtk.WIN_POS_CENTER)
+
+		# semi-smart positioning TODO get width and slack from parent
+		if(screen.get_width() >= 1210+10+width):
+			(x,y) = self.get_position()
+			x = (screen.get_width()-(1210+10+width))/2
+			self.move(x+1210+10,y)
+
 		self.vbox.pack_start(sw)
 		
 		self.button = gtk.Button("Cancel")
@@ -817,7 +838,7 @@ class CoordinateList(gtk.TreeView):
 #===============================================================================
 class NodeList(gtk.TreeView):
 	def __init__(self, board):
-		liststore = gtk.ListStore(str, str, str, bool, str, bool, str, str, bool, bool, bool)
+		liststore = gtk.ListStore(str, str, str, str, str, bool, str, str, bool, bool, bool)
 		gtk.TreeView.__init__(self, liststore)
 		self.board = board
 		self.board.listeners.append(self.update)
@@ -840,12 +861,10 @@ class NodeList(gtk.TreeView):
 		
 		renderer5 = gtk.CellRendererToggle()
 		renderer5.connect('toggled', self.on_toggled_mdlog)
-		
-		renderer6 = gtk.CellRendererToggle()
 				
 		self.append_column(gtk.TreeViewColumn("Name", renderer1, text=1))
 		self.append_column(gtk.TreeViewColumn("State", renderer1, text=2))
-		self.append_column(gtk.TreeViewColumn("Restrained", renderer6, active=3))
+		self.append_column(gtk.TreeViewColumn("", renderer1, text=3))
 		self.append_column(gtk.TreeViewColumn("Extension", renderer1, text=4))
 		self.append_column(gtk.TreeViewColumn("ConvLog", renderer2, active=5))
 		self.append_column(gtk.TreeViewColumn("Weight (dir.)", renderer1, text=6))
@@ -930,7 +949,13 @@ class NodeList(gtk.TreeView):
 						color = self.colors['stale']
 			elif(n.state == 'refined'):
 				color = self.colors['refined']
-						
+
+			ntype = "D"
+			if(n == self.board.pool.root):
+				ntype = "R"
+			elif(n.isa_transition):
+				ntype = "T"
+			
 			weight_direct = "n/a"
 			if('weight_direct' in n.obs):
 				weight_direct = "%1.10f"%n.obs.weight_direct
@@ -939,7 +964,7 @@ class NodeList(gtk.TreeView):
 			if('weight_corrected' in n.obs):
 				weight_corrected = "%1.10f"%n.obs.weight_corrected
 				
-			row = [color, n.name, n.state, n.has_restraints, ext_txt, n.has_convergence_log, weight_direct, weight_corrected, n.has_reweighting_log, n.has_trajectory, n.has_mdrun_log]
+			row = [color, n.name, n.state, ntype, ext_txt, n.has_convergence_log, weight_direct, weight_corrected, n.has_reweighting_log, n.has_trajectory, n.has_mdrun_log]
 			
 			# Updating the entire list, without clearing it. 
 			# This preserves the selection and the up/down-keys still work :-)
@@ -954,15 +979,12 @@ class NodeList(gtk.TreeView):
 			if(n == self.board.selected_node): 
 				self.get_selection().select_path((i,))
 	
-		#delete_list must not be a generator
+		# delete_list must not be a generator
 		delete_list = list(reversed(range(len(self.board.pool), len(M))))
 		for i in delete_list:
 			M.remove( M.get_iter((i,)) )
 		
 		self.updateing = False
-		
-		#TODO: is this call really nessecary???
-		#self.on_select() # just in case the selected node got remove
 		
   	#---------------------------------------------------------------------------
 	def on_select(self, dummy_widget=None):

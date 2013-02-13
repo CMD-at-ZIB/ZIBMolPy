@@ -33,7 +33,7 @@ Automatic refinement
 
 Nodes with state "mdrun-failed"
 ===============================
-	If something goes wrong during the sampling of a node, it will adapt the state "mdrun-failed". After the problem is resolved (see below), you have to recover the node back to state "mdrun-able" by calling the tool L{zgf_recover_failed}. Failed node samplings are often related to domain decomposition problems in systems with explicit solvent and L{linear coordinates<ZIBMolPy.internals>}:
+	If something goes wrong during the sampling of a node, it will adapt the state "mdrun-failed". After the problem is resolved (see below), you have to recover the node back to state "mdrun-able" by calling the tool L{zgf_recover_state}. Failed node samplings are often related to domain decomposition problems in systems with explicit solvent and L{linear coordinates<ZIBMolPy.internals>}:
 
 		- B{Problem:} Domain decomposition does not fit number of nodes/PME nodes. B{Solution:} Change number of nodes/PME nodes, or change PME grid dimension, or use particle decomposition.
 		- B{Problem:} Domain decomposition does not work due to (long) distance restraints (L{linear coordinates<ZIBMolPy.internals>}). B{Solution:} Change number of nodes/PME nodes, or change PME grid dimension, or use particle decomposition. Using particle decomposition and a relatively low number of processors per node (preferably sharing the same memory) works best in difficult cases.
@@ -46,12 +46,21 @@ from ZIBMolPy.utils import check_call
 from ZIBMolPy.pool import Pool
 from ZIBMolPy.algorithms import gelman_rubin
 from ZIBMolPy.ui import Option, OptionsList
-import zgf_refine
+from ZIBMolPy.io.trr import TrrFile
 
-from subprocess import call
+import zgf_refine
+import zgf_grompp
+
+from subprocess import call, Popen, PIPE
 from warnings import warn
 import traceback
 import sys
+
+import time
+
+import os
+import re
+import numpy as np
 
 options_desc = OptionsList([ 
 	Option("s", "seq", "bool", "Suppress MPI", default=False),
@@ -62,6 +71,7 @@ options_desc = OptionsList([
 	Option("d", "pd", "bool", "Use particle decomposition", default=False),
 	Option("c", "convtest", "bool", "Test if nodes are converged - does not simulate", default=False),
 	Option("a", "auto-refines", "int", "Number of automatic refinements", default=0, min_value=0),
+	Option("m", "multistart", "bool", "Sampling is restarted instead of extended", default=False)
 	])
 
 sys.modules[__name__].__doc__ += options_desc.epytext() # for epydoc
@@ -69,7 +79,7 @@ sys.modules[__name__].__doc__ += options_desc.epytext() # for epydoc
 
 def is_applicable():
 	pool = Pool()
-	return(len(pool.where("state in ('em-mdrun-able', 'mdrun-able', 'converged', 'not-converged')")) > 0)
+	return(len(pool.where("state in ('em-mdrun-able', 'mdrun-able', 'converged', 'not-converged', 'rerun-able-converged', 'rerun-able-not-converged')")) > 0)
 	
 
 #===============================================================================
@@ -91,7 +101,7 @@ def main():
 			n.reload()
 
 		active_node = None
-		for n in pool.where("state in ('em-mdrun-able', 'mdrun-able')"):
+		for n in pool.where("state in ('em-mdrun-able', 'mdrun-able', 'rerun-able-converged', 'rerun-able-not-converged')"):
 			if(n.lock()):
 				active_node = n
 				break
@@ -110,6 +120,7 @@ def main():
 			active_node.save()
 			active_node.unlock()
 		except:
+			print "MDRUN FAILED"
 			active_node.state = "mdrun-failed"
 			active_node.save()
 			active_node.unlock()
@@ -121,15 +132,23 @@ def main():
 def process(node, options):
 	
 	cmd1 = ["mdrun"]
-	cmd1 += ["-s", "../../"+node.tpr_fn]
 	
 	if(node.state == "em-mdrun-able"):
+		cmd1 += ["-s", "../../"+node.tpr_fn]
 		cmd1 += ["-c", "../../"+node.pdb_fn]
 		cmd1 += ["-o", "../../"+node.dir+"/em.trr"]
 		cmd1 += ["-e", "../../"+node.dir+"/em.edr"]
 		cmd1 += ["-g", "../../"+node.dir+"/em.log"]
+	elif(node.state in ('rerun-able-converged','rerun-able-not-converged')):
+		cmd1 += ["-s", "../../"+node.dir+"/rerun_me.tpr"]
+		cmd1 += ["-rerun", "../../"+node.dir+"/rerun_me.trr"]
+		cmd1 += ["-o", "../../"+node.dir+"/rerun.trr"]
+		cmd1 += ["-e", "../../"+node.dir+"/rerun.edr"]
+		cmd1 += ["-g", "../../"+node.dir+"/rerun.log"]
 	else:
+		cmd1 += ["-s", "../../"+node.tpr_fn]
 		cmd1 += ["-o", "../../"+node.trr_fn]
+		cmd1 += ["-c", "../../"+node.dir+"/outfile.pdb"]
 
 	cmd1 += ["-append", "-cpi", "state.cpt"] # continue previouly state, if exists
 	if(options.npme != -1):
@@ -172,24 +191,86 @@ def process(node, options):
 	if(node.state == "em-mdrun-able"):
 		node.state = "grompp-able"
 		return
-	
-	# check for convergence
-	converged = conv_check_gelman_rubin(node)
 
+	# if we were just rerunnning, we go back to original state now
+	if(node.state in ('rerun-able-converged','rerun-able-not-converged')):
+		node.state = node.state.rsplit("rerun-able-", 1)[1]
+		return
+
+	if(node.has_restraints and not options.multistart):
+		# check for convergence
+		converged = conv_check_gelman_rubin(node)
+	else:
+		# stow away sampling data
+		converged = False
+		os.remove(node.dir+"/state.cpt")
+		for fn in [node.dir+"/outfile.pdb",node.trr_fn, node.dir+"/ener.edr", node.dir+"/md.log"]:
+			archive_file(fn, node.extensions_counter)
+
+	# check if user wants to delete files except pdb
+	try:
+		if (node.save_mode == "pdb"):
+			# delete all files except pdb and start files
+			for fn in os.listdir(node.dir):
+				if(re.match(".+.pdb",fn)==None
+				and re.match("[^#].+.mdp",fn)==None
+				and re.match(".+.txt",fn)==None
+				and re.match("[^#].+.tpr",fn)==None
+				and re.match(".+.top",fn)==None
+				and fn!="lock"):
+					os.remove(node.dir+"/"+str(fn))
+	except AttributeError:
+		pass
+	
 	# decide what to do next
 	if(converged):
 		node.state = "converged"
-
 	elif(node.extensions_counter >= node.extensions_max):
-		node.state = "not-converged"
+		if(node.has_restraints and not options.multistart):
+			node.state = "not-converged"
+		else:
+			# if user wants to keep everthing we at merge trajectorie and edr files
+			# and delete backups
+			try:			
+				if (node.save_mode == "complete"):
+					# merge sampling trajectories
+					trr_fns = sorted([ fn for fn in os.listdir(node.dir) if re.match("[^#].+run\d+.trr", fn) ])
+					cmd2 = ["trjcat", "-f"]
+					cmd2 += trr_fns
+					cmd2 += ["-o", "../../"+node.trr_fn, "-cat"]
+					print("Calling: %s"%" ".join(cmd2))
+					check_call(cmd2, cwd=node.dir)
+					# merge edr files
+					get_merged_edr(node)
+					# delete backups, assuming each backup file starts with '#'
+					for fn in os.listdir(node.dir):
+						if(re.match("#.+",fn)):					
+							os.remove(node.dir+"/"+str(fn))
+			except AttributeError:
+				pass
+			
+			# in either case, save as ready node
+			node.state = "ready"
+			
 
 	else:
 		node.extensions_counter += 1
 		node.state = "mdrun-able" # actually it should still be in this state
 	
-		cmd0 = ["tpbconv", "-s", node.tpr_fn, "-o", node.tpr_fn, "-extend", str(node.extensions_length)]
-		print("Calling: %s"%" ".join(cmd0))
-		check_call(cmd0) # tell Gromacs to extend the tpr file for another round
+		if(node.has_restraints and not options.multistart):
+			cmd0 = ["tpbconv", "-s", node.tpr_fn, "-o", node.tpr_fn, "-extend", str(node.extensions_length)]
+			print("Calling: %s"%" ".join(cmd0))
+			check_call(cmd0) # tell Gromacs to extend the tpr file for another round
+		else:
+			node.state = "grompp-able"
+			zgf_grompp.call_grompp(node) # re-grompp to obtain new random impulse
+
+
+#===============================================================================
+def archive_file(fn, count):
+	assert( os.path.exists(fn) )
+	out_fn = fn.rsplit(".", 1)[0] + "_run" + str(count) + "." + fn.rsplit(".", 1)[1]
+	os.rename(fn, out_fn)
 
 
 #===============================================================================
@@ -201,6 +282,39 @@ def conv_check_gelman_rubin(node):
 	is_converged = gelman_rubin(frames, n_chains, threshold, log)
 	log.close()
 	return(is_converged)
+
+
+#===============================================================================
+def get_merged_edr(node):
+	# get list of edr files
+	edr_fnames = sorted([ node.dir+"/"+fn for fn in os.listdir(node.dir) if re.match("[^#].+run\d+.edr", fn) ])
+	assert( len(edr_fnames) ==  node.extensions_max+1 )
+
+	# find out about trr time step
+	trr = TrrFile(node.trr_fn)
+	dt = trr.first_frame.next().t - trr.first_frame.t
+	trr.close()
+	# dt is sometimes noisy in the final digits (three digits is femtosecond step = enough)
+	dt = np.around(dt, decimals=3)
+
+	time_offset = node.sampling_length+dt
+
+	for edr_fn in edr_fnames[1:]:	
+		# adapt edr starting times
+		cmd = ["eneconv", "-f", edr_fn, "-o", edr_fn, "-settime"]
+		print("Calling: "+(" ".join(cmd)))
+		p = Popen(cmd, stdin=PIPE)
+		p.communicate(input=(str(time_offset)+"\n"))
+		assert(p.wait() == 0)
+
+		time_offset += node.extensions_length+dt
+
+	# concatenate edr files with adapted starting times
+	cmd = ["eneconv", "-f"] + edr_fnames + ["-o", node.dir+"/ener.edr"]
+	print("Calling: "+(" ".join(cmd)))
+	p = Popen(cmd)
+	retcode = p.wait()
+	assert(retcode == 0)
 
 
 #===============================================================================

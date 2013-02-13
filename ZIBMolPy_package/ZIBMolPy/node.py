@@ -112,15 +112,16 @@ class Node(object):
 			from numpy import array, float32, float64
 			from ZIBMolPy.restraint import DihedralRestraint, DistanceRestraint
 			from ZIBMolPy.internals import Converter
-			raw_persistent = eval(open(self.filename).read())
-			self.__dict__.update(raw_persistent)
-								
+			f = open(self.filename)
+			text = f.read()
+			raw_persistent = eval(text)
+			self.__dict__.update(raw_persistent)					
 			if(path.exists(self.observables_fn)):
 				raw_obs = eval(open(self.observables_fn).read())
 				self.obs.update(raw_obs)
 			
 			self._mtime = t
-		except:
+		except:			
 			traceback.print_exc()
 			raise(Exception("Could not parse: "+self.filename))
 			
@@ -135,9 +136,13 @@ class Node(object):
 			
 		#save persistent node data
 		persistent = dict([ (k,v) for k,v in self.__dict__.items() if k[0]!='_' ])
-		f = open(self.filename, "w")
+		split_temp = (self.filename).rsplit(".")
+		name_temp = split_temp[0] + "temp" + split_temp[1]
+		f = open(name_temp, "w")
+		#f = open(self.filename, "w")
 		f.write(utils.pformat(persistent)+"\n")
 		f.close()
+		os.rename(name_temp,self.filename)
 		
 		# save observables, if there are any
 		if(len(self.obs) > 0):
@@ -342,6 +347,11 @@ class Node(object):
 		return(
 			(self.has_restraints and self.state != 'refined') 
 			or self.state=='creating-a-partition' ) # used by zgf_create_node.calc_theta()
+
+	@property
+	def isa_transition(self):
+		"""Indicates that this node is a transition node."""
+		return not(self.has_restraints or self == self.pool.root) 
 	
 	@property
 	def is_sampled(self):

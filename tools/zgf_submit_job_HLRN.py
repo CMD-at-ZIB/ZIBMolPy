@@ -55,14 +55,14 @@ sys.modules[__name__].__doc__ += options_desc.epytext() # for epydoc
 
 
 # reuse some options from zgf_mdrun
-FORWARDED_ZGF_MDRUN_OPTIONS = ("seq", "npme", "reprod", "pd", "convtest", "auto-refines")
+FORWARDED_ZGF_MDRUN_OPTIONS = ("seq", "npme", "reprod", "pd", "convtest", "auto-refines", "multistart")
 for x in FORWARDED_ZGF_MDRUN_OPTIONS:
 	options_desc.append(zgf_mdrun.options_desc[x]) 
 
 	
 def is_applicable():
 	pool = Pool()
-	return(len(pool.where("state in ('em-mdrun-able', 'mdrun-able')")) > 0)
+	return(len(pool.where("state in ('em-mdrun-able', 'mdrun-able', 'rerun-able-converged', 'rerun-able-not-converged')")) > 0)
 
 
 #===============================================================================

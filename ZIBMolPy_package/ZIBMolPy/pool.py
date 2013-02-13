@@ -226,15 +226,7 @@ class Pool(NodeList):
 	@property
 	def s_corr_mat_fn(self): 
 		return(self.analysis_dir+"s_corr_mat.npz")
-		
-	@property
-	def k_mat_fn(self): 
-		return(self.analysis_dir+"k_mat.npz")
-		
-	@property
-	def k_corr_mat_fn(self): 
-		return(self.analysis_dir+"k_corr_mat.npz")
-		
+			
 	@property
 	def chi_mat_fn(self): 
 		return(self.analysis_dir+"chi_mat.npz")
@@ -242,6 +234,14 @@ class Pool(NodeList):
 	@property
 	def qc_mat_fn(self): 
 		return(self.analysis_dir+"qc_mat.npz")
+
+	@property
+	def pc_mat_fn(self): 
+		return(self.analysis_dir+"pc_mat.npz")
+
+	@property
+	def p_mat_fn(self): 
+		return(self.analysis_dir+"p_mat.npz")
 
 	@property
 	def thermo_beta(self):

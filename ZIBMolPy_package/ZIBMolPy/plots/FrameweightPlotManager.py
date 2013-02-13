@@ -45,19 +45,19 @@ class FrameweightPlotManager(object):
 		axes2.set_ylabel('Weight')
 
 		if(self.board.cb_show_colors.get_active()):
-			plotargs_phi = {'linewidth':4, 'color':'magenta', 'linestyle':'--'}
-			plotargs_restraint = {'linewidth':4, 'color':'red'}
-			plotargs_restraint_gmx = {'linewidth':4, 'color':'orange', 'linestyle':'--'}
-			plotargs_frameweight = {'linewidth':4, 'color':'green'}
-			plotargs_mean_phi = {'linewidth':4, 'color':'magenta', 'linestyle':':'}
-			plotargs_mean_frameweight = {'linewidth':4, 'color':'green', 'linestyle':':'}
+			plotargs_phi = {'linewidth':2, 'color':'magenta', 'linestyle':'--'}
+			plotargs_restraint = {'linewidth':2, 'color':'red'}
+			plotargs_restraint_gmx = {'linewidth':2, 'color':'orange', 'linestyle':'--'}
+			plotargs_frameweight = {'linewidth':2, 'color':'green'}
+			plotargs_mean_phi = {'linewidth':2, 'color':'magenta', 'linestyle':':'}
+			plotargs_mean_frameweight = {'linewidth':2, 'color':'green', 'linestyle':':'}
 		else:
-			plotargs_phi = {'linewidth':4, 'color':'grey', 'linestyle':'--'} 
-			plotargs_restraint = {'linewidth':4, 'color':'dimgrey'}
-			plotargs_restraint_gmx = {'linewidth':4, 'color':'lightgrey', 'linestyle':'--'}
-			plotargs_frameweight = {'linewidth':4, 'color':'black'}
-			plotargs_mean_phi = {'linewidth':4, 'color':'grey', 'linestyle':':'}
-			plotargs_mean_frameweight = {'linewidth':4, 'color':'black', 'linestyle':':'}
+			plotargs_phi = {'linewidth':2, 'color':'grey', 'linestyle':'--'} 
+			plotargs_restraint = {'linewidth':2, 'color':'dimgrey'}
+			plotargs_restraint_gmx = {'linewidth':2, 'color':'lightgrey', 'linestyle':'--'}
+			plotargs_frameweight = {'linewidth':2, 'color':'black'}
+			plotargs_mean_phi = {'linewidth':2, 'color':'grey', 'linestyle':':'}
+			plotargs_mean_frameweight = {'linewidth':2, 'color':'black', 'linestyle':':'}
 			
 		n = self.board.selected_node
 		if(self.board.cb_show_title.get_active()):

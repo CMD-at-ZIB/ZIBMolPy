@@ -22,7 +22,7 @@ def kmeans(frames, k, threshold=1e-4, max_iterations=50, fixed_clusters=None):
 		fixed_clusters = []
 	# pick initial means randomly
 	start_frames = np.arange(len(frames))
-	#using numpy-random because python-random differes beetween 32 and 64bit 
+	# using numpy-random because python-random differes beetween 32 and 64bit 
 	np.random.shuffle(start_frames)
 	start_frames = start_frames[:k]
 	means = [ frames.getframe(i) for i in start_frames ]
@@ -56,7 +56,14 @@ def gelman_rubin(frames, n_chains, threshold, log=sys.stdout):
 	assert(frames.n_frames >= n_chains)
 	chains = frames.array_split(n_chains)
 	
-		
+	# catch runaway sampling
+	for c in chains:		
+		if( np.max(c.frameweights) == 0):
+			log.write("### Convergence summary: Gelman-Rubin not possible.\n")
+			log.write("WARNING: This usually means the sampling has left the support of its basis function!\n")
+			log.write("### Convergence not achieved\n")
+			return(False)
+
 	#TODO: evtl. mögliche Vereinfachung: B_total_var = W_chain_var*n_frames 
 	# calculate weighted inter-chain variance B, without factor n
 	var_per_chain = [c.var_weighted().array for c in chains]
@@ -171,7 +178,6 @@ def symmetrize(matrix, weights, correct_weights=False, error=1E-02):
 	return(matrix_new, weights_new)
 
 
-
 #===============================================================================
 def orthogonalize(eigenvalues, eigenvectors, weights):
 	perron = 0
@@ -207,7 +213,70 @@ def orthogonalize(eigenvalues, eigenvectors, weights):
 		weighted_norm = np.dot( np.dot( np.transpose(eigvec), np.diag(weights) ), eigvec )
 		eigvec /= np.sqrt(weighted_norm)
 
+	eigenvectors[:,0] = np.ones(eigenvectors.shape[1])
 	return eigenvectors
+
+
+#===============================================================================
+def opt_soft(eigvectors, rot_matrix, n_clusters):
+
+	# only consider first n_clusters eigenvectors
+	eigvectors = eigvectors[:,:n_clusters]
+	
+	# crop first row and first column from rot_matrix
+	rot_crop_matrix = rot_matrix[1:,1:]
+	
+	(x, y) = rot_crop_matrix.shape
+	
+	# reshape rot_crop_matrix into linear vector
+	rot_crop_vec = np.reshape(rot_crop_matrix, x*y)
+
+	# target function for optimization
+	def susanna_func(rot_crop_vec, eigvectors):
+		# reshape into matrix
+		rot_crop_matrix = np.reshape(rot_crop_vec, (x, y))
+		# fill matrix
+		rot_matrix = fill_matrix(rot_crop_matrix, eigvectors)
+
+		result = 0
+		for i in range(0, n_clusters):
+			for j in range(1, n_clusters):
+				result += np.power(rot_matrix[j,i], 2) / rot_matrix[0,i]
+		return(-result)
+
+
+	from scipy.optimize import fmin
+	rot_crop_vec_opt = fmin( susanna_func, rot_crop_vec, args=(eigvectors,) )
+	
+	rot_crop_matrix = np.reshape(rot_crop_vec_opt, (x, y))
+	rot_matrix = fill_matrix(rot_crop_matrix, eigvectors)
+
+	return(rot_matrix)
+
+
+#===============================================================================
+def fill_matrix(rot_crop_matrix, eigvectors):
+
+	(x, y) = rot_crop_matrix.shape
+
+	row_sums = np.sum(rot_crop_matrix, axis=1)	
+	row_sums = np.reshape(row_sums, (x,1))
+
+	# add -row_sums as leftmost column to rot_crop_matrix 
+	rot_crop_matrix = np.concatenate((-row_sums, rot_crop_matrix), axis=1 )
+
+	tmp = -np.dot(eigvectors[:,1:], rot_crop_matrix)
+
+	tmp_col_max = np.max(tmp, axis=0)
+	tmp_col_max = np.reshape(tmp_col_max, (1,y+1))
+
+	tmp_col_max_sum = np.sum(tmp_col_max)
+
+	# add col_max as top row to rot_crop_matrix and normalize
+	rot_matrix = np.concatenate((tmp_col_max, rot_crop_matrix), axis=0 )
+	rot_matrix /= tmp_col_max_sum
+
+	return rot_matrix
 
 
 #===============================================================================

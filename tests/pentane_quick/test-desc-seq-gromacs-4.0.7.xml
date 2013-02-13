@@ -68,7 +68,7 @@ Node node0003 is converged and not locked.
   evaluation region (=conjugate variance): 0.056969
   number of refpoints: 4
 WARNING: No nearpoints found for refpoint 4! (node0003)
-Thermodynamic weights calculated by method 'entropy' (sol-energy=False):
+Thermodynamic weights calculated by method 'entropy':
   node0003 with A: 79.002417 [kJ/mol] and weight: 0.999178
   node0001 with A: 96.723613 [kJ/mol] and weight: 0.000821
   node0002 with A: 112.563714 [kJ/mol] and weight: 0.000001
@@ -87,12 +87,9 @@ eigenvalue 2: 0.803603, gap to next eigenvalue: 0.149098
 eigenvalue 3: 0.654505, gap to next eigenvalue: 0.000000
 </match-stdout>
 <match-stdout>
-Q_c matrix:
-[[  2.22044605e-16]]
-</match-stdout>
-<match-stdout>
-cluster weights (calculated twice for checking):
-[-1.]
+-- cluster weights: first column of rot_matrix --
+[ 1.]
+-- cluster weights: numpy.dot(node_weights, chi_matrix) --
 [ 1.]
 </match-stdout>
 

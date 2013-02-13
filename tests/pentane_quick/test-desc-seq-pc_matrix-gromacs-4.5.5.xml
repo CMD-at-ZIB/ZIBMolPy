@@ -73,7 +73,7 @@ Thermodynamic weights calculated by method 'entropy':
   node0001 with A: 129.778020 [kJ/mol] and weight: 0.000000
 </match-stdout>
 
-<run>zgf_analyze -c</run>
+<run>zgf_analyze -c -s</run>
 <match-stdout>
 ### Node weights after symmetrization of S matrix:
 node0001: initial weight: 0.000000, corrected weight: 0.412048, weight change: 0.412048
@@ -101,6 +101,72 @@ cluster1.trr [3 frames] from node(s):
 [0]
 cluster2.trr [3 frames] from node(s):
 [1, 2]
+</match-stdout>
+
+<run>zgf_create_tnodes -t clusters -n 2 -r 2 -l 5 -s pdb -c 0.9 -m 3</run>
+<match-stdout>
+-----
+Generating transition nodes for node node0001...
+Using frame 0 as starting configuration.
+Using frame 4 as starting configuration.
+2 transition nodes generated.
+-----
+</match-stdout>
+<match-stdout>
+-----
+Generating transition nodes for node node0003...
+Using frame 0 as starting configuration.
+Using frame 4 as starting configuration.
+2 transition nodes generated.
+-----
+</match-stdout>
+<match-stdout>
+-----
+Generating transition nodes for node node0002...
+Using frame 0 as starting configuration.
+Using frame 4 as starting configuration.
+2 transition nodes generated.
+-----
+</match-stdout>
+
+<run>zgf_mdrun -sr</run>
+
+<run>zgf_create_pmatrix</run>
+<match-stdout>
+ CLUSTER 0 contains the following nodes:
+[0]
+Loading trr-file: nodes/node0001/node0001.trr... 
+done.
+Node 0
+chi value: 1.0
+counter:   1
+cluster:   0
+#tnodes:   2
+- - - -
+</match-stdout>
+<match-stdout>
+ CLUSTER 1 contains the following nodes:
+[2 1]
+Loading trr-file: nodes/node0003/node0003.trr... 
+done.
+Node 2
+chi value: 0.576789606246
+counter:   1
+cluster:   1
+#tnodes:   2
+- - - -
+Loading trr-file: nodes/node0002/node0002.trr... 
+done.
+Node 1
+chi value: 1.0
+counter:   2
+cluster:   1
+#tnodes:   2
+- - - -
+</match-stdout>
+<match-stdout>
+Clusters: [array([0]), array([2, 1])]
+Transition matrix Pc for tau = 5 ps:
 </match-stdout>
 
 </xml>

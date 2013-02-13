@@ -13,6 +13,8 @@ ZIBgridfree essential pipeline:
 	6. L{zgf_refine}
 	7. L{zgf_reweight}
 	8. L{zgf_analyze}
+	9. L{zgf_create_tnodes}
+	10. L{zgf_create_pmatrix}
 
 Convenience:
 ============
@@ -21,7 +23,9 @@ Convenience:
 	- L{zgf_remove_nodes}
 	- L{zgf_solvate_nodes}
 	- L{zgf_genion}
-	- L{zgf_recover_failed}
+	- L{zgf_rerun}
+	- L{zgf_recover_state}
+	- L{zgf_discard_solvent}
 
 Testing:
 ========

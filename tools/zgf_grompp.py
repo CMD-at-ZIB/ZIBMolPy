@@ -24,6 +24,8 @@ import traceback
 import sys
 from os import path
 
+import os
+
 
 options_desc = OptionsList()
 
@@ -31,78 +33,46 @@ sys.modules[__name__].__doc__ += options_desc.epytext() # for epydoc
 
 def is_applicable():
 	pool = Pool()
-	return(len(pool.where("state in ('grompp-able', 'em-grompp-able')")) > 0)
+	return(len(pool.where("state == 'grompp-able'")) > 0)
 
 #===============================================================================
 def main():
 	pool = Pool()
-
-	if(len(pool.where("state == 'grompp-able'")) > 0):
-		call_grompp(pool)
+	needy_nodes = pool.where("state == 'grompp-able'").multilock()
 		
-	if(len(pool.where("state == 'em-grompp-able'")) > 0):
-		assert(path.exists("em.mdp")) #TODO that's not super nice yet
-		call_grompp(pool, mode='em')
+	try:
+		for n in needy_nodes:
+			call_grompp(n)			
+	except:
+		traceback.print_exc()
 
-
-
-	#needy_nodes = pool.where("state == 'grompp-able'").multilock()
-		
-	#try:
-	#	for n in needy_nodes:
-	#		cmd = ["grompp"]
-	#		cmd += ["-f", "../../"+n.mdp_fn]
-	#		cmd += ["-n", "../../"+pool.ndx_fn]
-	#		cmd += ["-c", "../../"+n.pdb_fn]
-	#		cmd += ["-p", "../../"+n.top_fn]
-	#		cmd += ["-o", "../../"+n.tpr_fn]			
-	#		print("Calling: %s"%" ".join(cmd))
-	#		p = Popen(cmd, cwd=n.dir)
-	#		retcode = p.wait()
-	#		assert(retcode == 0) # grompp should never fail
-	#		n.state = "mdrun-able"
-	#		n.save()
-	#except:
-	#	traceback.print_exc()
-
-	#for n in needy_nodes:
-	#	n.unlock()
+	for n in needy_nodes:
+		n.unlock()
 
 
 #===============================================================================
-def call_grompp(pool, mode='run'):
-	try:
-		if(mode =='run'):
-			needy_nodes = pool.where("state == 'grompp-able'").multilock()
-			final_state = "mdrun-able"
-		elif(mode =='em'):
-			needy_nodes = pool.where("state == 'em-grompp-able'").multilock()
-			final_state = "em-mdrun-able"
-		else:
-			raise(Exception("Unknown grompp mode: "+mode))
-
-		for n in needy_nodes:
-			cmd = ["grompp"]
-			if(mode =='run'):
-				cmd += ["-f", "../../"+n.mdp_fn]
-			elif(mode =='em'):
-				cmd += ["-f", "../../em.mdp"] #TODO that's not super nice yet
-			cmd += ["-n", "../../"+pool.ndx_fn]
-			cmd += ["-c", "../../"+n.pdb_fn]
-			cmd += ["-p", "../../"+n.top_fn]
-			cmd += ["-o", "../../"+n.tpr_fn]			
-			print("Calling: %s"%" ".join(cmd))
-			p = Popen(cmd, cwd=n.dir)
-			retcode = p.wait()
-			assert(retcode == 0) # grompp should never fail
-			n.state = final_state
-			n.save()
-
-		for n in needy_nodes:
-			n.unlock()
-	except:
-		traceback.print_exc()
+# this method is called by zgf_solvate_nodes, zgf_genion, and zgf_mdrun
+def call_grompp(node, mdp_file="", final_state="mdrun-able"):
 	
+	cmd = ["grompp"]
+	
+	mdp_fn = node.mdp_fn
+	if(mdp_file):
+		mdp_fn = mdp_file
+
+	cmd += ["-f", "../../"+mdp_fn]
+	cmd += ["-n", "../../"+node.pool.ndx_fn]
+	cmd += ["-c", "../../"+node.pdb_fn]
+	cmd += ["-p", "../../"+node.top_fn]
+	cmd += ["-o", "../../"+node.dir+"/run_temp.tpr"]			
+	print("Calling: %s"%" ".join(cmd))
+	p = Popen(cmd, cwd=node.dir)
+	retcode = p.wait()
+	assert(retcode == 0) # grompp should never fail
+	os.rename(node.dir+"/run_temp.tpr",node.tpr_fn)
+	node.state = final_state
+	node.save()
+
 
 #===============================================================================
 if(__name__ == "__main__"):

@@ -131,7 +131,7 @@ WARNING: No nearpoints found for refpoint 4! (node0004)
   number of refpoints: 4
 </match-stdout>
 <match-stdout>
-Thermodynamic weights calculated by method 'entropy' (sol-energy=False):
+Thermodynamic weights calculated by method 'entropy':
   node0003 with A: 92.983912 [kJ/mol] and weight: 0.419921
   node0001 with A: 93.231389 [kJ/mol] and weight: 0.380259
   node0005 with A: 94.892786 [kJ/mol] and weight: 0.195349
@@ -157,12 +157,9 @@ EV0004: 0.796245, gap to next: 0.077950, EV-weighted gap to next: 0.062068
 EV0005: 0.718294, gap to next: 0.000000, EV-weighted gap to next: 0.000000
 </match-stdout>
 <match-stdout>
-Q_c matrix:
-[[  8.88178420e-16]]
-</match-stdout>
-<match-stdout>
-cluster weights (calculated twice for checking):
+-- cluster weights: first column of rot_matrix --
 [ 1.00000005]
+-- cluster weights: numpy.dot(node_weights, chi_matrix) --
 [ 1.0000001]
 </match-stdout>
 

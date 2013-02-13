@@ -28,6 +28,7 @@ from subprocess import Popen, PIPE
 import numpy as np
 import shutil
 
+import zgf_solvate_nodes
 import zgf_grompp
 
 
@@ -39,6 +40,9 @@ options_desc = OptionsList([
 	Option("N", "nname", "str", "Name of the negative ion", default="CL"),
 	Option("s", "random-seed", "str", "Seed for random number generator", default="1993"),
 ])
+
+# reuse option from zgf_solvate_nodes
+options_desc.append(zgf_solvate_nodes.options_desc["grompp"]) 
 
 sys.modules[__name__].__doc__ += options_desc.epytext() # for epydoc
 
@@ -62,10 +66,8 @@ def main():
 	
 	for n in needy_nodes:
 		n.state = "em-grompp-able"
-		n.save()
+		zgf_grompp.call_grompp(n, mdp_file=options.grompp, final_state="em-mdrun-able") # re-grompp to get a tpr for energy minimization
 		n.unlock()
-
-	zgf_grompp.main()
 
 
 #===============================================================================
@@ -85,3 +87,4 @@ if(__name__ == "__main__"):
 	main()
 
 #EOF
+

@@ -79,6 +79,19 @@ class NodeWeightPlotManager(object):
 			self.board.canvas.draw_idle()
 			return
 
+		if(self.board.cb_show_colors.get_active()):
+			potential_plotargs =  {'color':'lightgrey', 'label':'Mean potential' }
+			free_energy_plotargs = {'color':'grey', 'label':'Free energy' }
+			wdirect_plotargs = { 'color':'limegreen', 'label':'Weight direct' }
+			wcorrect_plotargs = { 'color':'lightskyblue', 'label':'Weight corrected' }
+			entropy_plotargs = { 'color':'yellow', 'label':'Entropy' }
+		else:
+			potential_plotargs =  {'color':'lightgrey', 'label':'Mean potential', 'ecolor':'black' }
+			free_energy_plotargs = {'color':'lightgrey', 'label':'Free energy' }
+			wdirect_plotargs = { 'color':'dimgrey', 'label':'Weight direct' }
+			wcorrect_plotargs = { 'color':'grey', 'label':'Weight corrected' }
+			entropy_plotargs = { 'color':'white', 'label':'Entropy' }
+
 		# assigns text-labels showing the hight of each bar
 		def autolabel(rects, target_axes, color='black'): # attach some text labels		
 			for rect in rects:
@@ -107,29 +120,29 @@ class NodeWeightPlotManager(object):
 		obs_std_V = np.array([ n.obs.std_V for n in nodes ])
 		if(self.rb_set_mean_potential.get_active()):
 			obs_mean_V = np.array([ n.obs.mean_V for n in nodes ])
-			rects1 = ax1.bar(ind, obs_mean_V, width, color='lightgrey', yerr=obs_std_V, label='Mean potential')
+			rects1 = ax1.bar(ind, obs_mean_V, width, yerr=obs_std_V, **potential_plotargs)
 		elif(self.rb_set_free_energy.get_active()):
 			obs_A = np.array([ n.obs.A for n in nodes ])
-			rects1 = ax1.bar(ind, obs_A, width, color='grey', label='Free energy')			
+			rects1 = ax1.bar(ind, obs_A, width, **free_energy_plotargs)			
 			obs_TdeltaS = self.board.pool.temperature*np.array([ n.obs.S for n in nodes ])
-			ax1.bar(ind, obs_TdeltaS, width, color='yellow', label='Entropy') # =rects2
-		autolabel(rects1, ax1)
+			ax1.bar(ind, obs_TdeltaS, width, **entropy_plotargs) # =rects2
+		autolabel(rects1, ax1) #TODO
 						
 		# plot weights
 		bars_direct = np.array([ (i, n.obs.weight_direct) for (i, n) in enumerate(nodes) if 'weight_direct' in n.obs ])
 		bars_corr   = np.array([ (i, n.obs.weight_corrected) for (i, n) in enumerate(nodes) if 'weight_corrected' in n.obs ])
 		if(self.rb_show_both.get_active()):
-			rect3a = ax2.bar(bars_direct[:,0], bars_direct[:,1], width/2, color='limegreen', label='Weight direct')
+			rect3a = ax2.bar(bars_direct[:,0], bars_direct[:,1], width/2, **wdirect_plotargs)
 			autolabel(rect3a, ax2, 'black')
 			if(bars_corr.size > 0):
-				rect3b = ax2.bar(bars_corr[:,0]+width/2, bars_corr[:,1], width/2, color='lightskyblue', label='Weight corrected')
+				rect3b = ax2.bar(bars_corr[:,0]+width/2, bars_corr[:,1], width/2, **wcorrect_plotargs)
 				autolabel(rect3b, ax2, 'black')
 		elif(self.rb_show_direct.get_active()):
-			rect3 = ax2.bar(bars_direct[:,0], bars_direct[:,1], width, color='limegreen', label='Weight direct')
+			rect3 = ax2.bar(bars_direct[:,0], bars_direct[:,1], width, **wdirect_plotargs)
 			autolabel(rect3, ax2, 'black')
 		elif(self.rb_show_corrected.get_active()):
 			if(bars_corr.size > 0):
-				rect3 = ax2.bar(bars_corr[:,0], bars_corr[:,1], width, color='lightskyblue', label='Weight corrected')
+				rect3 = ax2.bar(bars_corr[:,0], bars_corr[:,1], width, **wcorrect_plotargs)
 				autolabel(rect3, ax2, 'black')
 	
 		# build legend
