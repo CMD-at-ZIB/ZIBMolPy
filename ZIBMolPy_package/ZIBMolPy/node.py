@@ -356,7 +356,7 @@ class Node(object):
 	@property
 	def is_sampled(self):
 		"""Indicates that this node is finished with sampling""" 
-		return self.state in ("converged", "not-converged", "refined")
+		return self.state in ("converged", "not-converged", "refined", "ready")
 	
 #===============================================================================
 #EOF
