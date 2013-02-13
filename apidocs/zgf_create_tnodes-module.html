@@ -1,0 +1,377 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>zgf_create_tnodes</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+	
+	<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        displayMath: [['$$', '$$'], ["\\[", "\\]"]]
+      }
+    });
+    </script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+	</head>
+	
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="ZIBMolPy-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://wiki.kobv.de/confluence/display/AGCMD/ZIBMolPy">ZIBMolPy</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        Module&nbsp;zgf_create_tnodes
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="zgf_create_tnodes-module.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== MODULE DESCRIPTION ==================== -->
+<h1 class="epydoc">Module zgf_create_tnodes</h1><p class="nomargin-top"><span class="codelink"><a href="zgf_create_tnodes-pysrc.html">source&nbsp;code</a></span></p>
+<h1 class="heading">What it does</h1>
+    <p><b>This is the ninth step of ZIBgridfree.</b></p>
+    <p>This tool adds additional nodes to the pool called transition (or 
+    'T') nodes. They are essential to find out the probability to move 
+    either</p>
+    <ol start="1">
+      <li>
+        from one metastable cluster to another (transition-level 
+        'clusters', matrix $P_c(\tau)$) or
+      </li>
+      <li>
+        from one node to another (transition-level 'nodes', matrix 
+        $P(\tau)$).
+      </li>
+    </ol>
+    <p>If one decides to choose 'cluster', one gets soft clusters in the 
+    spirit of PCCA+, where each configuration belongs to a specific cluster
+    with a certain probability. If one chooses 'nodes', than one gets a 
+    hard clustering in terms of a Voronoi tesselation, where the center of 
+    each Voronoi cell is represented by a node of the pool.</p>
+    <p>In general, one assumes that more transition nodes lead to more 
+    accurate probability information. After creating transition nodes, <a 
+    href="zgf_mdrun-module.html" class="link">zgf_mdrun</a> has to be run 
+    again in order to perform the transition sampling, namely 'num-runs' 
+    trajectories of 'sampling-length' ps length. Finally, the transition 
+    matrix can be computed by calling <a 
+    href="zgf_create_pmatrix-module.html" 
+    class="link">zgf_create_pmatrix</a>. The amount of transition nodes 
+    that is created depends on the user input and is described in the 
+    following.</p>
+    <p><b>The next step is <a href="zgf_create_pmatrix-module.html" 
+    class="link">zgf_create_pmatrix</a>.</b></p>
+  <h1 class="heading">How it works</h1>
+    <p>At the command line, type:</p>
+<pre class="literalblock">
+       $ zgf_create_tnodes [options]
+</pre>
+  <h1 class="heading">Clusters</h1>
+    <p>The clusters identified by PCCA+ are described in terms of the 
+    $\chi$ matrix. For the transition probability computation, a node is 
+    assumed to belong to such a cluster if its $\chi$-Value is larger than 
+    0.5. For each node that belongs to a given cluster, this method 
+    generates 'num-tnodes' transition nodes. To avoid unnecessary 
+    computational cost, one can avoid creating 'num-tnodes' for those nodes
+    where the $\chi$-Value is already very close to 1 since one can assume 
+    that trajectories starting from those points will most likely not 
+    undergo a transition. The user may only generate 'num-tnodes' for a 
+    node that belongs to a cluster with a percentage between 0.5 and X 
+    where X is the 'coreset-power'. Each node that belongs to a cluster 
+    will spawn 'num-tnodes' transition nodes.</p>
+  <h1 class="heading">Nodes (Voronoi cells)</h1>
+    <p>Each Voronoi cell gets 'num-tnodes' transition nodes.</p>
+  <h1 class="heading">Save mode</h1>
+    <p>After execution of <a href="zgf_mdrun-module.html" 
+    class="link">zgf_mdrun</a>, each transition node creates trr, edr and 
+    log files. These files require disk space, but are not needed to 
+    calculate the transition probability. If one is going to choose the 
+    'pdb' option, then the trr, edr and log files are deleted. If for any 
+    reasons those files are needed, deletion can be avoided by choosing the
+    value 'complete'.</p>
+  <h1 class="heading">Options</h1>
+    <ul>
+      <li>
+        <b>transition-level</b>:
+<pre class="literalblock">
+ default: clusters
+ help: transition level
+ short_name: t
+ datatype: choice
+ choices: ('clusters', 'nodes')
+ long_name: transition-level
+</pre>
+      </li>
+      <li>
+        <b>num-tnodes</b>:
+<pre class="literalblock">
+ default: 1
+ help: number of tnodes per node
+ short_name: n
+ datatype: int
+ min_value: 1
+ long_name: num-tnodes
+</pre>
+      </li>
+      <li>
+        <b>num-runs</b>:
+<pre class="literalblock">
+ default: 5
+ help: number of runs
+ short_name: r
+ datatype: int
+ long_name: num-runs
+</pre>
+      </li>
+      <li>
+        <b>sampling-length</b>:
+<pre class="literalblock">
+ default: 100
+ help: length of sampling per run in ps
+ short_name: l
+ datatype: int
+ long_name: sampling-length
+</pre>
+      </li>
+      <li>
+        <b>save-mode</b>:
+<pre class="literalblock">
+ default: pdb
+ help: files to store
+ short_name: s
+ datatype: choice
+ choices: ('pdb', 'complete')
+ long_name: save-mode
+</pre>
+      </li>
+      <li>
+        <b>coreset-power</b>:
+<pre class="literalblock">
+ default: 0.9
+ help: ignore nodes with chi value higher than coreset-power ('clusters' only)
+ short_name: c
+ datatype: float
+ min_value: 0.5
+ long_name: coreset-power
+</pre>
+      </li>
+      <li>
+        <b>min-nodes</b>:
+<pre class="literalblock">
+ default: 3
+ help: min number of nodes to consider ('clusters' only)
+ short_name: m
+ datatype: int
+ min_value: 1
+ long_name: min-nodes
+</pre>
+      </li>
+    </ul>
+
+<!-- ==================== FUNCTIONS ==================== -->
+<a name="section-Functions"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td align="left" colspan="2" class="table-header">
+    <span class="table-header">Functions</span></td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="is_applicable"></a><span class="summary-sig-name">is_applicable</span>()</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="zgf_create_tnodes-pysrc.html#is_applicable">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="main"></a><span class="summary-sig-name">main</span>()</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="zgf_create_tnodes-pysrc.html#main">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="get_indices_equidist"></a><span class="summary-sig-name">get_indices_equidist</span>(<span class="summary-sig-arg">node</span>,
+        <span class="summary-sig-arg">n_neighbours</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="zgf_create_tnodes-pysrc.html#get_indices_equidist">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+</table>
+<!-- ==================== VARIABLES ==================== -->
+<a name="section-Variables"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td align="left" colspan="2" class="table-header">
+    <span class="table-header">Variables</span></td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="zgf_create_tnodes-module.html#options_desc" class="summary-name">options_desc</a> = <code title="[&lt;ZIBMolPy.ui.Option transition-level&gt;, &lt;ZIBMolPy.ui.Option num-tnodes\
+&gt;, &lt;ZIBMolPy.ui.Option num-runs&gt;, &lt;ZIBMolPy.ui.Option sampling-length&gt;\
+, &lt;ZIBMolPy.ui.Option save-mode&gt;, &lt;ZIBMolPy.ui.Option coreset-power&gt;, \
+&lt;ZIBMolPy.ui.Option min-nodes&gt;]">[&lt;ZIBMolPy.ui.Option transition-level&gt;, &lt;ZIBMol<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="__package__"></a><span class="summary-name">__package__</span> = <code title="None">None</code><br />
+      hash(x)
+    </td>
+  </tr>
+</table>
+<!-- ==================== VARIABLES DETAILS ==================== -->
+<a name="section-VariablesDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td align="left" colspan="2" class="table-header">
+    <span class="table-header">Variables Details</span></td>
+</tr>
+</table>
+<a name="options_desc"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">options_desc</h3>
+  
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+[&lt;ZIBMolPy.ui.Option transition-level&gt;, &lt;ZIBMolPy.ui.Option num-tnodes<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+&gt;, &lt;ZIBMolPy.ui.Option num-runs&gt;, &lt;ZIBMolPy.ui.Option sampling-length&gt;<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+, &lt;ZIBMolPy.ui.Option save-mode&gt;, &lt;ZIBMolPy.ui.Option coreset-power&gt;, <span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+&lt;ZIBMolPy.ui.Option min-nodes&gt;]
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="ZIBMolPy-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://wiki.kobv.de/confluence/display/AGCMD/ZIBMolPy">ZIBMolPy</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Wed Feb 13 11:19:36 2013
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

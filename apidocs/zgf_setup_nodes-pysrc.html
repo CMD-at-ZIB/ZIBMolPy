@@ -107,15 +107,14 @@ ZIBMolPy.topology" class="py-name" href="#" onclick="return doclink('link-9', 't
 <a name="L33"></a><tt class="py-lineno"> 33</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">numpy</tt> <tt class="py-keyword">as</tt> <tt class="py-name">np</tt> </tt>
 <a name="L34"></a><tt class="py-lineno"> 34</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">shutil</tt> </tt>
 <a name="L35"></a><tt class="py-lineno"> 35</tt>  <tt class="py-line"> </tt>
-<a name="L36"></a><tt class="py-lineno"> 36</tt>  <tt class="py-line"><tt id="link-20" class="py-name" targets="Variable zgf_analyze.options_desc=zgf_analyze-module.html#options_desc,Variable zgf_cleanup.options_desc=zgf_cleanup-module.html#options_desc,Variable zgf_cluster_create_neighbours.options_desc=zgf_cluster_create_neighbours-module.html#options_desc,Variable zgf_concatenate_stuff.options_desc=zgf_concatenate_stuff-module.html#options_desc,Variable zgf_core_set_create_matrix.options_desc=zgf_core_set_create_matrix-module.html#options_desc,Variable zgf_core_set_create_neighbours.options_desc=zgf_core_set_create_neighbours-module.html#options_desc,Variable zgf_create_nodes.options_desc=zgf_create_nodes-module.html#options_desc,Variable zgf_create_pool.options_desc=zgf_create_pool-module.html#options_desc,Variable zgf_create_rates.options_desc=zgf_create_rates-module.html#options_desc,Variable zgf_create_unrestrained_nodes.options_desc=zgf_create_unrestrained_nodes-module.html#options_desc,Variable zgf_discard_solvent.options_desc=zgf_discard_solvent-module.html#options_desc,Variable zgf_export_pool.options_desc=zgf_export_pool-module.html#options_desc,Variable zgf_extract_conformations.options_desc=zgf_extract_conformations-module.html#options_desc,Variable zgf_genion.options_desc=zgf_genion-module.html#options_desc,Variable zgf_grompp.options_desc=zgf_grompp-module.html#options_desc,Variable zgf_mdrun.options_desc=zgf_mdrun-module.html#options_desc,Variable zgf_recover_state.options_desc=zgf_recover_state-module.html#options_desc,Variable zgf_refine.options_desc=zgf_refine-module.html#options_desc,Variable zgf_remove_nodes.options_desc=zgf_remove_nodes-module.html#options_desc,Variable zgf_rerun.options_desc=zgf_rerun-module.html#options_desc,Variable zgf_reweight.options_desc=zgf_reweight-module.html#options_desc,Variable zgf_setup_nodes.options_desc=zgf_setup_nodes-module.html#options_desc,Variable zgf_show_cluster_representatives.options_desc=zgf_show_cluster_representatives-module.html#options_desc,Variable zgf_solvate_nodes.options_desc=zgf_solvate_nodes-module.html#options_desc,Variable zgf_standard_create_matrix.options_desc=zgf_standard_create_matrix-module.html#options_desc,Variable zgf_standard_create_neighbours.options_desc=zgf_standard_create_neighbours-module.html#options_desc,Variable zgf_submit_job_HLRN.options_desc=zgf_submit_job_HLRN-module.html#options_desc,Variable zgf_upgrade.options_desc=zgf_upgrade-module.html#options_desc"><a title="zgf_analyze.options_desc
+<a name="L36"></a><tt class="py-lineno"> 36</tt>  <tt class="py-line"><tt id="link-20" class="py-name" targets="Variable zgf_analyze.options_desc=zgf_analyze-module.html#options_desc,Variable zgf_cleanup.options_desc=zgf_cleanup-module.html#options_desc,Variable zgf_concatenate_stuff.options_desc=zgf_concatenate_stuff-module.html#options_desc,Variable zgf_create_nodes.options_desc=zgf_create_nodes-module.html#options_desc,Variable zgf_create_pmatrix.options_desc=zgf_create_pmatrix-module.html#options_desc,Variable zgf_create_pool.options_desc=zgf_create_pool-module.html#options_desc,Variable zgf_create_rates.options_desc=zgf_create_rates-module.html#options_desc,Variable zgf_create_tnodes.options_desc=zgf_create_tnodes-module.html#options_desc,Variable zgf_create_unrestrained_nodes.options_desc=zgf_create_unrestrained_nodes-module.html#options_desc,Variable zgf_discard_solvent.options_desc=zgf_discard_solvent-module.html#options_desc,Variable zgf_export_pool.options_desc=zgf_export_pool-module.html#options_desc,Variable zgf_extract_conformations.options_desc=zgf_extract_conformations-module.html#options_desc,Variable zgf_genion.options_desc=zgf_genion-module.html#options_desc,Variable zgf_grompp.options_desc=zgf_grompp-module.html#options_desc,Variable zgf_mdrun.options_desc=zgf_mdrun-module.html#options_desc,Variable zgf_recover_state.options_desc=zgf_recover_state-module.html#options_desc,Variable zgf_refine.options_desc=zgf_refine-module.html#options_desc,Variable zgf_remove_nodes.options_desc=zgf_remove_nodes-module.html#options_desc,Variable zgf_rerun.options_desc=zgf_rerun-module.html#options_desc,Variable zgf_reweight.options_desc=zgf_reweight-module.html#options_desc,Variable zgf_reweight_wham.options_desc=zgf_reweight_wham-module.html#options_desc,Variable zgf_setup_nodes.options_desc=zgf_setup_nodes-module.html#options_desc,Variable zgf_solvate_nodes.options_desc=zgf_solvate_nodes-module.html#options_desc,Variable zgf_submit_job_HLRN.options_desc=zgf_submit_job_HLRN-module.html#options_desc,Variable zgf_upgrade.options_desc=zgf_upgrade-module.html#options_desc"><a title="zgf_analyze.options_desc
 zgf_cleanup.options_desc
-zgf_cluster_create_neighbours.options_desc
 zgf_concatenate_stuff.options_desc
-zgf_core_set_create_matrix.options_desc
-zgf_core_set_create_neighbours.options_desc
 zgf_create_nodes.options_desc
+zgf_create_pmatrix.options_desc
 zgf_create_pool.options_desc
 zgf_create_rates.options_desc
+zgf_create_tnodes.options_desc
 zgf_create_unrestrained_nodes.options_desc
 zgf_discard_solvent.options_desc
 zgf_export_pool.options_desc
@@ -128,23 +127,20 @@ zgf_refine.options_desc
 zgf_remove_nodes.options_desc
 zgf_rerun.options_desc
 zgf_reweight.options_desc
+zgf_reweight_wham.options_desc
 zgf_setup_nodes.options_desc
-zgf_show_cluster_representatives.options_desc
 zgf_solvate_nodes.options_desc
-zgf_standard_create_matrix.options_desc
-zgf_standard_create_neighbours.options_desc
 zgf_submit_job_HLRN.options_desc
 zgf_upgrade.options_desc" class="py-name" href="#" onclick="return doclink('link-20', 'options_desc', 'link-20');">options_desc</a></tt> <tt class="py-op">=</tt> <tt id="link-21" class="py-name"><a title="ZIBMolPy.ui.OptionsList" class="py-name" href="#" onclick="return doclink('link-21', 'OptionsList', 'link-12');">OptionsList</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
 <a name="L37"></a><tt class="py-lineno"> 37</tt>  <tt class="py-line"> </tt>
 <a name="L38"></a><tt class="py-lineno"> 38</tt>  <tt class="py-line"><tt class="py-name">sys</tt><tt class="py-op">.</tt><tt class="py-name">modules</tt><tt class="py-op">[</tt><tt class="py-name">__name__</tt><tt class="py-op">]</tt><tt class="py-op">.</tt><tt class="py-name">__doc__</tt> <tt class="py-op">+=</tt> <tt id="link-22" class="py-name"><a title="zgf_analyze.options_desc
 zgf_cleanup.options_desc
-zgf_cluster_create_neighbours.options_desc
 zgf_concatenate_stuff.options_desc
-zgf_core_set_create_matrix.options_desc
-zgf_core_set_create_neighbours.options_desc
 zgf_create_nodes.options_desc
+zgf_create_pmatrix.options_desc
 zgf_create_pool.options_desc
 zgf_create_rates.options_desc
+zgf_create_tnodes.options_desc
 zgf_create_unrestrained_nodes.options_desc
 zgf_discard_solvent.options_desc
 zgf_export_pool.options_desc
@@ -157,11 +153,9 @@ zgf_refine.options_desc
 zgf_remove_nodes.options_desc
 zgf_rerun.options_desc
 zgf_reweight.options_desc
+zgf_reweight_wham.options_desc
 zgf_setup_nodes.options_desc
-zgf_show_cluster_representatives.options_desc
 zgf_solvate_nodes.options_desc
-zgf_standard_create_matrix.options_desc
-zgf_standard_create_neighbours.options_desc
 zgf_submit_job_HLRN.options_desc
 zgf_upgrade.options_desc" class="py-name" href="#" onclick="return doclink('link-22', 'options_desc', 'link-20');">options_desc</a></tt><tt class="py-op">.</tt><tt id="link-23" class="py-name" targets="Method ZIBMolPy.ui.OptionsList.epytext()=ZIBMolPy.ui.OptionsList-class.html#epytext"><a title="ZIBMolPy.ui.OptionsList.epytext" class="py-name" href="#" onclick="return doclink('link-23', 'epytext', 'link-23');">epytext</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> <tt class="py-comment"># for epydoc</tt> </tt>
 <a name="L39"></a><tt class="py-lineno"> 39</tt>  <tt class="py-line"> </tt>
@@ -396,18 +390,15 @@ ZIBMolPy.topology.Topology.write" class="py-name" href="#" onclick="return docli
 <a name="L201"></a><tt class="py-lineno">201</tt>  <tt class="py-line"> </tt>
 <a name="L202"></a><tt class="py-lineno">202</tt>  <tt class="py-line"><tt class="py-comment">#===============================================================================</tt> </tt>
 <a name="L203"></a><tt class="py-lineno">203</tt>  <tt class="py-line"><tt class="py-keyword">if</tt><tt class="py-op">(</tt><tt class="py-name">__name__</tt> <tt class="py-op">==</tt> <tt class="py-string">"__main__"</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
-<a name="L204"></a><tt class="py-lineno">204</tt>  <tt class="py-line">        <tt id="link-120" class="py-name" targets="Function zgf_analyze.main()=zgf_analyze-module.html#main,Function zgf_browser.main()=zgf_browser-module.html#main,Function zgf_cleanup.main()=zgf_cleanup-module.html#main,Function zgf_cluster_create_matrix.main()=zgf_cluster_create_matrix-module.html#main,Function zgf_cluster_create_neighbours.main()=zgf_cluster_create_neighbours-module.html#main,Function zgf_concatenate_stuff.main()=zgf_concatenate_stuff-module.html#main,Function zgf_core_set_create_matrix.main()=zgf_core_set_create_matrix-module.html#main,Function zgf_core_set_create_neighbours.main()=zgf_core_set_create_neighbours-module.html#main,Function zgf_create_matrix_pdb.main()=zgf_create_matrix_pdb-module.html#main,Function zgf_create_nodes.main()=zgf_create_nodes-module.html#main,Function zgf_create_pool.main()=zgf_create_pool-module.html#main,Function zgf_create_rates.main()=zgf_create_rates-module.html#main,Function zgf_create_unrestrained_nodes.main()=zgf_create_unrestrained_nodes-module.html#main,Function zgf_discard_solvent.main()=zgf_discard_solvent-module.html#main,Function zgf_export_pool.main()=zgf_export_pool-module.html#main,Function zgf_extract_conformations.main()=zgf_extract_conformations-module.html#main,Function zgf_gauge_times.main()=zgf_gauge_times-module.html#main,Function zgf_genion.main()=zgf_genion-module.html#main,Function zgf_grompp.main()=zgf_grompp-module.html#main,Function zgf_mdrun.main()=zgf_mdrun-module.html#main,Function zgf_recover_state.main()=zgf_recover_state-module.html#main,Function zgf_refine.main()=zgf_refine-module.html#main,Function zgf_remove_nodes.main()=zgf_remove_nodes-module.html#main,Function zgf_rerun.main()=zgf_rerun-module.html#main,Function zgf_reweight.main()=zgf_reweight-module.html#main,Function zgf_setup_nodes.main()=zgf_setup_nodes-module.html#main,Function zgf_show_cluster_representatives.main()=zgf_show_cluster_representatives-module.html#main,Function zgf_show_me_my_matrix.main()=zgf_show_me_my_matrix-module.html#main,Function zgf_solvate_nodes.main()=zgf_solvate_nodes-module.html#main,Function zgf_standard_create_matrix.main()=zgf_standard_create_matrix-module.html#main,Function zgf_standard_create_neighbours.main()=zgf_standard_create_neighbours-module.html#main,Function zgf_submit_job_HLRN.main()=zgf_submit_job_HLRN-module.html#main,Function zgf_test.main()=zgf_test-module.html#main,Function zgf_upgrade.main()=zgf_upgrade-module.html#main"><a title="zgf_analyze.main
+<a name="L204"></a><tt class="py-lineno">204</tt>  <tt class="py-line">        <tt id="link-120" class="py-name" targets="Function zgf_analyze.main()=zgf_analyze-module.html#main,Function zgf_browser.main()=zgf_browser-module.html#main,Function zgf_cleanup.main()=zgf_cleanup-module.html#main,Function zgf_concatenate_stuff.main()=zgf_concatenate_stuff-module.html#main,Function zgf_create_nodes.main()=zgf_create_nodes-module.html#main,Function zgf_create_pmatrix.main()=zgf_create_pmatrix-module.html#main,Function zgf_create_pool.main()=zgf_create_pool-module.html#main,Function zgf_create_rates.main()=zgf_create_rates-module.html#main,Function zgf_create_tnodes.main()=zgf_create_tnodes-module.html#main,Function zgf_create_unrestrained_nodes.main()=zgf_create_unrestrained_nodes-module.html#main,Function zgf_discard_solvent.main()=zgf_discard_solvent-module.html#main,Function zgf_export_pool.main()=zgf_export_pool-module.html#main,Function zgf_extract_conformations.main()=zgf_extract_conformations-module.html#main,Function zgf_gauge_times.main()=zgf_gauge_times-module.html#main,Function zgf_genion.main()=zgf_genion-module.html#main,Function zgf_grompp.main()=zgf_grompp-module.html#main,Function zgf_mdrun.main()=zgf_mdrun-module.html#main,Function zgf_recover_state.main()=zgf_recover_state-module.html#main,Function zgf_refine.main()=zgf_refine-module.html#main,Function zgf_remove_nodes.main()=zgf_remove_nodes-module.html#main,Function zgf_rerun.main()=zgf_rerun-module.html#main,Function zgf_reweight.main()=zgf_reweight-module.html#main,Function zgf_reweight_wham.main()=zgf_reweight_wham-module.html#main,Function zgf_setup_nodes.main()=zgf_setup_nodes-module.html#main,Function zgf_solvate_nodes.main()=zgf_solvate_nodes-module.html#main,Function zgf_submit_job_HLRN.main()=zgf_submit_job_HLRN-module.html#main,Function zgf_test.main()=zgf_test-module.html#main,Function zgf_upgrade.main()=zgf_upgrade-module.html#main"><a title="zgf_analyze.main
 zgf_browser.main
 zgf_cleanup.main
-zgf_cluster_create_matrix.main
-zgf_cluster_create_neighbours.main
 zgf_concatenate_stuff.main
-zgf_core_set_create_matrix.main
-zgf_core_set_create_neighbours.main
-zgf_create_matrix_pdb.main
 zgf_create_nodes.main
+zgf_create_pmatrix.main
 zgf_create_pool.main
 zgf_create_rates.main
+zgf_create_tnodes.main
 zgf_create_unrestrained_nodes.main
 zgf_discard_solvent.main
 zgf_export_pool.main
@@ -421,12 +412,9 @@ zgf_refine.main
 zgf_remove_nodes.main
 zgf_rerun.main
 zgf_reweight.main
+zgf_reweight_wham.main
 zgf_setup_nodes.main
-zgf_show_cluster_representatives.main
-zgf_show_me_my_matrix.main
 zgf_solvate_nodes.main
-zgf_standard_create_matrix.main
-zgf_standard_create_neighbours.main
 zgf_submit_job_HLRN.main
 zgf_test.main
 zgf_upgrade.main" class="py-name" href="#" onclick="return doclink('link-120', 'main', 'link-120');">main</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
@@ -470,7 +458,7 @@ expandto(location.href);
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Fri Nov 16 15:54:19 2012
+    Generated by Epydoc 3.0.1 on Wed Feb 13 11:19:37 2013
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

@@ -125,26 +125,41 @@
     <p>As in Gromacs we use simple harmonic restraint potentials to 
     approximate the original radial basis functions used in ZIBgridfree, we
     have to perform a frame reweighting of the sampling trajectories 
-    afterwards. The frame weight of each individual frame q belonging to 
-    node i is calculated as:</p>
-    <p>frame_weight(q) = &Phi;_i(q) / exp( -&beta; * penalty_potential_i(q)
-    )</p>
-    <p>Frame weights should yield values between zero and one. Slightly 
-    higher values than one are feasible. Note that frame weights are not 
+    afterwards. The frame weight of each individual frame $q$ belonging to 
+    node $i$ is calculated as:</p>
+    <p>\[ \mathtt{frame\_weight}_i(q)=\frac{\phi_i(q)}{\exp(-\beta \cdot 
+    U_{res}(q))}, \]</p>
+    <p>where $U_{res}(q)$ is the GROMACS restraint potential in frame $q$. 
+    Frame weights should yield values between zero and one. Slightly higher
+    values than one are feasible. Note that frame weights are not 
     normalized to one.</p>
-    <p>Overweight frames are possible if &Phi;_i(q) is high (meaning that q
-    is well within its native basis function) while the 
-    penalty_potential_i(q) is high, as well. Hence, q is punished wrongly, 
-    as q should only be punished by the penalty potential if it attempts to
-    leave its native basis function.</p>
+    <p>Overweight frames are possible if $\phi_i(q)$ is high (meaning that 
+    $q$ is well within its native basis function) while the 
+    penalty_potential $U_{res}(q)$ is high, as well. Hence, $q$ is punished
+    wrongly, as $q$ should only be punished by the penalty potential if it 
+    attempts to leave its native basis function.</p>
     <p>When overweight frames occur, this probably means that your 
-    approximation of the &Phi; function for the corresponding node is bad. 
+    approximation of the $\phi$ function for the corresponding node is bad.
     You can check this by using <a href="zgf_browser-module.html" 
     class="link">zgf_browser</a>. If the penalty potential kicks in where 
-    &Phi; is still good, you have got a bad approximation of the &Phi; 
+    $\phi$ is still good, you have got a bad approximation of the $\phi$ 
     function. Overweight frame weights will trigger a WARNING. Furthermore,
     any occurence of overweight frame weights will be stored in the 
     reweighting log file.</p>
+  <h1 class="heading">Choice of energy observables for reweighting</h1>
+    <p>You can pick from various options. You can decide if you want to use
+    observables from the standard run (as stored in 'ener.edr') or from a 
+    rerun (as stored in 'rerun.edr') that you did with <a 
+    href="zgf_rerun-module.html" class="link">zgf_rerun</a>. You can also 
+    read bonded and non-bonded energy observables from different edr-files.
+    If you are not happy with the standard choice of energy observables, 
+    you can provide a file with costum observables (non-bonded only).</p>
+  <h1 class="heading">Check restraint energy</h1>
+    <p>This option is mainly for debugging. It compares wether ZIBMolPy 
+    internally calculates the same restraint energies as Gromacs (as stored
+    in the edr-file of the run). You can also compare ZIBMolPy and Gromacs 
+    restraint energies visually by using the FrameWeightPlot in <a 
+    href="zgf_browser-module.html" class="link">zgf_browser</a>.</p>
   <h1 class="heading">Options</h1>
     <ul>
       <li>
@@ -183,7 +198,7 @@
  help: bonded energy type
  short_name: b
  datatype: choice
- choices: ('run_standard', 'rerun_standard')
+ choices: ('run_standard', 'rerun_standard', 'none')
  long_name: e-bonded
 </pre>
       </li>
@@ -194,7 +209,7 @@
  help: nonbonded energy type
  short_name: n
  datatype: choice
- choices: ('run_standard', 'run_moi', 'run_moi_sol', 'run_custom', 'rerun_standard', 'rerun_moi', 'rerun_moi_sol', 'rerun_custom')
+ choices: ('run_standard', 'run_moi', 'run_moi_sol_sr', 'run_moi_sol_lr', 'run_custom', 'rerun_standard', 'rerun_moi', 'rerun_moi_sol_sr', 'rerun_moi_sol_lr', 'rerun_custom', 'none')
  long_name: e-nonbonded
 </pre>
       </li>
@@ -225,6 +240,15 @@
  short_name: r
  datatype: bool
  long_name: save-refpoints
+</pre>
+      </li>
+      <li>
+        <b>check-restraint</b>:
+<pre class="literalblock">
+ help: check if ZIBMolPy calculates the same restraint energy as Gromacs
+ short_name: R
+ datatype: bool
+ long_name: check-restraint
 </pre>
       </li>
     </ul>
@@ -385,7 +409,8 @@
         <a href="zgf_reweight-module.html#options_desc" class="summary-name">options_desc</a> = <code title="[&lt;ZIBMolPy.ui.Option ignore-convergence&gt;, &lt;ZIBMolPy.ui.Option ignore-f\
 ailed&gt;, &lt;ZIBMolPy.ui.Option method&gt;, &lt;ZIBMolPy.ui.Option e-bonded&gt;, &lt;Z\
 IBMolPy.ui.Option e-nonbonded&gt;, &lt;ZIBMolPy.ui.Option custom-energy&gt;, &lt;Z\
-IBMolPy.ui.Option presamp-temp&gt;, &lt;ZIBMolPy.ui.Option save-refpoints&gt;]">[&lt;ZIBMolPy.ui.Option ignore-convergence&gt;, &lt;ZIBM<code class="variable-ellipsis">...</code></code>
+IBMolPy.ui.Option presamp-temp&gt;, &lt;ZIBMolPy.ui.Option save-refpoints&gt;, \
+&lt;ZIBMolPy.ui.Option check-restraint&gt;]">[&lt;ZIBMolPy.ui.Option ignore-convergence&gt;, &lt;ZIBM<code class="variable-ellipsis">...</code></code>
     </td>
   </tr>
 <tr>
@@ -458,7 +483,8 @@ IBMolPy.ui.Option presamp-temp&gt;, &lt;ZIBMolPy.ui.Option save-refpoints&gt;]">
 [&lt;ZIBMolPy.ui.Option ignore-convergence&gt;, &lt;ZIBMolPy.ui.Option ignore-f<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
 ailed&gt;, &lt;ZIBMolPy.ui.Option method&gt;, &lt;ZIBMolPy.ui.Option e-bonded&gt;, &lt;Z<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
 IBMolPy.ui.Option e-nonbonded&gt;, &lt;ZIBMolPy.ui.Option custom-energy&gt;, &lt;Z<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
-IBMolPy.ui.Option presamp-temp&gt;, &lt;ZIBMolPy.ui.Option save-refpoints&gt;]
+IBMolPy.ui.Option presamp-temp&gt;, &lt;ZIBMolPy.ui.Option save-refpoints&gt;, <span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+&lt;ZIBMolPy.ui.Option check-restraint&gt;]
 </pre></td></tr></table>
 </dd>
   </dl>
@@ -496,7 +522,7 @@ IBMolPy.ui.Option presamp-temp&gt;, &lt;ZIBMolPy.ui.Option save-refpoints&gt;]
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Fri Nov 16 15:54:17 2012
+    Generated by Epydoc 3.0.1 on Wed Feb 13 11:19:36 2013
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

@@ -77,11 +77,11 @@
 <a name="L6"></a><tt class="py-lineno">  6</tt>  <tt class="py-line"><tt class="py-docstring">============</tt> </tt>
 <a name="L7"></a><tt class="py-lineno">  7</tt>  <tt class="py-line"><tt class="py-docstring">        B{This is the second step of ZIBgridfree.}</tt> </tt>
 <a name="L8"></a><tt class="py-lineno">  8</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
-<a name="L9"></a><tt class="py-lineno">  9</tt>  <tt class="py-line"><tt class="py-docstring">        This tool will generate a discretization of conformational space specified by certain internal coordinates from a supplied ZIBgridfree sampling node. If the node pool is empty, the root node (i. e. the presampling) will be used in order to generate an initial discretization. Later on, new nodes can be created from arbitrary nodes in the node pool: L{zgf_create_nodes} is also called from L{zgf_refine}. </tt> </tt>
+<a name="L9"></a><tt class="py-lineno">  9</tt>  <tt class="py-line"><tt class="py-docstring">        This tool will generate a discretization of conformational space specified by certain internal coordinates from a supplied ZIBgridfree sampling node. If the node pool is empty, the root node (i.e. the presampling) will be used in order to generate an initial discretization. Later on, new nodes can be created from arbitrary nodes in the node pool: L{zgf_create_nodes} is also called from L{zgf_refine}. </tt> </tt>
 <a name="L10"></a><tt class="py-lineno"> 10</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
-<a name="L11"></a><tt class="py-lineno"> 11</tt>  <tt class="py-line"><tt class="py-docstring">        Radial basis functions are used to form a (more or less) soft partitioning of the conformational space. The function S{Phi}_i(q) (taking values between zero and one) gives the membership of configuration q to basis function i. The potential modifications representing the basis functions during the sampling are approximated by standard Gromacs restraint potentials. </tt> </tt>
+<a name="L11"></a><tt class="py-lineno"> 11</tt>  <tt class="py-line"><tt class="py-docstring">        Radial basis functions are used to form a (more or less) soft partitioning of the conformational space. The function $\phi_i(q)$ (taking values between zero and one) gives the membership of configuration $q$ to basis function $i$. The potential modifications representing the basis functions during the sampling are approximated by standard GROMACS restraint potentials. </tt> </tt>
 <a name="L12"></a><tt class="py-lineno"> 12</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
-<a name="L13"></a><tt class="py-lineno"> 13</tt>  <tt class="py-line"><tt class="py-docstring">        You should use L{zgf_browser} to check if you are happy with the discretization (coverage of conformational space, i. e. the number of nodes), and the quality of the S{Phi} function fit.</tt> </tt>
+<a name="L13"></a><tt class="py-lineno"> 13</tt>  <tt class="py-line"><tt class="py-docstring">        You should use L{zgf_browser} to check if you are happy with the discretization (coverage of conformational space, i.e. the number of nodes), and the quality of the $\phi$ function fit.</tt> </tt>
 <a name="L14"></a><tt class="py-lineno"> 14</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
 <a name="L15"></a><tt class="py-lineno"> 15</tt>  <tt class="py-line"><tt class="py-docstring">        B{The next step is L{zgf_setup_nodes}.}</tt> </tt>
 <a name="L16"></a><tt class="py-lineno"> 16</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
@@ -92,12 +92,12 @@
 <a name="L21"></a><tt class="py-lineno"> 21</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
 <a name="L22"></a><tt class="py-lineno"> 22</tt>  <tt class="py-line"><tt class="py-docstring">Discretization parameters</tt> </tt>
 <a name="L23"></a><tt class="py-lineno"> 23</tt>  <tt class="py-line"><tt class="py-docstring">=========================</tt> </tt>
-<a name="L24"></a><tt class="py-lineno"> 24</tt>  <tt class="py-line"><tt class="py-docstring">  - B{S{alpha} (alpha)} specifies the stiffness of the discretization: Larger S{alpha} values mean harder basis functions and less overlap. S{alpha} is either specified directly by the user or calculated via S{theta}. In general, S{alpha} will increase with the number of nodes, as with increasing number of nodes, each individual node has to cover less conformational space. Under normal conditions, higher S{alpha} values will lead to better convergence of the sampling.</tt> </tt>
-<a name="L25"></a><tt class="py-lineno"> 25</tt>  <tt class="py-line"><tt class="py-docstring">        </tt> </tt>
-<a name="L26"></a><tt class="py-lineno"> 26</tt>  <tt class="py-line"><tt class="py-docstring">  - B{S{theta} (theta)} is calculated as the average of the distances of each node to its nearest neighbor: High minimum distances will lead to soft basis funtions, small minimum distances will lead to hard basis functions.</tt> </tt>
+<a name="L24"></a><tt class="py-lineno"> 24</tt>  <tt class="py-line"><tt class="py-docstring">  - $\\alpha$ specifies the stiffness of the discretization: Larger $\\alpha$ values mean harder basis functions and less overlap. $\\alpha$ is either specified directly by the user or calculated via $\\theta$. In general, $\\alpha$ will increase with the number of nodes, as with increasing number of nodes, each individual node has to cover less conformational space. Under normal conditions, higher $\\alpha$ values will lead to better convergence of the sampling.</tt> </tt>
+<a name="L25"></a><tt class="py-lineno"> 25</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L26"></a><tt class="py-lineno"> 26</tt>  <tt class="py-line"><tt class="py-docstring">  - $\\theta$ is calculated as the average of the distances of each node to its nearest neighbor: High minimum distances will lead to soft basis funtions, small minimum distances will lead to hard basis functions.</tt> </tt>
 <a name="L27"></a><tt class="py-lineno"> 27</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
-<a name="L28"></a><tt class="py-lineno"> 28</tt>  <tt class="py-line"><tt class="py-docstring">        Note that very large S{alpha} values may lead to infinitely large force constants in the Gromacs restraint potentials. This indicates that the density of nodes (which is usually strongly related to the number of nodes) is too high.</tt> </tt>
-<a name="L29"></a><tt class="py-lineno"> 29</tt>  <tt class="py-line"><tt class="py-docstring">        </tt> </tt>
+<a name="L28"></a><tt class="py-lineno"> 28</tt>  <tt class="py-line"><tt class="py-docstring">        Note that very large $\\alpha$ values may lead to infinitely large force constants in the Gromacs restraint potentials. This indicates that the density of nodes (which is usually strongly related to the number of nodes) is too high.</tt> </tt>
+<a name="L29"></a><tt class="py-lineno"> 29</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
 <a name="L30"></a><tt class="py-lineno"> 30</tt>  <tt class="py-line"><tt class="py-docstring">        Currently, for averaging we use the B{median} of minimum distances. This will result in harder basis functions compared to when using the B{mean}, as exceptionally large minimum distances do not weigh in.</tt> </tt>
 <a name="L31"></a><tt class="py-lineno"> 31</tt>  <tt class="py-line"><tt class="py-docstring">"""</tt> </tt>
 <a name="L32"></a><tt class="py-lineno"> 32</tt>  <tt class="py-line"> </tt>
@@ -137,15 +137,14 @@ zgf_create_unrestrained_nodes.PLATEAU_BREAK" class="py-name" href="#" onclick="r
 zgf_create_unrestrained_nodes.THE_BIG_NUMBER" class="py-name" href="#" onclick="return doclink('link-35', 'THE_BIG_NUMBER', 'link-35');">THE_BIG_NUMBER</a></tt> <tt class="py-op">=</tt> <tt class="py-number">99999.0</tt> <tt class="py-comment"># is measured in [Chuck]</tt> </tt>
 <a name="L61"></a><tt class="py-lineno"> 61</tt>  <tt class="py-line"> </tt>
 <a name="L62"></a><tt class="py-lineno"> 62</tt>  <tt class="py-line"><tt class="py-comment">#===============================================================================</tt> </tt>
-<a name="L63"></a><tt class="py-lineno"> 63</tt>  <tt class="py-line"><tt id="link-36" class="py-name" targets="Variable zgf_analyze.options_desc=zgf_analyze-module.html#options_desc,Variable zgf_cleanup.options_desc=zgf_cleanup-module.html#options_desc,Variable zgf_cluster_create_neighbours.options_desc=zgf_cluster_create_neighbours-module.html#options_desc,Variable zgf_concatenate_stuff.options_desc=zgf_concatenate_stuff-module.html#options_desc,Variable zgf_core_set_create_matrix.options_desc=zgf_core_set_create_matrix-module.html#options_desc,Variable zgf_core_set_create_neighbours.options_desc=zgf_core_set_create_neighbours-module.html#options_desc,Variable zgf_create_nodes.options_desc=zgf_create_nodes-module.html#options_desc,Variable zgf_create_pool.options_desc=zgf_create_pool-module.html#options_desc,Variable zgf_create_rates.options_desc=zgf_create_rates-module.html#options_desc,Variable zgf_create_unrestrained_nodes.options_desc=zgf_create_unrestrained_nodes-module.html#options_desc,Variable zgf_discard_solvent.options_desc=zgf_discard_solvent-module.html#options_desc,Variable zgf_export_pool.options_desc=zgf_export_pool-module.html#options_desc,Variable zgf_extract_conformations.options_desc=zgf_extract_conformations-module.html#options_desc,Variable zgf_genion.options_desc=zgf_genion-module.html#options_desc,Variable zgf_grompp.options_desc=zgf_grompp-module.html#options_desc,Variable zgf_mdrun.options_desc=zgf_mdrun-module.html#options_desc,Variable zgf_recover_state.options_desc=zgf_recover_state-module.html#options_desc,Variable zgf_refine.options_desc=zgf_refine-module.html#options_desc,Variable zgf_remove_nodes.options_desc=zgf_remove_nodes-module.html#options_desc,Variable zgf_rerun.options_desc=zgf_rerun-module.html#options_desc,Variable zgf_reweight.options_desc=zgf_reweight-module.html#options_desc,Variable zgf_setup_nodes.options_desc=zgf_setup_nodes-module.html#options_desc,Variable zgf_show_cluster_representatives.options_desc=zgf_show_cluster_representatives-module.html#options_desc,Variable zgf_solvate_nodes.options_desc=zgf_solvate_nodes-module.html#options_desc,Variable zgf_standard_create_matrix.options_desc=zgf_standard_create_matrix-module.html#options_desc,Variable zgf_standard_create_neighbours.options_desc=zgf_standard_create_neighbours-module.html#options_desc,Variable zgf_submit_job_HLRN.options_desc=zgf_submit_job_HLRN-module.html#options_desc,Variable zgf_upgrade.options_desc=zgf_upgrade-module.html#options_desc"><a title="zgf_analyze.options_desc
+<a name="L63"></a><tt class="py-lineno"> 63</tt>  <tt class="py-line"><tt id="link-36" class="py-name" targets="Variable zgf_analyze.options_desc=zgf_analyze-module.html#options_desc,Variable zgf_cleanup.options_desc=zgf_cleanup-module.html#options_desc,Variable zgf_concatenate_stuff.options_desc=zgf_concatenate_stuff-module.html#options_desc,Variable zgf_create_nodes.options_desc=zgf_create_nodes-module.html#options_desc,Variable zgf_create_pmatrix.options_desc=zgf_create_pmatrix-module.html#options_desc,Variable zgf_create_pool.options_desc=zgf_create_pool-module.html#options_desc,Variable zgf_create_rates.options_desc=zgf_create_rates-module.html#options_desc,Variable zgf_create_tnodes.options_desc=zgf_create_tnodes-module.html#options_desc,Variable zgf_create_unrestrained_nodes.options_desc=zgf_create_unrestrained_nodes-module.html#options_desc,Variable zgf_discard_solvent.options_desc=zgf_discard_solvent-module.html#options_desc,Variable zgf_export_pool.options_desc=zgf_export_pool-module.html#options_desc,Variable zgf_extract_conformations.options_desc=zgf_extract_conformations-module.html#options_desc,Variable zgf_genion.options_desc=zgf_genion-module.html#options_desc,Variable zgf_grompp.options_desc=zgf_grompp-module.html#options_desc,Variable zgf_mdrun.options_desc=zgf_mdrun-module.html#options_desc,Variable zgf_recover_state.options_desc=zgf_recover_state-module.html#options_desc,Variable zgf_refine.options_desc=zgf_refine-module.html#options_desc,Variable zgf_remove_nodes.options_desc=zgf_remove_nodes-module.html#options_desc,Variable zgf_rerun.options_desc=zgf_rerun-module.html#options_desc,Variable zgf_reweight.options_desc=zgf_reweight-module.html#options_desc,Variable zgf_reweight_wham.options_desc=zgf_reweight_wham-module.html#options_desc,Variable zgf_setup_nodes.options_desc=zgf_setup_nodes-module.html#options_desc,Variable zgf_solvate_nodes.options_desc=zgf_solvate_nodes-module.html#options_desc,Variable zgf_submit_job_HLRN.options_desc=zgf_submit_job_HLRN-module.html#options_desc,Variable zgf_upgrade.options_desc=zgf_upgrade-module.html#options_desc"><a title="zgf_analyze.options_desc
 zgf_cleanup.options_desc
-zgf_cluster_create_neighbours.options_desc
 zgf_concatenate_stuff.options_desc
-zgf_core_set_create_matrix.options_desc
-zgf_core_set_create_neighbours.options_desc
 zgf_create_nodes.options_desc
+zgf_create_pmatrix.options_desc
 zgf_create_pool.options_desc
 zgf_create_rates.options_desc
+zgf_create_tnodes.options_desc
 zgf_create_unrestrained_nodes.options_desc
 zgf_discard_solvent.options_desc
 zgf_export_pool.options_desc
@@ -158,11 +157,9 @@ zgf_refine.options_desc
 zgf_remove_nodes.options_desc
 zgf_rerun.options_desc
 zgf_reweight.options_desc
+zgf_reweight_wham.options_desc
 zgf_setup_nodes.options_desc
-zgf_show_cluster_representatives.options_desc
 zgf_solvate_nodes.options_desc
-zgf_standard_create_matrix.options_desc
-zgf_standard_create_neighbours.options_desc
 zgf_submit_job_HLRN.options_desc
 zgf_upgrade.options_desc" class="py-name" href="#" onclick="return doclink('link-36', 'options_desc', 'link-36');">options_desc</a></tt> <tt class="py-op">=</tt> <tt id="link-37" class="py-name"><a title="ZIBMolPy.ui.OptionsList" class="py-name" href="#" onclick="return doclink('link-37', 'OptionsList', 'link-25');">OptionsList</a></tt><tt class="py-op">(</tt><tt class="py-op">[</tt> </tt>
 <a name="L64"></a><tt class="py-lineno"> 64</tt>  <tt class="py-line">        <tt id="link-38" class="py-name"><a title="ZIBMolPy.ui.Option" class="py-name" href="#" onclick="return doclink('link-38', 'Option', 'link-24');">Option</a></tt><tt class="py-op">(</tt><tt class="py-string">"N"</tt><tt class="py-op">,</tt> <tt class="py-string">"methodnodes"</tt><tt class="py-op">,</tt> <tt class="py-string">"choice"</tt><tt class="py-op">,</tt> <tt class="py-string">"method to determine nodes"</tt><tt class="py-op">,</tt> <tt class="py-name">choices</tt><tt class="py-op">=</tt><tt class="py-op">(</tt><tt class="py-string">"kmeans"</tt><tt class="py-op">,</tt><tt class="py-string">"equidist"</tt><tt class="py-op">,</tt> <tt class="py-string">"all"</tt><tt class="py-op">)</tt><tt class="py-op">)</tt><tt class="py-op">,</tt> </tt>
@@ -180,13 +177,12 @@ zgf_upgrade.options_desc" class="py-name" href="#" onclick="return doclink('link
 <a name="L76"></a><tt class="py-lineno"> 76</tt>  <tt class="py-line"> </tt>
 <a name="L77"></a><tt class="py-lineno"> 77</tt>  <tt class="py-line"><tt class="py-name">sys</tt><tt class="py-op">.</tt><tt class="py-name">modules</tt><tt class="py-op">[</tt><tt class="py-name">__name__</tt><tt class="py-op">]</tt><tt class="py-op">.</tt><tt class="py-name">__doc__</tt> <tt class="py-op">+=</tt> <tt id="link-48" class="py-name"><a title="zgf_analyze.options_desc
 zgf_cleanup.options_desc
-zgf_cluster_create_neighbours.options_desc
 zgf_concatenate_stuff.options_desc
-zgf_core_set_create_matrix.options_desc
-zgf_core_set_create_neighbours.options_desc
 zgf_create_nodes.options_desc
+zgf_create_pmatrix.options_desc
 zgf_create_pool.options_desc
 zgf_create_rates.options_desc
+zgf_create_tnodes.options_desc
 zgf_create_unrestrained_nodes.options_desc
 zgf_discard_solvent.options_desc
 zgf_export_pool.options_desc
@@ -199,11 +195,9 @@ zgf_refine.options_desc
 zgf_remove_nodes.options_desc
 zgf_rerun.options_desc
 zgf_reweight.options_desc
+zgf_reweight_wham.options_desc
 zgf_setup_nodes.options_desc
-zgf_show_cluster_representatives.options_desc
 zgf_solvate_nodes.options_desc
-zgf_standard_create_matrix.options_desc
-zgf_standard_create_neighbours.options_desc
 zgf_submit_job_HLRN.options_desc
 zgf_upgrade.options_desc" class="py-name" href="#" onclick="return doclink('link-48', 'options_desc', 'link-36');">options_desc</a></tt><tt class="py-op">.</tt><tt id="link-49" class="py-name" targets="Method ZIBMolPy.ui.OptionsList.epytext()=ZIBMolPy.ui.OptionsList-class.html#epytext"><a title="ZIBMolPy.ui.OptionsList.epytext" class="py-name" href="#" onclick="return doclink('link-49', 'epytext', 'link-49');">epytext</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> <tt class="py-comment"># for epydoc</tt> </tt>
 <a name="L78"></a><tt class="py-lineno"> 78</tt>  <tt class="py-line"> </tt>
@@ -221,13 +215,12 @@ ZIBMolPy.pool" class="py-name" href="#" onclick="return doclink('link-52', 'pool
 <a name="L88"></a><tt class="py-lineno"> 88</tt>  <tt class="py-line">                <tt class="py-name">argv</tt> <tt class="py-op">=</tt> <tt class="py-name">sys</tt><tt class="py-op">.</tt><tt class="py-name">argv</tt> </tt>
 <a name="L89"></a><tt class="py-lineno"> 89</tt>  <tt class="py-line">        <tt class="py-name">options</tt> <tt class="py-op">=</tt> <tt id="link-53" class="py-name"><a title="zgf_analyze.options_desc
 zgf_cleanup.options_desc
-zgf_cluster_create_neighbours.options_desc
 zgf_concatenate_stuff.options_desc
-zgf_core_set_create_matrix.options_desc
-zgf_core_set_create_neighbours.options_desc
 zgf_create_nodes.options_desc
+zgf_create_pmatrix.options_desc
 zgf_create_pool.options_desc
 zgf_create_rates.options_desc
+zgf_create_tnodes.options_desc
 zgf_create_unrestrained_nodes.options_desc
 zgf_discard_solvent.options_desc
 zgf_export_pool.options_desc
@@ -240,11 +233,9 @@ zgf_refine.options_desc
 zgf_remove_nodes.options_desc
 zgf_rerun.options_desc
 zgf_reweight.options_desc
+zgf_reweight_wham.options_desc
 zgf_setup_nodes.options_desc
-zgf_show_cluster_representatives.options_desc
 zgf_solvate_nodes.options_desc
-zgf_standard_create_matrix.options_desc
-zgf_standard_create_neighbours.options_desc
 zgf_submit_job_HLRN.options_desc
 zgf_upgrade.options_desc" class="py-name" href="#" onclick="return doclink('link-53', 'options_desc', 'link-36');">options_desc</a></tt><tt class="py-op">.</tt><tt id="link-54" class="py-name" targets="Method ZIBMolPy.ui.OptionsList.parse_args()=ZIBMolPy.ui.OptionsList-class.html#parse_args"><a title="ZIBMolPy.ui.OptionsList.parse_args" class="py-name" href="#" onclick="return doclink('link-54', 'parse_args', 'link-54');">parse_args</a></tt><tt class="py-op">(</tt><tt class="py-name">argv</tt><tt class="py-op">)</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt> </tt>
 <a name="L90"></a><tt class="py-lineno"> 90</tt>  <tt class="py-line">         </tt>
@@ -342,18 +333,15 @@ ZIBMolPy.pool" class="py-name" href="#" onclick="return doclink('link-92', 'pool
 ZIBMolPy.pool.Pool.save" class="py-name" href="#" onclick="return doclink('link-94', 'save', 'link-85');">save</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
 <a name="L161"></a><tt class="py-lineno">161</tt>  <tt class="py-line">                <tt class="py-keyword">print</tt> <tt class="py-string">"saving "</tt> <tt class="py-op">+</tt><tt class="py-name">str</tt><tt class="py-op">(</tt><tt class="py-name">n</tt><tt class="py-op">)</tt> </tt>
 <a name="L162"></a><tt class="py-lineno">162</tt>  <tt class="py-line">                 </tt>
-<a name="L163"></a><tt class="py-lineno">163</tt>  <tt class="py-line">        <tt id="link-95" class="py-name"><a title="zgf_cleanup" class="py-name" href="#" onclick="return doclink('link-95', 'zgf_cleanup', 'link-30');">zgf_cleanup</a></tt><tt class="py-op">.</tt><tt id="link-96" class="py-name" targets="Function zgf_analyze.main()=zgf_analyze-module.html#main,Function zgf_browser.main()=zgf_browser-module.html#main,Function zgf_cleanup.main()=zgf_cleanup-module.html#main,Function zgf_cluster_create_matrix.main()=zgf_cluster_create_matrix-module.html#main,Function zgf_cluster_create_neighbours.main()=zgf_cluster_create_neighbours-module.html#main,Function zgf_concatenate_stuff.main()=zgf_concatenate_stuff-module.html#main,Function zgf_core_set_create_matrix.main()=zgf_core_set_create_matrix-module.html#main,Function zgf_core_set_create_neighbours.main()=zgf_core_set_create_neighbours-module.html#main,Function zgf_create_matrix_pdb.main()=zgf_create_matrix_pdb-module.html#main,Function zgf_create_nodes.main()=zgf_create_nodes-module.html#main,Function zgf_create_pool.main()=zgf_create_pool-module.html#main,Function zgf_create_rates.main()=zgf_create_rates-module.html#main,Function zgf_create_unrestrained_nodes.main()=zgf_create_unrestrained_nodes-module.html#main,Function zgf_discard_solvent.main()=zgf_discard_solvent-module.html#main,Function zgf_export_pool.main()=zgf_export_pool-module.html#main,Function zgf_extract_conformations.main()=zgf_extract_conformations-module.html#main,Function zgf_gauge_times.main()=zgf_gauge_times-module.html#main,Function zgf_genion.main()=zgf_genion-module.html#main,Function zgf_grompp.main()=zgf_grompp-module.html#main,Function zgf_mdrun.main()=zgf_mdrun-module.html#main,Function zgf_recover_state.main()=zgf_recover_state-module.html#main,Function zgf_refine.main()=zgf_refine-module.html#main,Function zgf_remove_nodes.main()=zgf_remove_nodes-module.html#main,Function zgf_rerun.main()=zgf_rerun-module.html#main,Function zgf_reweight.main()=zgf_reweight-module.html#main,Function zgf_setup_nodes.main()=zgf_setup_nodes-module.html#main,Function zgf_show_cluster_representatives.main()=zgf_show_cluster_representatives-module.html#main,Function zgf_show_me_my_matrix.main()=zgf_show_me_my_matrix-module.html#main,Function zgf_solvate_nodes.main()=zgf_solvate_nodes-module.html#main,Function zgf_standard_create_matrix.main()=zgf_standard_create_matrix-module.html#main,Function zgf_standard_create_neighbours.main()=zgf_standard_create_neighbours-module.html#main,Function zgf_submit_job_HLRN.main()=zgf_submit_job_HLRN-module.html#main,Function zgf_test.main()=zgf_test-module.html#main,Function zgf_upgrade.main()=zgf_upgrade-module.html#main"><a title="zgf_analyze.main
+<a name="L163"></a><tt class="py-lineno">163</tt>  <tt class="py-line">        <tt id="link-95" class="py-name"><a title="zgf_cleanup" class="py-name" href="#" onclick="return doclink('link-95', 'zgf_cleanup', 'link-30');">zgf_cleanup</a></tt><tt class="py-op">.</tt><tt id="link-96" class="py-name" targets="Function zgf_analyze.main()=zgf_analyze-module.html#main,Function zgf_browser.main()=zgf_browser-module.html#main,Function zgf_cleanup.main()=zgf_cleanup-module.html#main,Function zgf_concatenate_stuff.main()=zgf_concatenate_stuff-module.html#main,Function zgf_create_nodes.main()=zgf_create_nodes-module.html#main,Function zgf_create_pmatrix.main()=zgf_create_pmatrix-module.html#main,Function zgf_create_pool.main()=zgf_create_pool-module.html#main,Function zgf_create_rates.main()=zgf_create_rates-module.html#main,Function zgf_create_tnodes.main()=zgf_create_tnodes-module.html#main,Function zgf_create_unrestrained_nodes.main()=zgf_create_unrestrained_nodes-module.html#main,Function zgf_discard_solvent.main()=zgf_discard_solvent-module.html#main,Function zgf_export_pool.main()=zgf_export_pool-module.html#main,Function zgf_extract_conformations.main()=zgf_extract_conformations-module.html#main,Function zgf_gauge_times.main()=zgf_gauge_times-module.html#main,Function zgf_genion.main()=zgf_genion-module.html#main,Function zgf_grompp.main()=zgf_grompp-module.html#main,Function zgf_mdrun.main()=zgf_mdrun-module.html#main,Function zgf_recover_state.main()=zgf_recover_state-module.html#main,Function zgf_refine.main()=zgf_refine-module.html#main,Function zgf_remove_nodes.main()=zgf_remove_nodes-module.html#main,Function zgf_rerun.main()=zgf_rerun-module.html#main,Function zgf_reweight.main()=zgf_reweight-module.html#main,Function zgf_reweight_wham.main()=zgf_reweight_wham-module.html#main,Function zgf_setup_nodes.main()=zgf_setup_nodes-module.html#main,Function zgf_solvate_nodes.main()=zgf_solvate_nodes-module.html#main,Function zgf_submit_job_HLRN.main()=zgf_submit_job_HLRN-module.html#main,Function zgf_test.main()=zgf_test-module.html#main,Function zgf_upgrade.main()=zgf_upgrade-module.html#main"><a title="zgf_analyze.main
 zgf_browser.main
 zgf_cleanup.main
-zgf_cluster_create_matrix.main
-zgf_cluster_create_neighbours.main
 zgf_concatenate_stuff.main
-zgf_core_set_create_matrix.main
-zgf_core_set_create_neighbours.main
-zgf_create_matrix_pdb.main
 zgf_create_nodes.main
+zgf_create_pmatrix.main
 zgf_create_pool.main
 zgf_create_rates.main
+zgf_create_tnodes.main
 zgf_create_unrestrained_nodes.main
 zgf_discard_solvent.main
 zgf_export_pool.main
@@ -367,12 +355,9 @@ zgf_refine.main
 zgf_remove_nodes.main
 zgf_rerun.main
 zgf_reweight.main
+zgf_reweight_wham.main
 zgf_setup_nodes.main
-zgf_show_cluster_representatives.main
-zgf_show_me_my_matrix.main
 zgf_solvate_nodes.main
-zgf_standard_create_matrix.main
-zgf_standard_create_neighbours.main
 zgf_submit_job_HLRN.main
 zgf_test.main
 zgf_upgrade.main" class="py-name" href="#" onclick="return doclink('link-96', 'main', 'link-96');">main</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
@@ -749,15 +734,12 @@ ZIBMolPy.pool" class="py-name" href="#" onclick="return doclink('link-230', 'poo
 <a name="L481"></a><tt class="py-lineno">481</tt>  <tt class="py-line">        <tt id="link-231" class="py-name"><a title="zgf_analyze.main
 zgf_browser.main
 zgf_cleanup.main
-zgf_cluster_create_matrix.main
-zgf_cluster_create_neighbours.main
 zgf_concatenate_stuff.main
-zgf_core_set_create_matrix.main
-zgf_core_set_create_neighbours.main
-zgf_create_matrix_pdb.main
 zgf_create_nodes.main
+zgf_create_pmatrix.main
 zgf_create_pool.main
 zgf_create_rates.main
+zgf_create_tnodes.main
 zgf_create_unrestrained_nodes.main
 zgf_discard_solvent.main
 zgf_export_pool.main
@@ -771,12 +753,9 @@ zgf_refine.main
 zgf_remove_nodes.main
 zgf_rerun.main
 zgf_reweight.main
+zgf_reweight_wham.main
 zgf_setup_nodes.main
-zgf_show_cluster_representatives.main
-zgf_show_me_my_matrix.main
 zgf_solvate_nodes.main
-zgf_standard_create_matrix.main
-zgf_standard_create_neighbours.main
 zgf_submit_job_HLRN.main
 zgf_test.main
 zgf_upgrade.main" class="py-name" href="#" onclick="return doclink('link-231', 'main', 'link-96');">main</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
@@ -820,7 +799,7 @@ expandto(location.href);
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Fri Nov 16 15:54:18 2012
+    Generated by Epydoc 3.0.1 on Wed Feb 13 11:19:37 2013
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"
