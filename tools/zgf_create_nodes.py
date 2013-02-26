@@ -63,15 +63,15 @@ THE_BIG_NUMBER = 99999.0 # is measured in [Chuck]
 options_desc = OptionsList([
 	Option("N", "methodnodes", "choice", "method to determine nodes", choices=("kmeans","equidist", "all")),
 	Option("A", "methodalphas", "choice", "method to determine alphas", choices=("theta", "user") ),
-	Option("K", "numnodes", "int", "number of nodes to create", default=10, min_value=1),
-	Option("E", "ext-max", "int", "max. number of extensions if not converged", default=5, min_value=0),
-	Option("L", "ext-length", "int", "length per extension in ps", default=100, min_value=1),
 	Option("P", "methodphifit", "choice", "method to determine phi fit", choices=("switch", "harmonic", "leastsq") ),
-	Option("p", "parent-node", "node", "parent-node", default="root"),
-	Option("w", "write-preview", "bool", "write frames of new nodes as pdb-trajectory", default=False),
+	Option("K", "numnodes", "int", "number of nodes to create", default=10, min_value=1),
+	Option("C", "numchains", "int", "number of chains per node", default=1, min_value=1),
 	Option("l", "sampling-length", "int", "length of the normal sampling in ps", default=100, min_value=0),
+	Option("L", "ext-length", "int", "length per extension in ps", default=100, min_value=1),
+	Option("E", "ext-max", "int", "max. number of extensions if not converged", default=5, min_value=0),	
+	Option("p", "parent-node", "node", "parent-node", default="root"),
 	Option("s", "random-seed", "str", "seed for random number generator"),
-	
+	Option("w", "write-preview", "bool", "write frames of new nodes as pdb-trajectory", default=False)
 ])
 
 sys.modules[__name__].__doc__ += options_desc.epytext() # for epydoc
@@ -125,7 +125,7 @@ def main(argv=None):
 		n.parent_frame_num = i
 		n.parent = parent
 		n.state = "creating-a-partition" # will be set to "created" at end of script
-		n.extensions_counter = 0
+		n.extensions_counter = np.zeros(options.numchains, dtype=np.int)
 		n.extensions_max = options.ext_max
 		n.extensions_length = options.ext_length
 		n.sampling_length = options.sampling_length	

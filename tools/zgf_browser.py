@@ -139,6 +139,7 @@ class Blackboard(object):
 		self.listeners = []
 		self.pool = None
 		self.selected_node = None
+		self.selected_chain = None
 		self.selected_coords = []
 		self.selected_plot_manager = None
 	
@@ -293,6 +294,7 @@ class Statusbar(gtk.Statusbar):
 		t_left_dnodes = 0
 		t_left_tnodes = 0
 
+		"""
 		for n in self.board.pool:
 			if(n == self.board.pool.root):
 				continue
@@ -325,6 +327,10 @@ class Statusbar(gtk.Statusbar):
 			if(t_left_tnodes):
 				tnodes_time_msg += "(%d)"%t_left_tnodes
 			tnodes_time_msg += " ps"
+		"""
+		dnodes_time_msg = "reimplement me" #TODO
+		tnodes_time_msg = "reimplement me" #TODO
+
 
 		msg_parts.append(dnodes_time_msg)
 		msg_parts.append(tnodes_time_msg)
@@ -862,8 +868,8 @@ class CoordinateList(gtk.TreeView):
 #===============================================================================
 class NodeList(gtk.TreeView):
 	def __init__(self, board):
-		liststore = gtk.ListStore(str, str, str, str, str, bool, str, str, bool, bool, bool)
-		gtk.TreeView.__init__(self, liststore)
+		treestore = gtk.TreeStore(str, str, str, str, str, str, bool, str, str, bool, bool, bool)
+		gtk.TreeView.__init__(self, treestore)
 		self.board = board
 		self.board.listeners.append(self.update)
 		self.updateing = False # prevents cyclic-events between update and on_select
@@ -873,13 +879,26 @@ class NodeList(gtk.TreeView):
 		self.colors = {'default': '#FFFFFF', 'refined': '#D8D8D8', 'active': '#A6E8A6', 'stale': '#E8A6A7'}
 
 		renderer1 = gtk.CellRendererText()
-		
+
+		"""
+		column_spin = gtk.TreeViewColumn("Chain")
+		adjustment = gtk.Adjustment(0, 0, 100, 1, 10, 0)        
+		cellrenderer_spin = gtk.CellRendererSpin()
+		cellrenderer_spin.set_property("editable", True)
+		cellrenderer_spin.set_property("visible", True)
+		cellrenderer_spin.set_property("adjustment", adjustment)
+
+		column_spin.pack_start(cellrenderer_spin, True)
+		column_spin.add_attribute(cellrenderer_spin, "text", 4)
+
+		"""
+
 		renderer2 = gtk.CellRendererToggle()
 		renderer2.connect('toggled', self.on_toggled_convlog)
-				
+		
 		renderer3 = gtk.CellRendererToggle()
 		renderer3.connect('toggled', self.on_toggled_weightlog)
-		
+
 		renderer4 = gtk.CellRendererToggle()
 		renderer4.connect('toggled', self.on_toggled_trajectory)
 		
@@ -889,13 +908,17 @@ class NodeList(gtk.TreeView):
 		self.append_column(gtk.TreeViewColumn("Name", renderer1, text=1))
 		self.append_column(gtk.TreeViewColumn("State", renderer1, text=2))
 		self.append_column(gtk.TreeViewColumn("", renderer1, text=3))
-		self.append_column(gtk.TreeViewColumn("Extension", renderer1, text=4))
-		self.append_column(gtk.TreeViewColumn("ConvLog", renderer2, active=5))
-		self.append_column(gtk.TreeViewColumn("Weight (dir.)", renderer1, text=6))
-		self.append_column(gtk.TreeViewColumn("Weight (corr.)", renderer1, text=7))
-		self.append_column(gtk.TreeViewColumn("WeightLog", renderer3, active=8))
-		self.append_column(gtk.TreeViewColumn("Trajectory", renderer4, active=9))
-		self.append_column(gtk.TreeViewColumn("MDLog", renderer5, active=10))
+
+		#self.append_column(column_spin)
+		self.append_column(gtk.TreeViewColumn("Chains", renderer1, text=4))
+
+		self.append_column(gtk.TreeViewColumn("Extension", renderer1, text=5))
+		self.append_column(gtk.TreeViewColumn("ConvLog", renderer2, active=6))
+		self.append_column(gtk.TreeViewColumn("Weight (dir.)", renderer1, text=7))
+		self.append_column(gtk.TreeViewColumn("Weight (corr.)", renderer1, text=8))
+		self.append_column(gtk.TreeViewColumn("WeightLog", renderer3, active=9))
+		self.append_column(gtk.TreeViewColumn("Trajectory", renderer4, active=10))
+		self.append_column(gtk.TreeViewColumn("MDLog", renderer5, active=11))
 		self.append_column(gtk.TreeViewColumn("")) # placeholder
 						 
 
@@ -959,8 +982,13 @@ class NodeList(gtk.TreeView):
 		
 		for (i,n) in enumerate(self.board.pool):
 			(ext_c, ext_m) = ("?", "?")
+			chain_idx = "n/a"
+			chains = False
 			if(hasattr(n, "extensions_counter")):
-				ext_c =  str(n.extensions_counter)
+				ext_c =  str(n.extensions_counter[0])
+				chain_idx = "(?/%d)"%len(n.extensions_counter)
+				chains = True			
+
 			if(hasattr(n, "extensions_max")):
 				ext_m =  str(n.extensions_max)
 			ext_txt = "(%s/%s)"%(ext_c, ext_m)
@@ -988,20 +1016,40 @@ class NodeList(gtk.TreeView):
 			if('weight_corrected' in n.obs):
 				weight_corrected = "%1.10f"%n.obs.weight_corrected
 				
-			row = [color, n.name, n.state, ntype, ext_txt, n.has_convergence_log, weight_direct, weight_corrected, n.has_reweighting_log, n.has_trajectory, n.has_mdrun_log]
+			row = [color, n.name, n.state, ntype, chain_idx, ext_txt, n.has_convergence_log, weight_direct, weight_corrected, n.has_reweighting_log, n.has_trajectory, n.has_mdrun_log]
 			
 			# Updating the entire list, without clearing it. 
 			# This preserves the selection and the up/down-keys still work :-)
 				
 			if(i >= len(M)):
-				M.append(row)
+				M.append(None, row)
 			else:
 				row_iter = M.get_iter((i,))
 				for (j, v) in enumerate(row):
 					M.set_value(row_iter, j, v)
-		
-			if(n == self.board.selected_node): 
+
+			if(n == self.board.selected_node):
 				self.get_selection().select_path((i,))
+
+			if(chains):
+				for (k, c) in enumerate(n.extensions_counter):
+					#row = [color, "chain%03d"%(k+1), n.state, "", "", ext_txt, n.has_convergence_log, "", "", n.has_reweighting_log, n.has_trajectory, n.has_mdrun_log]
+					row = [color, "chain%03d"%(k+1), n.state, "", "", ext_txt, None, "", "", n.has_reweighting_log, n.has_trajectory, n.has_mdrun_log]
+					row_iter = M.get_iter((i,))
+
+					if( M.iter_n_children(row_iter) < len(n.extensions_counter) ):
+						M.append(row_iter, row)
+					else:
+						child_iter = M.iter_nth_child(row_iter, k)
+						for (j, v) in enumerate(row):
+							M.set_value(child_iter, j, v)
+
+					if(k == self.board.selected_chain):
+						self.get_selection().select_path((i,k))
+
+		
+			
+
 	
 		# delete_list must not be a generator
 		delete_list = list(reversed(range(len(self.board.pool), len(M))))
@@ -1014,17 +1062,28 @@ class NodeList(gtk.TreeView):
 	def on_select(self, dummy_widget=None):
 		selection = self.get_selection().get_selected_rows()
 
-		if(len(selection[1]) == 0): #selection might be empty...
+		if(len(selection[1]) == 0): # selection might be empty ...
 			new_selected_node =  None
+			new_selected_chain =  None
 			if(len(self.board.pool) > 0):
-				new_selected_node = self.board.pool[0] #... then select the root
+				new_selected_node = self.board.pool[0] # ... then select the root
 		else:
-			i = selection[1][0][0]
-			new_selected_node = self.board.pool[i]
+			new_selected_node = self.board.pool[ selection[1][0][0] ]
+			if(len(selection[1][0]) == 1):
+				new_selected_chain = None
+			elif(len(selection[1][0]) == 2):
+				new_selected_chain = selection[1][0][1]
 		
 		if(self.board.selected_node != new_selected_node):
 			self.board.selected_node = new_selected_node
 			self.board.fire_listeners()
+
+		if(self.board.selected_chain != new_selected_chain):
+			self.board.selected_chain = new_selected_chain
+			self.board.fire_listeners()
+
+		print self.board.selected_node
+		print self.board.selected_chain
 		 	
 	#---------------------------------------------------------------------------
 	def on_toggled_convlog(self, widget, selection):
