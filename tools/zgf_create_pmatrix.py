@@ -6,7 +6,7 @@ What it does
 ============
 	B{This is the final step of ZIBgridfree.}
 
-	This tool will calculate the transition probability matrices $P_c(\\tau)$) (transitions between metastable subsets, i.e. the clusters identified by PCCA+) or $P(\\tau)$) (transitions between all nodes), depending on what was chosen in L{zgf_create_tnodes}.
+	This tool will calculate the transition probability matrices $P_c(\\tau)$ (transitions between metastable subsets, i.e. the clusters identified by PCCA+) or $P(\\tau)$ (transitions between all nodes), depending on what was chosen in L{zgf_create_tnodes}.
 
 How it works
 ============

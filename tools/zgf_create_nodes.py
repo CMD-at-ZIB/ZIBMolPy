@@ -47,6 +47,7 @@ from datetime import datetime
 from tempfile import mktemp
 from subprocess import Popen, PIPE
 import numpy as np
+import copy
 
 
 # ZIBgridfree quasi-constant parameters
@@ -190,26 +191,39 @@ def mknodes_equidist(parent, numnodes):
 
 	frames_int = parent.trajectory
 	initial_node = 0
-	# sorted distances (increasing order) from initial node to all frames
-	diffs = (frames_int - frames_int.getframe(initial_node)).norm()
-	sorted_diffs_idx = np.argsort( diffs )
 	
-	def identify_nodes(frames_int, initial_node, theta, sorted_diffs, sorted_diffs_idx):		
+	# sorted distances (increasing order) from initial node to all frames
+	# needs to be calculated fo inital guess for theta
+	diffs = (frames_int - frames_int.getframe(initial_node)).norm()
+
+	def identify_nodes(frames_int_CR,frames_int, theta):		
 		chosen_idx = []
+		node = 0
+		chosen_idx.append(node)
 
 		while True:
-			node = sorted_diffs_idx[0]
-			chosen_idx.append(node)
+			# sorted distances (increasing order) from selected node to all frames
+			position = frames_int.getframe(node) 
+			dist2node = (frames_int - position).norm()
+			dump = np.where(dist2node < theta)[0]
 
-			dist2initial = (frames_int.getframe(initial_node) - frames_int.getframe(node)).norm()
-			dump = np.where((sorted_diffs - dist2initial) < theta)[0]
+			#remove all nodes with a distance less then theta to selected node
+			frames_int = frames_int.delframes(dump)
 
-			# crop diffs and indices
-			sorted_diffs = sorted_diffs[len(dump):]
-			sorted_diffs_idx = sorted_diffs_idx[len(dump):]	
-		
-			if len(sorted_diffs) == 0:
+			#find new closest node
+			dist2node = (frames_int - position).norm()
+			sorted_diffs_node = np.argsort( dist2node )
+			sorted_diffs_node = sorted_diffs_node[len(dump):]
+
+			#stop if there is no other node left			
+			if len(sorted_diffs_node) == 0:
 				break
+
+			node = sorted_diffs_node[0]
+
+			#find old position of node and keep him in chosen_idx
+			old_pos = np.where(frames_int_CR.array == frames_int.getframe(node).array)[0][0]
+			chosen_idx.append(old_pos)
 
 		return chosen_idx
 
@@ -217,9 +231,10 @@ def mknodes_equidist(parent, numnodes):
 	theta_low = 0.0
 	theta_high = np.max(diffs)
 	theta = theta_high/2.0 # initial guess
-
 	while True:
-		chosen_idx = identify_nodes(frames_int, initial_node, theta, diffs[sorted_diffs_idx][:], sorted_diffs_idx[:])
+		# Make sure frames are not deleted and that we still pass an object and no list (so frames_int[:] is no solution)
+		frames_copy = frames_int.copy()
+		chosen_idx = identify_nodes(frames_int,frames_copy, theta)
 		print "theta: %f, theta_high: %f, theta_low: %f, current numnodes: %d"%(theta, theta_high, theta_low, len(chosen_idx))
 
 		if len(chosen_idx) < numnodes:
@@ -228,6 +243,7 @@ def mknodes_equidist(parent, numnodes):
 			theta_low = theta
 		if (len(chosen_idx) == numnodes) or (theta_high - theta_low < 2E-6):
 			break
+
 
 		theta = (theta_low + theta_high)/2.0
 
@@ -242,6 +258,13 @@ def mknodes_equidist(parent, numnodes):
 	print (frames_chosen.var() / frames_int.var()).array
 	
 	return(chosen_idx)
+
+#==========================================================================
+def multi_delete(list_, *args):
+    indexes = sorted(list(args), reverse=True)
+    for index in indexes:
+        list_.array.remove(index)
+    return list_
 	
 
 #==========================================================================

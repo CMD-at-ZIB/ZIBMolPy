@@ -286,28 +286,52 @@ class Statusbar(gtk.Statusbar):
 	
 		if(self.board.pool.alpha!=None):
 			msg_parts.append("α=%.2f"%self.board.pool.alpha)
-		
-		t_left = 0 # time still needed (estimate) 
-		t_used = 0 # time already used
-		
+	
+		# time calculation and estimate (in case of t_left_dnodes)
+		t_used_dnodes = 0
+		t_used_tnodes = 0
+		t_left_dnodes = 0
+		t_left_tnodes = 0
+
 		for n in self.board.pool:
 			if(n == self.board.pool.root):
 				continue
 			expected_exts = n.extensions_max/2.0 # how many extension do we expect?
-			if n.is_sampled:
-				t_used += n.sampling_length + n.extensions_length * n.extensions_counter
-			elif(n.extensions_counter == 0):
-				t_left += n.sampling_length +  n.extensions_length * expected_exts 
+			if(n.has_restraints):
+				if n.is_sampled:
+					t_used_dnodes += n.sampling_length + n.extensions_length * n.extensions_counter
+				elif(n.extensions_counter == 0):
+					t_left_dnodes += n.sampling_length +  n.extensions_length * expected_exts 
+				else:
+					t_used_dnodes += n.sampling_length + n.extensions_length * n.extensions_counter
+					t_left_dnodes += n.extensions_length * max(1, expected_exts - n.extensions_counter)
 			else:
-				t_used += n.sampling_length + n.extensions_length * n.extensions_counter
-				t_left +=  n.extensions_length * max(1, expected_exts - n.extensions_counter)
-		
-		msg_parts.append("time-used=%d ps"%t_used)
-		msg_parts.append("time-left (est.)=%d ps"%t_left)
+				if(n.is_sampled):
+					t_used_tnodes += n.sampling_length + n.extensions_length * n.extensions_counter
+				elif(n.extensions_counter == 0):
+					t_left_tnodes += n.sampling_length + n.extensions_length * n.extensions_max
+				else:
+					t_used_tnodes += n.sampling_length + n.extensions_length * n.extensions_counter
+					t_left_tnodes += n.extensions_length * (n.extensions_max - n.extensions_counter)
+
+		dnodes_time_msg = "D-time=%d"%t_used_dnodes
+		if(t_left_dnodes):
+			dnodes_time_msg += "(est. %d)"%t_left_dnodes
+		dnodes_time_msg += " ps"
+
+		tnodes_time_msg = ""
+		if(t_used_tnodes or t_left_tnodes):
+			tnodes_time_msg += "T-time=%d"%t_used_tnodes
+			if(t_left_tnodes):
+				tnodes_time_msg += "(%d)"%t_left_tnodes
+			tnodes_time_msg += " ps"
+
+		msg_parts.append(dnodes_time_msg)
+		msg_parts.append(tnodes_time_msg)
 		ctx = self.get_context_id("foobar")
 		self.pop(ctx)
 		self.push(ctx, "   ".join(msg_parts))
-		#"put something interesting here last update: "+str(time.time())
+
 
 #===============================================================================
 class ScrolledWindow(gtk.ScrolledWindow):

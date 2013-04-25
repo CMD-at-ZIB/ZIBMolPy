@@ -227,6 +227,13 @@ class InternalArray(object):
 			return(InternalArray(self.converter, self.array[frame_indices, :], self.frameweights[frame_indices,:]))
 		return(InternalArray(self.converter, self.array[frame_indices, :]))
 
+	def delframes(self,frame_indices):
+		""" Expects a list of frame-indices. Returns an new InternalArray without those frames."""
+		assert(all([isinstance(i, int) for i in frame_indices]))
+		if(self.has_frameweights):
+			return(InternalArray(self.converter, np.delete(self.array,frame_indices,0), np.delete(self.frameweights,frame_indices,0)))
+		return(InternalArray(self.converter, np.delete(self.array,frame_indices,0)))
+
 	def array_split(self, n_segments):
 		""" Attempts to split self into n_segments InternalArrays of equal size """
 		assert(isinstance(n_segments, int))
