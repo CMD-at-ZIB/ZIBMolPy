@@ -62,9 +62,9 @@ THE_BIG_NUMBER = 99999.0 # is measured in [Chuck]
 
 #===============================================================================
 options_desc = OptionsList([
-	Option("N", "methodnodes", "choice", "method to determine nodes", choices=("kmeans","equidist", "all")),
+	Option("N", "methodnodes", "choice", "method to determine nodes", choices=("kmeans", "equidist", "maxdist", "all")),
 	Option("A", "methodalphas", "choice", "method to determine alphas", choices=("theta", "user") ),
-	Option("K", "numnodes", "int", "number of nodes to create", default=10, min_value=1),
+	Option("K", "numnodes", "int", "number of nodes to create", default=10, min_value=0),
 	Option("E", "ext-max", "int", "max. number of extensions if not converged", default=5, min_value=0),
 	Option("L", "ext-length", "int", "length per extension in ps", default=100, min_value=1),
 	Option("P", "methodphifit", "choice", "method to determine phi fit", choices=("switch", "harmonic", "leastsq") ),
@@ -112,6 +112,8 @@ def main(argv=None):
 		chosen_idx = mknodes_kmeans(parent, options.numnodes)
 	elif(options.methodnodes == "equidist"):
 		chosen_idx = mknodes_equidist(parent, options.numnodes)
+	elif(options.methodnodes == "maxdist"):
+		chosen_idx = mknodes_maxdist(parent, options.numnodes)
 	elif(options.methodnodes == "all"):
 		chosen_idx = mknodes_all(parent)
 	else:
@@ -258,6 +260,80 @@ def mknodes_equidist(parent, numnodes):
 	print (frames_chosen.var() / frames_int.var()).array
 	
 	return(chosen_idx)
+
+#==========================================================================
+def mknodes_maxdist(parent, numnodes):
+
+	if(parent.state == "refined" and len(parent.pool) > 1):
+		sys.exit("Error. Cannot refine a refined node with method 'maxdist'.")
+	 
+		
+	# return object: list of node indices related to the presampling trajectory		
+	chosen_idx = []
+	
+	# InternalArray object with internal coordinates: "nFrames x nInternals" (see internals.py)
+	frames_int = parent.trajectory
+	
+	# maximal allowed distance of any frame to some node if number of nodes set to 0.
+	distCutoff = np.pi * np.sqrt(frames_int.array.shape[1]) / 4	
+	print str(frames_int.array.shape[1]) + " internals -> optimal distance cutoff set to " + str("%0.3f" % distCutoff)
+	
+	# first node (0) chosen arbitrarily and appended to empty list
+	maxNode = 0
+	chosen_idx.append(maxNode)
+	n = 1
+	print "Searching node " + str(n) + ": set to frame 1."
+	
+	# initial array for comparison with minimal distances array
+	nFrames = frames_int.array.shape[0]
+	minArray = THE_BIG_NUMBER * np.ones(nFrames)
+	
+	# for every new nodes
+	while True:
+		n += 1
+		
+		# distances of all frames to current node where node itself is set to "-1"	
+		diffs = (frames_int - frames_int.getframe(maxNode)).norm()
+		diffs[maxNode] = -1
+
+		# merge array of minima with array of current differences by minimizing element-wisely 		
+		minArray = np.minimum(minArray,diffs)
+				
+		# select next node as argmax of minimal distance array and append it to nodes list
+		maxNode = np.argmax(minArray)
+		chosen_idx.append(maxNode)
+		maxDist = minArray[maxNode]
+		
+		print "Searching node " + str(n) + ": Frame " + str(maxNode+1) + " with highest minimal distance: " + str("%0.3f" % maxDist)
+		
+		# stop either after having selected "numnodes">0 nodes or yielding highest minimal distances less than the cutoff value
+		if (maxDist <= distCutoff) and (numnodes == 0):
+			print "\nMaximum distance lower than cutoff " + str("%0.3f" % distCutoff) + " with " + str(n) + " nodes:"
+			break
+		if (n >= numnodes) and (numnodes > 0):
+			print "\n" + str(numnodes) + " nodes reached at a highest minimal distance of " + str("%0.3f" % maxDist) + ":"
+			break
+		
+		
+	chosen_idxP = np.sort(np.array(chosen_idx)) + 1
+	print str(chosen_idxP).strip('[]')
+	#print str(numnodes) + " selected: " + ', '.join(map(str, chosen_idx))
+		
+	
+	frames_chosen = frames_int.getframes(chosen_idx)
+	
+	print "\nDiscretization overview:"
+	print "- Variance per int of presampling trajectory:"
+	print frames_int.var().array
+	print "- Variance per int of chosen nodes:"
+	print frames_chosen.var().array
+	print "- Relative variance per int of chosen nodes:"
+	print (frames_chosen.var() / frames_int.var()).array
+	
+	#sys.exit("Exiting test run 'maxdist'.")
+	
+	return(chosen_idx)
+	
 
 #==========================================================================
 def multi_delete(list_, *args):

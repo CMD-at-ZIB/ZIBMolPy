@@ -64,17 +64,16 @@ from ZIBMolPy.restraint import DihedralRestraint, DistanceRestraint
 from ZIBMolPy.ui import Option, OptionsList
 from ZIBMolPy.phi import get_phi, get_phi_potential
 from ZIBMolPy.pool import Pool
-from ZIBMolPy import gromacs
 import zgf_cleanup
 
-from subprocess import Popen, PIPE
+from subprocess import Popen, PIPE, call, check_call
 from datetime import datetime
 from tempfile import mktemp
 from warnings import warn
 import numpy as np
 import sys
 import os
-import re
+from shutil import copy
 from os import path
 
 
@@ -82,11 +81,14 @@ CRITICAL_FRAME_WEIGHT = 5.0
 
 
 options_desc = OptionsList([
+	Option("s", "seq", "bool", "Suppress MPI", default=False),
+	Option("p", "np", "int", "Number of processors to be used for MPI", default=4, min_value=1),
 	Option("c", "ignore-convergence", "bool", "reweight despite not-converged", default=False),
 	Option("f", "ignore-failed", "bool", "reweight and ignore mdrun-failed nodes", default=False),
 	Option("m", "method", "choice", "reweighting method", choices=("entropy", "direct", "presampling")),
-	Option("b", "e-bonded", "choice", "bonded energy type", choices=("run_standard", "rerun_standard", "none")),
-	Option("n", "e-nonbonded", "choice", "nonbonded energy type", choices=("run_standard", "run_moi", "run_moi_sol_sr", "run_moi_sol_lr", "run_custom", "rerun_standard", "rerun_moi", "rerun_moi_sol_sr", "rerun_moi_sol_lr", "rerun_custom", "none")),
+	Option("z", "reminimize", "bool", "reminimize presampling frames", default=False),
+	Option("b", "e-bonded", "choice", "bonded energy type", choices=("run_standard_potential", "run_standard_bondedterms", "rerun_standard_potential", "rerun_standard_bondedterms", "none")),
+	Option("n", "e-nonbonded", "choice", "nonbonded energy type", choices=("none", "run_standard_nonbondedterms", "run_moi", "run_moi_sol_sr", "run_moi_sol_lr", "run_custom", "rerun_standard_nonbondedterms", "run_moi_sol_interact", "rerun_moi_sol_interact", "run_moi_sol_interact_withLR", "rerun_moi_sol_interact_withLR", "rerun_moi", "rerun_moi_sol_sr", "rerun_moi_sol_lr", "rerun_custom")),
 	Option("e", "custom-energy", "file", extension="txt", default="custom_energy.txt"),
 	Option("t", "presamp-temp", "float", "presampling temp", default=1000), #TODO maybe drop this and ask user instead... method has to be reworked anyway
 	Option("r", "save-refpoints", "bool", "save refpoints in observables", default=False),
@@ -170,7 +172,6 @@ def reweight_direct(nodes, options):
 		energies = load_energy(n, options.e_bonded, options.e_nonbonded, custom_energy_terms)
 
 		frame_weights = n.frameweights
-		phi_values = n.phi_values
 		phi_weighted_energies = energies + get_phi_potential(n.trajectory, n)
 
 		# define evaluation region where sampling is rather dense, e. g. around mean potential energy with standard deviation of potential energy
@@ -242,7 +243,6 @@ def reweight_entropy(nodes, options):
 		energies = load_energy(n, options.e_bonded, options.e_nonbonded, custom_energy_terms)
 
 		frame_weights = n.frameweights
-		phi_values = n.phi_values
 		phi_weighted_energies = energies + get_phi_potential(n.trajectory, n)
 	
 		# calculate mean V
@@ -295,47 +295,180 @@ def reweight_presampling(nodes, options):
 		assert(path.exists(options.custom_energy))
 		custom_energy_terms = [entry.strip() for entry in open(options.custom_energy).readlines() if entry != "\n"]
 	
+	root = nodes[0].pool.root
+	
 	# presampling data
-	presampling_internals = nodes[0].pool.root.trajectory # alternatively pool[0].trajectory
+	presampling_internals = root.trajectory
 	
 	# presampling and sampling beta
-	beta_samp = nodes[0].pool.thermo_beta
+	beta_samp = root.pool.thermo_beta
 	beta_presamp = 1/(options.presamp_temp*BOLTZMANN*AVOGADRO)
+	
+	
+	
+	cmd0 = ["grompp"]
+
+	cmd0 += ["-f", "../../"+root.pool.mdp_fn]
+	cmd0 += ["-n", "../../"+root.pool.ndx_fn]
+	cmd0 += ["-c", "../../"+root.pdb_fn]
+	cmd0 += ["-p", "../../"+root.pool.top_fn]
+	cmd0 += ["-o", "../../"+root.dir+"/run_temp.tpr"]			
+	print("Calling: %s"%" ".join(cmd0))
+	p = Popen(cmd0, cwd=root.dir)
+	retcode = p.wait()
+	assert(retcode == 0) # grompp should never fail
+	os.rename(root.dir+"/run_temp.tpr",root.tpr_fn)
+	
+	# rerun mdrun to calculate presampling energies
+	cmd = ["mdrun"]
+	
+	cmd += ["-s", "../../" + root.tpr_fn]
+	cmd += ["-rerun", "../../" + root.trr_fn]
+	
+	p = Popen(cmd, cwd=root.dir)
+	assert(p.wait() == 0)
+	
+	# remove unnecessary files
+	os.remove(root.dir + "/traj.trr")
+	
+	if (options.e_nonbonded[0:1] == "re" ):
+		e_nb = options.e_nonbonded[2:]
+	else:
+		e_nb = options.e_nonbonded
+	
+	# get potential V of presampling frames
+	energies = load_energy(root, "run_standard", e_nb, custom_energy_terms)
+	
+	
+	
+	mins_dir = root.dir + "/mins"
+	if not os.path.isdir(mins_dir):
+		os.mkdir(mins_dir)
+	
+	copy (root.pool.mdp_fn, mins_dir + "/min.mdp")
+	# change to minimization
+	with open(mins_dir + "/min.mdp", "r+") as f:
+		c = f.read()
+		
+		pos = c.find("integrator")
+		assert (pos != -1) # integrator should be defined
+		c = c[:pos] + ";" +c[pos:] + "\nintegrator = steep\nnstcgsteep = 10"
+		
+		f.seek(0)
+		f.truncate()
+		
+		f.write(c)
+		f.close()	
+	
+	
+	# loading times for starting minimizatioon from certain frame in trajectory
+	cmd2 = ["g_energy", "-dp", "-f", "ener.edr"]
+	
+	print "Loading times of the presampling frames"
+	p = Popen (cmd2, cwd=root.dir, stdin=PIPE)
+	p.communicate("1\n")
+	assert (p.wait() == 0)
+	print "times ---------------------------------------------"
+	times = np.loadtxt(root.dir + "/energy.xvg", comments="@", skiprows=10, usecols=[0])
+	print times
+	
+	print "presamp_partition ----------------------------------"
+	phi_mat = get_phi_mat(presampling_internals, nodes)
+	presamp_partition = np.argmax(phi_mat, axis=1)
+	print "presamp_partition end -------------------------------"
+	# grompp command for every frame
+	cmd3 = ["grompp", "-f", "min.mdp", "-c", "../../../" + root.pdb_fn]
+	cmd3 += ["-t", "../../../" + root.trr_fn]
+	cmd3 += ["-n", "../../../" + root.pool.ndx_fn]
+		
+	if (not root.reweight_minimized or options.reminimize):
+		print "Running grompp to prepare for the minimizations"
+		print "Running mdrun for every presampling frame"
+		for i in xrange(times.size):
+			cmds = cmd3 + ["-p", "../../../" + nodes[presamp_partition[i]].top_fn]
+			cmds += ["-time", str(times[i])]
+			cmds += ["-o", "run" + str(i) + ".tpr"]
+			cmds += ["-po", "mdout" + str(i) + ".mdp"]
+			
+			p = Popen (cmds, cwd = mins_dir)
+			assert(p.wait() == 0)
+			
+			os.remove(mins_dir + "/mdout" + str(i) + ".mdp")
+   
+			# minimization from all frames
+			cmd4 =["mdrun"]
+			cmd4 += ["-s", "run" + str(i) + ".tpr"]
+			cmd4 += ["-g", "md" + str(i) + ".log"]
+			cmd4 += ["-e", "ener" + str(i) + ".edr"]
+			cmd4 += ["-o", "traj" + str(i) + ".trr"]
+			cmd4 += ["-c", "confout" + str(i) + ".gro"]
+			
+			# use mpiexec and mdrun_mpi if available
+			if(not options.seq and call(["which","mpiexec"])==0):
+				if(call(["which","mdrun_mpi"])==0):
+					cmd4[0] = "mdrun_mpi"
+				cmd4 = ["mpiexec", "-np", str(options.np)] + cmd4
+				
+			#http://stackoverflow.com/questions/4554767/terminating-subprocess-in-python
+			#alternative
+			#p = Popen(...)
+			#pp = psutil.Process(p.pid)
+			#for child in pp.get_children():
+			#	child.send_signal(signal.SIGINT)
+			
+			#ensure, that childprocess dies when parent dies. Alternative: write own signal-handler e.g for atexit-module
+			#http://stackoverflow.com/questions/1884941/killing-the-child-processes-with-the-parent-process
+			implant_bomb = None
+			try:
+				import ctypes
+				libc = ctypes.CDLL('libc.so.6')
+				PR_SET_PDEATHSIG = 1; TERM = 15
+				implant_bomb = lambda: libc.prctl(PR_SET_PDEATHSIG, TERM)
+			except:
+				warn("Child process might live on when parent gets terminated (feature requires python 2.6).")
+			
+			print("Calling: %s"%" ".join(cmd4))
+			check_call(cmd4, cwd=mins_dir, preexec_fn=implant_bomb)
+			
+			os.remove(mins_dir + "/traj" + str(i) + ".trr")
+			os.remove(mins_dir + "/confout" + str(i) + ".gro")
+			os.remove(mins_dir + "/md" + str(i) + ".log")
+  
+		root.reweight_minimized = True
+		root.lock()
+		root.save()
+		root.unlock()
+	
+	
+	# stores according minimum in nodes
+	min_per_node(mins_dir, presamp_partition, nodes, options.e_bonded, options.e_nonbonded, custom_energy_terms)
+	
 		
 	# calculate free energy per node 
-	for n in nodes:
-		log = open(n.reweighting_log_fn, "a") # using separate log-file
+	for i in xrange(len(nodes)):
+		log = open(nodes[i].reweighting_log_fn, "a") # using separate log-file
 		def output(message):
 			print(message)
 			log.write(message+"\n")
 			
 		output("======= Starting node reweighting %s"%datetime.now())
 		
-		# get potential V and substract penalty potential
-		energies = load_energy(n, options.e_bonded, options.e_nonbonded, custom_energy_terms)
-
-		frame_weights = n.frameweights
-		phi_values = n.phi_values
-		phi_weighted_energies = energies + get_phi_potential(n.trajectory, n)
-
-		# calculate mean V and standard deviation
-		n.obs.mean_V = np.average(phi_weighted_energies, weights=frame_weights)
-		n.tmp['weight'] = 1.0
-		n.obs.std_V = np.sqrt(np.average(np.square(phi_weighted_energies - n.obs.mean_V), weights=frame_weights))
-			
+		phi_values = phi_mat[:,i]
+		phi_sum = np.sum(phi_values)
+		
+		# calculate mean V
+		nodes[i].obs.mean_V = np.average(energies, weights=phi_values/phi_sum)
+		nodes[i].tmp['weight'] = 1.0
+		
 		# number of presampling points in node i => free energy at high temperature
-		n.tmp['presamp_weight'] = np.sum(get_phi(presampling_internals, n))
-		n.tmp['presamp_A']= -1/beta_presamp * np.log(n.tmp['presamp_weight'])
-			
-		# estimate global optimum potential energy
-		factor= 1.0
-		n.tmp['opt_pot_energy']= n.obs.mean_V - 3.0 * factor * n.obs.std_V
+		nodes[i].tmp['presamp_A']= -1/beta_presamp * np.log(phi_sum)
 			
 		# compute free energy and entropy at sampling temperature
-		n.obs.S = 0.0 #TODO can we get separate entropy from the term below?
-		n.obs.A = (beta_samp - beta_presamp) / beta_samp * n.tmp['opt_pot_energy'] + np.log(beta_samp / beta_presamp) * factor * n.obs.std_V + (beta_presamp / beta_samp) * n.tmp['presamp_A']
-		if('refpoints' in n.obs):
-			del n.obs['refpoints']
+		# n.obs.S = 0.0 #TODO can we get separate entropy from the term below?
+		beta_rel = beta_presamp / beta_samp
+		nodes[i].obs.A = (1 - beta_rel) * nodes[i].tmp["opt_pot_e"] + beta_rel * np.log(1/beta_rel) * (nodes[i].obs.mean_V - nodes[i].tmp["opt_pot_e"]) + beta_rel * nodes[i].tmp['presamp_A']
+		if('refpoints' in nodes[i].obs):
+			del nodes[i].obs['refpoints']
 
 		log.close()
 
@@ -348,15 +481,20 @@ def reweight_presampling(nodes, options):
 def load_energy(node, e_bonded_type, e_nonbonded_type, custom_e_terms=None):
 	
 	if(e_bonded_type != "none"):
+		
 		# get bonded energy
-		if(e_bonded_type == "run_standard"):
+		if(e_bonded_type in ("run_standard_bondedterms", "run_standard_potential") ):
 			edr_fn = "ener.edr"
-		elif(e_bonded_type == "rerun_standard"):
+		elif(e_bonded_type in ("rerun_standard_bondedterms", "rerun_standard_potential")):
 			edr_fn = "rerun.edr"
 		else:
 			raise(Exception("Method unkown: "+e_bonded_type))
+		
+		if(e_bonded_type in ("run_standard_potential", "rerun_standard_potential")):
+			e_bonded_terms = ["Potential"]
 
-		e_bonded_terms = ["Bond", "Angle", "Proper-Dih.", "Ryckaert-Bell.", "Improper-Dih."]
+		if(e_bonded_type in ("run_standard_bondedterms", "rerun_standard_bondedterms")):
+			e_bonded_terms = ["Bond", "Angle", "Proper-Dih.", "Ryckaert-Bell.", "Improper-Dih."]
 
 		xvg_fn = mktemp(suffix=".xvg", dir=node.dir)
 		cmd = ["g_energy", "-dp", "-f", node.dir+"/"+edr_fn, "-o", xvg_fn, "-sum"]
@@ -374,18 +512,25 @@ def load_energy(node, e_bonded_type, e_nonbonded_type, custom_e_terms=None):
 
 	if(e_nonbonded_type != "none"):
 		# get non-bonded energy
-		if(e_nonbonded_type in ("run_standard","run_moi","run_moi_sol_sr","run_moi_sol_lr","run_custom")):
+		if(e_nonbonded_type in ("run_standard_nonbondedterms","run_moi","run_moi_sol_sr","run_moi_sol_lr","run_custom")):
 			edr_fn = "ener.edr"
-		elif(e_nonbonded_type in ("rerun_standard","rerun_moi","rerun_moi_sol_sr","rerun_moi_sol_lr","rerun_custom")):
+		elif(e_nonbonded_type in ("rerun_standard_nonbondedterms","rerun_moi","rerun_moi_sol_sr","rerun_moi_sol_lr","rerun_custom")):
 			edr_fn = "rerun.edr"
 		else:
 			raise(Exception("Method unkown: "+e_nonbonded_type))
 
-		if(e_nonbonded_type in ("run_standard", "rerun_standard")):
+		if(e_nonbonded_type in ("run_standard_nonbondedterms", "rerun_standard_nonbondedterms")):
 			e_nonbonded_terms = ["LJ-14", "Coulomb-14", "LJ-(SR)", "LJ-(LR)", "Disper.-corr.", "Coulomb-(SR)", "Coul.-recip."]
 
 		if(e_nonbonded_type in ("run_moi", "rerun_moi")):
 			e_nonbonded_terms = ["Coul-SR:MOI-MOI", "LJ-SR:MOI-MOI", "LJ-LR:MOI-MOI", "Coul-14:MOI-MOI", "LJ-14:MOI-MOI"]
+		
+		if(e_nonbonded_type in ("run_moi_sol_interact", "rerun_moi_sol_interact")):
+			e_nonbonded_terms = ["Coul-SR:MOI-SOL", "LJ-SR:MOI-SOL"]
+
+		if(e_nonbonded_type in ("run_moi_sol_interact_withLR", "rerun_moi_sol_interact_withLR")):
+			e_nonbonded_terms = ["Coul-SR:MOI-SOL", "LJ-SR:MOI-SOL", "LJ-LR:MOI-SOL"]
+			#e_nonbonded_terms = ["Coul-SR:SOL-UNK", "LJ-SR:SOL-UNK", "LJ-LR:SOL-UNK"]
 
 		if(e_nonbonded_type in ("run_moi_sol_sr", "rerun_moi_sol_sr")):
 			e_nonbonded_terms = ["Coul-SR:MOI-MOI", "LJ-SR:MOI-MOI", "LJ-LR:MOI-MOI", "Coul-14:MOI-MOI", "LJ-14:MOI-MOI", "Coul-SR:MOI-SOL", "LJ-SR:MOI-SOL"]
@@ -455,7 +600,6 @@ def check_restraint_energy(node):
 	dis_penalty = np.zeros(node.trajectory.n_frames)
 	
 	for i, r in enumerate(node.restraints):
-		c = node.pool.converter[i]
 		p = r.energy(node.trajectory.getcoord(i))
 		
 		if(isinstance(r, DihedralRestraint)):
@@ -491,9 +635,83 @@ def check_restraint_energy(node):
 	return( dih_penalty_gmx + dis_penalty_gmx ) # values are returned for optional plotting
 
 
+def min_per_node(mins_dir, partition, nodes, e_bonded_type, e_nonbonded_type, custom_e_terms=None):
+	mins = [[]] * len(nodes)
+	presamp_int = nodes[0].pool.root.trajectory
+	
+	for i in xrange(partition.size):
+		edr_fn = mins_dir + "/ener" + str(i) + ".edr"
+		if(e_bonded_type != "none"):
+			# get bonded energy
+			if(e_bonded_type not in ("run_standard", "rerun_standard")):
+				raise(Exception("Method unkown: "+e_bonded_type))
+	
+			e_bonded_terms = ["Bond", "Angle", "Proper-Dih.", "Ryckaert-Bell.", "Improper-Dih."]
+	
+			xvg_fn = mktemp(suffix=".xvg", dir=mins_dir)
+			cmd = ["g_energy", "-dp", "-f", edr_fn, "-o", xvg_fn, "-sum"]
+	
+			print("Calling: "+(" ".join(cmd)))
+			p = Popen(cmd, stdin=PIPE)
+			p.communicate(input=("\n".join(e_bonded_terms)+"\n"))
+			assert(p.wait() == 0)
+	
+			# skipping over "#"-comments at the beginning of xvg-file 
+			e_bonded = np.loadtxt(xvg_fn, comments="@", usecols=(1,), skiprows=10) [-1]
+			os.remove(xvg_fn)
+		else:
+			e_bonded = 0
+	
+		if(e_nonbonded_type != "none"):
+			# get non-bonded energy
+			if(e_nonbonded_type not in ("run_standard","run_moi","run_moi_sol_sr","run_moi_sol_lr","run_custom", "rerun_standard","rerun_moi","rerun_moi_sol_sr","rerun_moi_sol_lr","rerun_custom")):
+				raise(Exception("Method unkown: "+e_nonbonded_type))
+	
+			if(e_nonbonded_type in ("run_standard", "rerun_standard")):
+				e_nonbonded_terms = ["LJ-14", "Coulomb-14", "LJ-(SR)", "LJ-(LR)", "Disper.-corr.", "Coulomb-(SR)", "Coul.-recip."]
+	
+			if(e_nonbonded_type in ("run_moi", "rerun_moi")):
+				e_nonbonded_terms = ["Coul-SR:MOI-MOI", "LJ-SR:MOI-MOI", "LJ-LR:MOI-MOI", "Coul-14:MOI-MOI", "LJ-14:MOI-MOI"]
+	
+			if(e_nonbonded_type in ("run_moi_sol_sr", "rerun_moi_sol_sr")):
+				e_nonbonded_terms = ["Coul-SR:MOI-MOI", "LJ-SR:MOI-MOI", "LJ-LR:MOI-MOI", "Coul-14:MOI-MOI", "LJ-14:MOI-MOI", "Coul-SR:MOI-SOL", "LJ-SR:MOI-SOL"]
+	
+			if(e_nonbonded_type in ("run_moi_sol_lr", "rerun_moi_sol_lr")):
+				e_nonbonded_terms = ["Coul-SR:MOI-MOI", "LJ-SR:MOI-MOI", "LJ-LR:MOI-MOI", "Coul-14:MOI-MOI", "LJ-14:MOI-MOI", "Coul-SR:MOI-SOL", "LJ-SR:MOI-SOL", "LJ-LR:MOI-SOL"]
+	
+			if(e_nonbonded_type in ("run_custom", "rerun_custom")):
+				assert(custom_e_terms)
+				e_nonbonded_terms = custom_e_terms
+		
+			xvg_fn = mktemp(suffix=".xvg", dir=mins_dir)
+			cmd = ["g_energy", "-dp", "-f", edr_fn, "-o", xvg_fn, "-sum"]
+	
+			print("Calling: "+(" ".join(cmd)))
+			p = Popen(cmd, stdin=PIPE)
+			p.communicate(input=("\n".join(e_nonbonded_terms)+"\n"))
+			assert(p.wait() == 0)
+		
+			# skipping over "#"-comments at the beginning of xvg-file 
+			e_nonbonded = np.loadtxt(xvg_fn, comments="@", usecols=(1,), skiprows=10) [-1]
+			os.remove(xvg_fn)
+		else:
+			e_nonbonded = 0
+
+		mins[partition[i]].append(e_bonded + e_nonbonded + get_phi_potential(presamp_int.getframes([i]), nodes[partition[i]])[0])
+		
+	for i in xrange(len(nodes)):
+		nodes[i].tmp["opt_pot_e"] = min(mins[i])
+
+def get_phi_mat (ints, nodes):
+	phi = np.empty((ints.n_frames, len(nodes)))
+	
+	for j in xrange(len(nodes)):
+		phi[:,j] = get_phi(ints, nodes[j])
+		
+	return phi
 #===============================================================================
 if(__name__ == "__main__"):
 	main()
-
+	
 #EOF
 
