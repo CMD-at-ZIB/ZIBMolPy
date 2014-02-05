@@ -658,8 +658,8 @@ class DihedralCoordinate(InternalCoordinate):
 		phi = gmx_angle(m,n)
 		ipr = iprod(r_ij,n)
 		sign= np.sign(ipr)
-		phi = sign*phi
-		return( np.array(phi) )
+		sign[np.where(sign==0.0)]=1
+		return( np.array(sign*phi) )
   
 	#---------------------------------------------------------------------------
 	@staticmethod
