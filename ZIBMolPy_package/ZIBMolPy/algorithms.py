@@ -109,7 +109,7 @@ def cluster_by_isa(eigenvectors, n_clusters):
 	c = eigenvectors[:, range(n_clusters)]
 	ortho_sys = np.copy(c)
 	max_dist = 0.0
-	ind = np.zeros(n_clusters, dtype=np.int8)
+	ind = np.zeros(n_clusters, dtype=np.int32)
 
 	# first two representatives with maximum distance
 	for (i, row) in enumerate(c):        
