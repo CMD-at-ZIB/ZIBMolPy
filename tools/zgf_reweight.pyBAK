@@ -512,9 +512,9 @@ def load_energy(node, e_bonded_type, e_nonbonded_type, custom_e_terms=None):
 
 	if(e_nonbonded_type != "none"):
 		# get non-bonded energy
-		if(e_nonbonded_type in ("run_standard_nonbondedterms","run_moi_sol_interact_withLR","run_moi","run_moi_sol_sr","run_moi_sol_lr","run_custom")):
+		if(e_nonbonded_type in ("run_standard_nonbondedterms","run_moi","run_moi_sol_sr","run_moi_sol_lr","run_custom")):
 			edr_fn = "ener.edr"
-		elif(e_nonbonded_type in ("rerun_standard_nonbondedterms","rerun_moi_sol_interact_withLR","rerun_moi","rerun_moi_sol_sr","rerun_moi_sol_lr","rerun_custom")):
+		elif(e_nonbonded_type in ("rerun_standard_nonbondedterms","rerun_moi","rerun_moi_sol_sr","rerun_moi_sol_lr","rerun_custom")):
 			edr_fn = "rerun.edr"
 		else:
 			raise(Exception("Method unkown: "+e_nonbonded_type))
@@ -529,8 +529,8 @@ def load_energy(node, e_bonded_type, e_nonbonded_type, custom_e_terms=None):
 			e_nonbonded_terms = ["Coul-SR:MOI-SOL", "LJ-SR:MOI-SOL"]
 
 		if(e_nonbonded_type in ("run_moi_sol_interact_withLR", "rerun_moi_sol_interact_withLR")):
-			#e_nonbonded_terms = ["Coul-SR:MOI-SOL", "LJ-SR:MOI-SOL", "LJ-LR:MOI-SOL"]
-			e_nonbonded_terms = ["Coul-SR:SOL-UNK", "LJ-SR:SOL-UNK", "LJ-LR:SOL-UNK"]
+			e_nonbonded_terms = ["Coul-SR:MOI-SOL", "LJ-SR:MOI-SOL", "LJ-LR:MOI-SOL"]
+			#e_nonbonded_terms = ["Coul-SR:SOL-UNK", "LJ-SR:SOL-UNK", "LJ-LR:SOL-UNK"]
 
 		if(e_nonbonded_type in ("run_moi_sol_sr", "rerun_moi_sol_sr")):
 			e_nonbonded_terms = ["Coul-SR:MOI-MOI", "LJ-SR:MOI-MOI", "LJ-LR:MOI-MOI", "Coul-14:MOI-MOI", "LJ-14:MOI-MOI", "Coul-SR:MOI-SOL", "LJ-SR:MOI-SOL"]
