@@ -1,4 +1,5 @@
-#!/usr/bin/python -u
+#!/usr/bin/env sh
+''''exec python -u -- "$0" ${1+"$@"} # '''
 # -*- coding: utf-8 -*-
 
 """
@@ -64,14 +65,15 @@ import numpy as np
 
 options_desc = OptionsList([ 
 	Option("s", "seq", "bool", "Suppress MPI", default=False),
-	Option("n", "np", "int", "Number of processors to be used for MPI", default=4, min_value=1),
+	Option("n", "np", "int", "Number of processors to be used for MPI (should be set instead 'nt'if mdrun_mpi is available)", default=1, min_value=1),
 	Option("t", "nt", "int", "Number of threads to start, 0 is guess", default=0, min_value=0),
 	Option("p", "npme", "int", "Number of separate processors to be used for PME, -1 is guess", default=-1, min_value=-1),
 	Option("r", "reprod", "bool", "Avoid mdrun optimizations that affect binary reproducibility", default=False),
 	Option("d", "pd", "bool", "Use particle decomposition", default=False),
 	Option("c", "convtest", "bool", "Test if nodes are converged - does not simulate", default=False),
 	Option("a", "auto-refines", "int", "Number of automatic refinements", default=0, min_value=0),
-	Option("m", "multistart", "bool", "Sampling is restarted instead of extended", default=False)
+	Option("m", "multistart", "bool", "Sampling is restarted instead of extended", default=False),
+	Option("x", "pbs", "choice", "change only if parallel PBS execution on HLRN3", choices=("none", "aprun","mpiexec"))
 	])
 
 sys.modules[__name__].__doc__ += options_desc.epytext() # for epydoc
@@ -160,11 +162,27 @@ def process(node, options):
 	if(options.pd):
 		cmd1 += ["-pd"]
 	
-	# use mpiexec and mdrun_mpi if available
-	if(not options.seq and call(["which","mpiexec"])==0):
+	# do parallel job if preferred
+	if(not options.seq):
+		
 		if(call(["which","mdrun_mpi"])==0):
 			cmd1[0] = "mdrun_mpi"
-		cmd1 = ["mpiexec", "-np", str(options.np)] + cmd1
+			if(call(["which","mpiexec"])==0):
+				cmd1 = ["mpiexec", "-np", str(options.np)] + cmd1
+		
+		if(not options.seq and str(options.pbs) == "mpiexec" and call(["which","mpiexec"])==0):
+			cmd1 = ["mpiexec", "-np", str(options.np)] + cmd1
+
+
+		if(not options.seq and str(options.pbs) == "aprun"):
+				cmd1 = ["aprun", "-n", str(options.np)] + cmd1
+				
+	
+	## use mpiexec and mdrun_mpi if available
+	#if(not options.seq and call(["which","aprun"])==0):
+	#	if(call(["which","mdrun_mpi"])==0):
+	#		cmd1[0] = "mdrun_mpi"
+	#	cmd1 = ["aprun", "-n", str(options.np)] + cmd1
 		
 	#http://stackoverflow.com/questions/4554767/terminating-subprocess-in-python
 	#alternative

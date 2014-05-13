@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 """
@@ -23,8 +23,8 @@ import zgf_cleanup
 import sys
 
 options_desc = OptionsList([
-	Option("c", "current-state", "choice", "current state of nodes to recover", choices=("mdrun-failed", "ready", "converged", "not-converged")),
-	Option("r", "recover-state", "choice", "state that is to be recovered", choices=("mdrun-able", "em-mdrun-able", "converged", "not-converged", "ready")),
+	Option("c", "current-state", "choice", "current state of nodes to recover", choices=("mdrun-failed", "ready", "converged", "not-converged", "rerun-able-converged", "merge-able")),
+	Option("r", "recover-state", "choice", "state that is to be recovered", choices=("mdrun-able", "em-mdrun-able", "converged", "not-converged", "ready", "merge-able")),
 	])
 
 sys.modules[__name__].__doc__ += options_desc.epytext() # for epydoc
