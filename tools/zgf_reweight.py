@@ -555,7 +555,7 @@ def load_energy(node, e_bonded_type, e_nonbonded_type, custom_e_terms=None):
 		os.remove(xvg_fn)
 	else:
 		e_nonbonded = np.zeros(node.trajectory.n_frames)
-
+		
 	assert(len(e_bonded) == len(e_nonbonded) == node.trajectory.n_frames)
 
 	return(e_bonded+e_nonbonded)
