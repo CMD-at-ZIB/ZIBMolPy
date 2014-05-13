@@ -57,8 +57,6 @@ from warnings import warn
 import traceback
 import sys
 
-import time
-
 import os
 import re
 import numpy as np

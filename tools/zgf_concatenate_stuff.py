@@ -48,11 +48,15 @@ def main():
 
 	if(len(needy_nodes) == 0):
 		return
-
+	
 	# find out about trr time step
-	trr = TrrFile(needy_nodes[0].trr_fn)
-	dt = trr.first_frame.next().t - trr.first_frame.t
-	trr.close()
+	dt = 0	
+	for fn in os.listdir(needy_nodes[0].dir):
+		if re.match("^"+needy_nodes[0].dir+".+run\d+.trr", fn):
+			trr = TrrFile(fn)			
+			dt = trr.first_frame.next().t - trr.first_frame.t
+			trr.close()
+			break
 
 	# dt is sometimes noisy in the final digits (three digits is femtosecond step = enough)
 	dt = np.around(dt, decimals=3)
