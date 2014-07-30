@@ -305,7 +305,7 @@ def reweight_presampling(nodes, options):
 	beta_presamp = 1/(options.presamp_temp*BOLTZMANN*AVOGADRO)
 	
 	
-	
+	# Calculating energies of all presampling frames
 	cmd0 = ["grompp"]
 
 	cmd0 += ["-f", "../../"+root.pool.mdp_fn]
@@ -319,7 +319,7 @@ def reweight_presampling(nodes, options):
 	assert(retcode == 0) # grompp should never fail
 	os.rename(root.dir+"/run_temp.tpr",root.tpr_fn)
 	
-	# rerun mdrun to calculate presampling energies
+	# rerun mdrun
 	cmd = ["mdrun"]
 	
 	cmd += ["-s", "../../" + root.tpr_fn]
@@ -331,22 +331,17 @@ def reweight_presampling(nodes, options):
 	# remove unnecessary files
 	os.remove(root.dir + "/traj.trr")
 	
-	if (options.e_nonbonded[0:1] == "re" ):
-		e_nb = options.e_nonbonded[2:]
-	else:
-		e_nb = options.e_nonbonded
-	
-	# get potential V of presampling frames
-	energies = load_energy(root, "run_standard", e_nb, custom_energy_terms)
+	# extract potential energy V of presampling frames
+	energies = load_energy(root, options.e_bonded, options.e_nonbonded, custom_energy_terms)
 	
 	
-	
+	# Beginning minimizations starting from every presampling frame
 	mins_dir = root.dir + "/mins"
 	if not os.path.isdir(mins_dir):
 		os.mkdir(mins_dir)
 	
 	copy (root.pool.mdp_fn, mins_dir + "/min.mdp")
-	# change to minimization
+	# change configuration to minimization
 	with open(mins_dir + "/min.mdp", "r+") as f:
 		c = f.read()
 		
@@ -368,20 +363,16 @@ def reweight_presampling(nodes, options):
 	p = Popen (cmd2, cwd=root.dir, stdin=PIPE)
 	p.communicate("1\n")
 	assert (p.wait() == 0)
-	print "times ---------------------------------------------"
 	times = np.loadtxt(root.dir + "/energy.xvg", comments="@", skiprows=10, usecols=[0])
-	print times
 	
-	print "presamp_partition ----------------------------------"
 	phi_mat = get_phi_mat(presampling_internals, nodes)
 	presamp_partition = np.argmax(phi_mat, axis=1)
-	print "presamp_partition end -------------------------------"
 	# grompp command for every frame
 	cmd3 = ["grompp", "-f", "min.mdp", "-c", "../../../" + root.pdb_fn]
 	cmd3 += ["-t", "../../../" + root.trr_fn]
 	cmd3 += ["-n", "../../../" + root.pool.ndx_fn]
 		
-	if (not root.reweight_minimized or options.reminimize):
+	if (not hasattr(root, "reweight_minimized") or options.reminimize):
 		print "Running grompp to prepare for the minimizations"
 		print "Running mdrun for every presampling frame"
 		for i in xrange(times.size):
@@ -555,7 +546,7 @@ def load_energy(node, e_bonded_type, e_nonbonded_type, custom_e_terms=None):
 		os.remove(xvg_fn)
 	else:
 		e_nonbonded = np.zeros(node.trajectory.n_frames)
-
+		
 	assert(len(e_bonded) == len(e_nonbonded) == node.trajectory.n_frames)
 
 	return(e_bonded+e_nonbonded)
@@ -636,79 +627,88 @@ def check_restraint_energy(node):
 
 
 def min_per_node(mins_dir, partition, nodes, e_bonded_type, e_nonbonded_type, custom_e_terms=None):
+	""" Calculates the minium energy of the presampling frames belonging to the according node. A frame belongs to the node to which it has the strongest membership.
+	
+	@param mins_dir: directory in which the minimizations required for the presampling reweighting are performed
+	@param partition: 1D array, at index i is the index of the node corresponding to presampling frame i"""
+	
 	mins = [[]] * len(nodes)
 	presamp_int = nodes[0].pool.root.trajectory
 	
 	for i in xrange(partition.size):
 		edr_fn = mins_dir + "/ener" + str(i) + ".edr"
+		
+		e_terms = []
 		if(e_bonded_type != "none"):
 			# get bonded energy
-			if(e_bonded_type not in ("run_standard", "rerun_standard")):
+	
+			if(e_bonded_type in ("run_standard_potential", "rerun_standard_potential")):
+				e_terms += ["Potential"]
+
+			elif(e_bonded_type in ("run_standard_bondedterms", "rerun_standard_bondedterms")):
+				e_terms += ["Bond", "Angle", "Proper-Dih.", "Ryckaert-Bell.", "Improper-Dih."]
+			else:
 				raise(Exception("Method unkown: "+e_bonded_type))
 	
-			e_bonded_terms = ["Bond", "Angle", "Proper-Dih.", "Ryckaert-Bell.", "Improper-Dih."]
-	
-			xvg_fn = mktemp(suffix=".xvg", dir=mins_dir)
-			cmd = ["g_energy", "-dp", "-f", edr_fn, "-o", xvg_fn, "-sum"]
-	
-			print("Calling: "+(" ".join(cmd)))
-			p = Popen(cmd, stdin=PIPE)
-			p.communicate(input=("\n".join(e_bonded_terms)+"\n"))
-			assert(p.wait() == 0)
-	
-			# skipping over "#"-comments at the beginning of xvg-file 
-			e_bonded = np.loadtxt(xvg_fn, comments="@", usecols=(1,), skiprows=10) [-1]
-			os.remove(xvg_fn)
-		else:
-			e_bonded = 0
 	
 		if(e_nonbonded_type != "none"):
 			# get non-bonded energy
-			if(e_nonbonded_type not in ("run_standard","run_moi","run_moi_sol_sr","run_moi_sol_lr","run_custom", "rerun_standard","rerun_moi","rerun_moi_sol_sr","rerun_moi_sol_lr","rerun_custom")):
-				raise(Exception("Method unkown: "+e_nonbonded_type))
+			if(e_nonbonded_type in ("run_standard_nonbondedterms", "rerun_standard_nonbondedterms")):
+				e_terms += ["LJ-14", "Coulomb-14", "LJ-(SR)", "LJ-(LR)", "Disper.-corr.", "Coulomb-(SR)", "Coul.-recip."]
 	
-			if(e_nonbonded_type in ("run_standard", "rerun_standard")):
-				e_nonbonded_terms = ["LJ-14", "Coulomb-14", "LJ-(SR)", "LJ-(LR)", "Disper.-corr.", "Coulomb-(SR)", "Coul.-recip."]
+			elif(e_nonbonded_type in ("run_moi", "rerun_moi")):
+				e_terms += ["Coul-SR:MOI-MOI", "LJ-SR:MOI-MOI", "LJ-LR:MOI-MOI", "Coul-14:MOI-MOI", "LJ-14:MOI-MOI"]
+			
+			elif(e_nonbonded_type in ("run_moi_sol_interact", "rerun_moi_sol_interact")):
+				e_terms += ["Coul-SR:MOI-SOL", "LJ-SR:MOI-SOL"]
 	
-			if(e_nonbonded_type in ("run_moi", "rerun_moi")):
-				e_nonbonded_terms = ["Coul-SR:MOI-MOI", "LJ-SR:MOI-MOI", "LJ-LR:MOI-MOI", "Coul-14:MOI-MOI", "LJ-14:MOI-MOI"]
+			elif(e_nonbonded_type in ("run_moi_sol_interact_withLR", "rerun_moi_sol_interact_withLR")):
+				#e_nonbonded_terms = ["Coul-SR:MOI-SOL", "LJ-SR:MOI-SOL", "LJ-LR:MOI-SOL"]
+				e_terms += ["Coul-SR:SOL-UNK", "LJ-SR:SOL-UNK", "LJ-LR:SOL-UNK"]
 	
-			if(e_nonbonded_type in ("run_moi_sol_sr", "rerun_moi_sol_sr")):
-				e_nonbonded_terms = ["Coul-SR:MOI-MOI", "LJ-SR:MOI-MOI", "LJ-LR:MOI-MOI", "Coul-14:MOI-MOI", "LJ-14:MOI-MOI", "Coul-SR:MOI-SOL", "LJ-SR:MOI-SOL"]
+			elif(e_nonbonded_type in ("run_moi_sol_sr", "rerun_moi_sol_sr")):
+				e_terms += ["Coul-SR:MOI-MOI", "LJ-SR:MOI-MOI", "LJ-LR:MOI-MOI", "Coul-14:MOI-MOI", "LJ-14:MOI-MOI", "Coul-SR:MOI-SOL", "LJ-SR:MOI-SOL"]
 	
-			if(e_nonbonded_type in ("run_moi_sol_lr", "rerun_moi_sol_lr")):
-				e_nonbonded_terms = ["Coul-SR:MOI-MOI", "LJ-SR:MOI-MOI", "LJ-LR:MOI-MOI", "Coul-14:MOI-MOI", "LJ-14:MOI-MOI", "Coul-SR:MOI-SOL", "LJ-SR:MOI-SOL", "LJ-LR:MOI-SOL"]
+			elif(e_nonbonded_type in ("run_moi_sol_lr", "rerun_moi_sol_lr")):
+				e_terms += ["Coul-SR:MOI-MOI", "LJ-SR:MOI-MOI", "LJ-LR:MOI-MOI", "Coul-14:MOI-MOI", "LJ-14:MOI-MOI", "Coul-SR:MOI-SOL", "LJ-SR:MOI-SOL", "LJ-LR:MOI-SOL"]
 	
-			if(e_nonbonded_type in ("run_custom", "rerun_custom")):
+			elif(e_nonbonded_type in ("run_custom", "rerun_custom")):
 				assert(custom_e_terms)
-				e_nonbonded_terms = custom_e_terms
+				e_terms += custom_e_terms
+				
+			else:
+				raise(Exception("Method unkown: "+e_bonded_type))	
 		
+		if (len(e_terms) >= 0):
+			
 			xvg_fn = mktemp(suffix=".xvg", dir=mins_dir)
 			cmd = ["g_energy", "-dp", "-f", edr_fn, "-o", xvg_fn, "-sum"]
 	
 			print("Calling: "+(" ".join(cmd)))
 			p = Popen(cmd, stdin=PIPE)
-			p.communicate(input=("\n".join(e_nonbonded_terms)+"\n"))
+			p.communicate(input=("\n".join(e_terms)+"\n"))
 			assert(p.wait() == 0)
 		
 			# skipping over "#"-comments at the beginning of xvg-file 
-			e_nonbonded = np.loadtxt(xvg_fn, comments="@", usecols=(1,), skiprows=10) [-1]
+			e = np.loadtxt(xvg_fn, comments="@", usecols=(1,), skiprows=10) [-1]
 			os.remove(xvg_fn)
 		else:
-			e_nonbonded = 0
+			e = 0
 
-		mins[partition[i]].append(e_bonded + e_nonbonded + get_phi_potential(presamp_int.getframes([i]), nodes[partition[i]])[0])
+		mins[partition[i]].append(e + get_phi_potential(presamp_int.getframes([i]), nodes[partition[i]])[0])
 		
 	for i in xrange(len(nodes)):
 		nodes[i].tmp["opt_pot_e"] = min(mins[i])
 
 def get_phi_mat (ints, nodes):
+	"caclculates the membership of every frame to every node"
 	phi = np.empty((ints.n_frames, len(nodes)))
 	
 	for j in xrange(len(nodes)):
 		phi[:,j] = get_phi(ints, nodes[j])
 		
 	return phi
+	
 #===============================================================================
 if(__name__ == "__main__"):
 	main()
