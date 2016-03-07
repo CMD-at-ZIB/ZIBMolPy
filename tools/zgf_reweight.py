@@ -498,6 +498,10 @@ def load_energy(node, e_bonded_type, e_nonbonded_type, custom_e_terms=None):
 		# skipping over "#"-comments at the beginning of xvg-file 
 		e_bonded = np.loadtxt(xvg_fn, comments="@", usecols=(1,), skiprows=10) 
 		os.remove(xvg_fn)
+		
+		if(len(e_bonded)==node.trajectory.n_frames+1):
+			e_bonded = e_bonded[:-1]
+			
 	else:
 		e_bonded = np.zeros(node.trajectory.n_frames)
 
@@ -544,8 +548,16 @@ def load_energy(node, e_bonded_type, e_nonbonded_type, custom_e_terms=None):
 		# skipping over "#"-comments at the beginning of xvg-file 
 		e_nonbonded = np.loadtxt(xvg_fn, comments="@", usecols=(1,), skiprows=10) 
 		os.remove(xvg_fn)
+		
+		if(len(e_nonbonded)==node.trajectory.n_frames+1):
+			e_nonbonded = e_nonbonded[:-1]
 	else:
 		e_nonbonded = np.zeros(node.trajectory.n_frames)
+	
+	print len(e_bonded)
+	print len(e_nonbonded)
+	print (node.trajectory.n_frames)
+	
 		
 	assert(len(e_bonded) == len(e_nonbonded) == node.trajectory.n_frames)
 

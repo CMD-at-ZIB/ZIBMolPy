@@ -128,7 +128,7 @@ def main():
 	f.close()
 	
 	if(not options.dryrun):
-		subprocess.check_call(["msub",fn])
+		subprocess.check_call(["msub", "-v", "MODULEPATH",fn])
 	os.remove(fn)
 	
 #==========================================================================
