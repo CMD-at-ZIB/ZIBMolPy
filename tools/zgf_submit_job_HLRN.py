@@ -108,7 +108,7 @@ def main():
 		if(o.long_name in FORWARDED_ZGF_MDRUN_OPTIONS):
 			zgfmdrun_call += " " + " ".join(o.forward_value(options))
 			# TODO better: "-option=value" , meaning wrap each item in quotes 
-			# ...the shell should remove them.
+			# ... the shell should remove them.
 	
 	for i in range(options.subdivide):
 		joblines += [zgfmdrun_call + " &> zgf_mdrun.${PBS_JOBID}.%d.log &"%i]

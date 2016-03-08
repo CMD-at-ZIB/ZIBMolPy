@@ -499,6 +499,7 @@ def load_energy(node, e_bonded_type, e_nonbonded_type, custom_e_terms=None):
 		e_bonded = np.loadtxt(xvg_fn, comments="@", usecols=(1,), skiprows=10) 
 		os.remove(xvg_fn)
 		
+		# if len(energy file) != len(trajectory)
 		if(len(e_bonded)==node.trajectory.n_frames+1):
 			e_bonded = e_bonded[:-1]
 			
@@ -549,6 +550,7 @@ def load_energy(node, e_bonded_type, e_nonbonded_type, custom_e_terms=None):
 		e_nonbonded = np.loadtxt(xvg_fn, comments="@", usecols=(1,), skiprows=10) 
 		os.remove(xvg_fn)
 		
+		# if len(energy file) != len(trajectory)
 		if(len(e_nonbonded)==node.trajectory.n_frames+1):
 			e_nonbonded = e_nonbonded[:-1]
 	else:
