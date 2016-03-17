@@ -47,7 +47,7 @@ def main():
 	
 	pool = Pool()
 	needy_nodes = pool.where("state == 'created'")
-	assert(len(needy_nodes) == len(needy_nodes.multilock())) # make sure we lock ALL nodes
+	assert(len(needy_nodes) == len(needy_nodes.multilock())) # make sure we lock ALL nodes 
 	
 	extract_frames(pool)
 	generate_topology(pool)
