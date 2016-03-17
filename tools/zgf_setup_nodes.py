@@ -20,7 +20,7 @@ How it works
 from ZIBMolPy.restraint import DihedralRestraint, DistanceRestraint
 from ZIBMolPy.pool import Pool
 import ZIBMolPy.topology as topology
-from ZIBMolPy.ui import OptionsList
+from ZIBMolPy.ui import OptionsList	
 from ZIBMolPy.io.trr import TrrFile
 from ZIBMolPy.gromacs import read_mdp_file
 
@@ -51,6 +51,7 @@ def main():
 	
 	extract_frames(pool)
 	generate_topology(pool)
+	generate_unrestrained_topology(pool)
 	generate_mdp(pool)
 	
 	for n in needy_nodes:
@@ -164,6 +165,7 @@ def generate_topology(pool):
 		
 		# load unmodified topology
 		top = topology.Topology(pool.top_fn)
+		utop = topology.Topology(pool.top_fn)
 		
 		#k = node.alpha / get_beta(node.temperature) # in kJ/(mol rad^2)
 		
@@ -214,14 +216,42 @@ def generate_topology(pool):
 				t = tuple( rel_atoms + [r0_real, r1_real, r2_real, k_real] )
 				newline = "%d  %d  10  %.10f  %.10f  %.10f  %.10f; ZIBgridfree\n" % t
 				moltype_of_interest.add2section("bonds", newline)
-				#disres_idx += 1
+				#disres_idx += 1 
 				
 			else:
 				raise(Exception("Unkown Restraint-Type"))
 			
 		print("Writing: %s"%n.top_fn)
 		top.write(n.top_fn)
+		utop.write(pool.utop_fn)
 
+#===============================================================================
+def generate_unrestrained_topology(pool):
+	
+	VERSION = getVersion()
+	
+	
+	for n in pool.where("state == 'created'"):
+		
+		if(not n.has_restraints):
+			shutil.copyfile(pool.utop_fn, n.utop_fn)
+			continue
+		
+		# load unmodified topology
+		utop = topology.Topology(pool.utop_fn)
+		
+		#k = node.alpha / get_beta(node.temperature) # in kJ/(mol rad^2)
+		
+		# Gromacs topologies consist of molecules, where each molecule belongs to a moleculetype.
+		# Atoms, bonds, dihedrals belong to a moleculetype.
+		# Atomnumbers are counted in each moleculetype seperately, starting with 1 (internals start with 0)
+		#disres_idx = 0
+		
+		assert(len(pool.converter) == len(n.restraints))
+		
+			
+		print("Writing: %s"%n.utop_fn)
+		utop.write(n.utop_fn)
 
 #===============================================================================
 if(__name__ == "__main__"):
