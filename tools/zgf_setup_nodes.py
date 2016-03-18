@@ -165,7 +165,6 @@ def generate_topology(pool):
 		
 		# load unmodified topology
 		top = topology.Topology(pool.top_fn)
-		utop = topology.Topology(pool.top_fn)
 		
 		#k = node.alpha / get_beta(node.temperature) # in kJ/(mol rad^2)
 		
@@ -216,14 +215,13 @@ def generate_topology(pool):
 				t = tuple( rel_atoms + [r0_real, r1_real, r2_real, k_real] )
 				newline = "%d  %d  10  %.10f  %.10f  %.10f  %.10f; ZIBgridfree\n" % t
 				moltype_of_interest.add2section("bonds", newline)
-				#disres_idx += 1 
+				#disres_idx += 1
 				
 			else:
 				raise(Exception("Unkown Restraint-Type"))
 			
 		print("Writing: %s"%n.top_fn)
 		top.write(n.top_fn)
-		utop.write(pool.utop_fn)
 
 #===============================================================================
 def generate_unrestrained_topology(pool):

@@ -4,11 +4,11 @@ integrator          =  md
 dt                  =  0.001  ; ps
 nsteps              =  100000 ; 100 ps
 nstcomm             =  1 
-nstxout             =  250     ; output coordinates every 0.25 ps 
+nstxout             =  300     ; output coordinates every 0.25 ps 
 nstvout             =  0       ; frequency to write velocities to output trajectory, the last velocities are always written
 nstfout             =  0       ; frequency to write forces to output trajectory
-nstlog              =  250     ; frequency to write energies to log file
-nstenergy           =  250     ; frequency to write energies to edr file
+nstlog              =  300     ; frequency to write energies to log file
+nstenergy           =  300     ; frequency to write energies to edr file
 
 vdwtype             =  cut-off
 coulombtype         =  cut-off

@@ -242,6 +242,10 @@ class Node(object):
 	@property
 	def top_fn(self):
 		return(self.dir+"/"+self.name+".top")
+		
+	@property
+	def utop_fn(self):
+		return(self.dir+"/"+self.name+"_u.top")
 
 	@property
 	def convergence_log_fn(self):
