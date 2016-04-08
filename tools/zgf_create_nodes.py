@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 """
@@ -274,8 +274,9 @@ def mknodes_maxdist(parent, numnodes):
 	# InternalArray object with internal coordinates: "nFrames x nInternals" (see internals.py)
 	frames_int = parent.trajectory
 	
-	# maximal allowed distance of any frame to some node if number of nodes set to 0.
-	distCutoff = np.pi * np.sqrt(frames_int.array.shape[1]) / 4	
+	# maximum allowed distance of any frame to some node if number of nodes set to 0
+	#distCutoff = np.pi * np.sqrt(frames_int.array.shape[1]) / 3	
+	distCutoff = np.pi /3	
 	print str(frames_int.array.shape[1]) + " internals -> optimal distance cutoff set to " + str("%0.3f" % distCutoff)
 	
 	# first node (0) chosen arbitrarily and appended to empty list

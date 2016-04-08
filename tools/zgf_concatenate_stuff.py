@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 """
@@ -48,15 +48,19 @@ def main():
 
 	if(len(needy_nodes) == 0):
 		return
-
+	
 	# find out about trr time step
-	trr = TrrFile(needy_nodes[0].trr_fn)
-	dt = trr.first_frame.next().t - trr.first_frame.t
-	trr.close()
+	dt = 0	
+	nodeDir = needy_nodes[0].dir.split('/')[-1]
+	for fn in os.listdir(needy_nodes[0].dir):
+		if re.match("^"+nodeDir+".+run\d+\.trr", fn):
+			trr = TrrFile(needy_nodes[0].dir+"/"+fn)			
+			dt = trr.first_frame.next().t - trr.first_frame.t
+			trr.close()
+			break
 
 	# dt is sometimes noisy in the final digits (three digits is femtosecond step = enough)
 	dt = np.around(dt, decimals=3)
-
 	for n in needy_nodes:
 
 		if(options.trr):

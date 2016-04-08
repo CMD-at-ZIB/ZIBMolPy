@@ -1,8 +1,8 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 """
-What it does 
+What it does
 ============
 	B{This is the third step of ZIBgridfree.}
 
@@ -47,7 +47,7 @@ def main():
 	
 	pool = Pool()
 	needy_nodes = pool.where("state == 'created'")
-	assert(len(needy_nodes) == len(needy_nodes.multilock())) # make sure we lock ALL nodes
+	assert(len(needy_nodes) == len(needy_nodes.multilock())) # make sure we lock ALL nodes 
 	
 	extract_frames(pool)
 	generate_topology(pool)
@@ -57,6 +57,20 @@ def main():
 		n.state = "grompp-able"
 		n.save()
 		n.unlock()
+
+
+#===============================================================================
+def getVersion():
+	regex = re.compile("^\s+\:\-\)\s+VERSION\s(\S+)\s+")
+	p = Popen(['make_ndx'], stdout=PIPE, stderr=PIPE)
+	output = p.communicate()
+	outputlines = output[1].split('\n')
+	for line in outputlines:
+		m = regex.match(line)
+		
+		if m:
+			version = m.group(1)
+			return version
 
 
 #===============================================================================
@@ -138,6 +152,10 @@ def extract_frames(pool):
 
 #===============================================================================
 def generate_topology(pool):
+	
+	VERSION = getVersion()
+	
+	
 	for n in pool.where("state == 'created'"):
 		
 		if(not n.has_restraints):
@@ -169,7 +187,13 @@ def generate_topology(pool):
 			if isinstance(r, DihedralRestraint):
 				(phi0, dphi, k) = r.params
 				t = tuple( rel_atoms + [degrees(phi0), degrees(dphi), k] )
-				newline = "%d  %d  %d  %d  1  1  %.10f  %.10f  %.10f  2; ZIBgridfree\n" % t
+				
+				if (int(VERSION.split(".")[0]) > 4 or int(VERSION.split(".")[1]) > 5):
+					newline = "%d  %d  %d  %d  1  %.10f  %.10f  %.10f; ZIBgridfree\n" % t
+					
+				else:
+					newline = "%d  %d  %d  %d  1  1  %.10f  %.10f  %.10f  2; ZIBgridfree\n" % t
+												
 				moltype_of_interest.add2section("dihedral_restraints", newline)
 			
 			elif isinstance(r, DistanceRestraint):

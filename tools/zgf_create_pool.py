@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 """
@@ -105,7 +105,7 @@ def main():
 	assert(path.exists(options.grompp))
 	assert(path.exists(options.topology))
 		
-	#TODO: what if there is no index-file? (make_ndx) 
+	#TODO: what if there is no index-file? (make_ndx)
 	assert(path.exists(options.index))
 	assert('moi' in gromacs.read_index_file(options.index)), "group 'MOI' should be defined in index file"
  
@@ -121,7 +121,7 @@ def main():
 		if not(userinput("Your sampling temperature is set to %s K. Continue?"%temperature, "bool")):
 			sys.exit("Quit by user.")
 
-	# options we can fix
+	# options we can fix 
  	mdp_options_dirty = False #if set, a new mdp-file will be written
 
 	# the value of the following options need to be fixed
