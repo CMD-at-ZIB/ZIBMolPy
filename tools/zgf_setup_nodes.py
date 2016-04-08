@@ -1,8 +1,8 @@
-#!/usr/bin/env python
+#!/usr/bin/python
 # -*- coding: utf-8 -*-
 
 """
-What it does
+What it does 
 ============
 	B{This is the third step of ZIBgridfree.}
 
@@ -20,7 +20,7 @@ How it works
 from ZIBMolPy.restraint import DihedralRestraint, DistanceRestraint
 from ZIBMolPy.pool import Pool
 import ZIBMolPy.topology as topology
-from ZIBMolPy.ui import OptionsList	
+from ZIBMolPy.ui import OptionsList
 from ZIBMolPy.io.trr import TrrFile
 from ZIBMolPy.gromacs import read_mdp_file
 
@@ -51,27 +51,12 @@ def main():
 	
 	extract_frames(pool)
 	generate_topology(pool)
-	generate_unrestrained_topology(pool)
 	generate_mdp(pool)
 	
 	for n in needy_nodes:
 		n.state = "grompp-able"
 		n.save()
 		n.unlock()
-
-
-#===============================================================================
-def getVersion():
-	regex = re.compile("^\s+\:\-\)\s+VERSION\s(\S+)\s+")
-	p = Popen(['make_ndx'], stdout=PIPE, stderr=PIPE)
-	output = p.communicate()
-	outputlines = output[1].split('\n')
-	for line in outputlines:
-		m = regex.match(line)
-		
-		if m:
-			version = m.group(1)
-			return version
 
 
 #===============================================================================
@@ -153,10 +138,6 @@ def extract_frames(pool):
 
 #===============================================================================
 def generate_topology(pool):
-	
-	VERSION = getVersion()
-	
-	
 	for n in pool.where("state == 'created'"):
 		
 		if(not n.has_restraints):
@@ -188,13 +169,7 @@ def generate_topology(pool):
 			if isinstance(r, DihedralRestraint):
 				(phi0, dphi, k) = r.params
 				t = tuple( rel_atoms + [degrees(phi0), degrees(dphi), k] )
-				
-				if (int(VERSION.split(".")[0]) > 4 or int(VERSION.split(".")[1]) > 5):
-					newline = "%d  %d  %d  %d  1  %.10f  %.10f  %.10f; ZIBgridfree\n" % t
-					
-				else:
-					newline = "%d  %d  %d  %d  1  1  %.10f  %.10f  %.10f  2; ZIBgridfree\n" % t
-												
+				newline = "%d  %d  %d  %d  1  1  %.10f  %.10f  %.10f  2; ZIBgridfree\n" % t
 				moltype_of_interest.add2section("dihedral_restraints", newline)
 			
 			elif isinstance(r, DistanceRestraint):
@@ -223,33 +198,6 @@ def generate_topology(pool):
 		print("Writing: %s"%n.top_fn)
 		top.write(n.top_fn)
 
-#===============================================================================
-def generate_unrestrained_topology(pool):
-	
-	VERSION = getVersion()
-	
-	
-	for n in pool.where("state == 'created'"):
-		
-		if(not n.has_restraints):
-			shutil.copyfile(pool.utop_fn, n.utop_fn)
-			continue
-		
-		# load unmodified topology
-		utop = topology.Topology(pool.utop_fn)
-		
-		#k = node.alpha / get_beta(node.temperature) # in kJ/(mol rad^2)
-		
-		# Gromacs topologies consist of molecules, where each molecule belongs to a moleculetype.
-		# Atoms, bonds, dihedrals belong to a moleculetype.
-		# Atomnumbers are counted in each moleculetype seperately, starting with 1 (internals start with 0)
-		#disres_idx = 0
-		
-		assert(len(pool.converter) == len(n.restraints))
-		
-			
-		print("Writing: %s"%n.utop_fn)
-		utop.write(n.utop_fn)
 
 #===============================================================================
 if(__name__ == "__main__"):

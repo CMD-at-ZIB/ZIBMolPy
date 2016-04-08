@@ -242,10 +242,6 @@ class Node(object):
 	@property
 	def top_fn(self):
 		return(self.dir+"/"+self.name+".top")
-		
-	@property
-	def utop_fn(self):
-		return(self.dir+"/"+self.name+"_u.top")
 
 	@property
 	def convergence_log_fn(self):
@@ -344,7 +340,7 @@ class Node(object):
 		
 	
 	#---------------------------------------------------------------------------	
-	# some conjugate state information
+	# some conjugate state information 
 	@property
 	def isa_partition(self):
 		"""Indicates that this node belongs to the partioning of the internal coordinate space."""

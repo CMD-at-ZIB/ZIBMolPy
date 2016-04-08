@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python
 # -*- coding: utf-8 -*-
 
 """
@@ -68,7 +68,6 @@ options_desc = OptionsList([
 		Option("f", "presampling", "file", extension="trr", default="presampling.trr"),
 		Option("g", "grompp", "file", extension="mdp", default="run.mdp"),
 		Option("p", "topology", "file", extension="top", default="topol.top"),
-		Option("u", "utopology", "file", extension="top", default="utopol.top"),
 		Option("n", "index", "file", extension="ndx", default="index.ndx"),
 		
 		# ZIBgridfree related options
@@ -96,7 +95,6 @@ def main():
 		options.internals = options.common_filename+".int"
 		options.grompp = options.common_filename+".mdp"
 		options.topology = options.common_filename+".top"
-		options.utopology = options.common_filename+".top"
 		options.index = options.common_filename+".ndx"
 
 	print("Options:\n%s\n"%pformat(eval(str(options))))
@@ -106,8 +104,8 @@ def main():
 	assert(path.exists(options.internals))
 	assert(path.exists(options.grompp))
 	assert(path.exists(options.topology))
-	assert(path.exists(options.utopology))	
-	#TODO: what if there is no index-file? (make_ndx)
+		
+	#TODO: what if there is no index-file? (make_ndx) 
 	assert(path.exists(options.index))
 	assert('moi' in gromacs.read_index_file(options.index)), "group 'MOI' should be defined in index file"
  
@@ -228,7 +226,6 @@ def main():
 	pool.int_fn = options.internals
 	pool.mdp_fn = options.grompp
 	pool.top_fn = options.topology
-	pool.utop_fn = options.utopology
 	pool.ndx_fn = options.index
 	pool.temperature = int(temperature)
 	pool.gr_threshold = options.gr_threshold

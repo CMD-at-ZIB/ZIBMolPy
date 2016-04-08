@@ -1,0 +1,10 @@
+{'extensions_counter': 0,
+ 'extensions_length': 100,
+ 'extensions_max': 5,
+ 'internals': InternalArray(Converter(int_fn='internals.int'), array([[ 1.52872598, -0.74644512]], dtype=float32)),
+ 'parent': Node(name='node0000'),
+ 'parent_frame_num': 3027,
+ 'restraints': [DihedralRestraint((4, 2, 0, 1),1.48066149579,0.628318530718,33.8633471235),
+                DihedralRestraint((2, 0, 1, 3),-0.733548758182,0.549778714378,32.7642092102)],
+ 'sampling_length': 100,
+ 'state': 'mdrun-able'}

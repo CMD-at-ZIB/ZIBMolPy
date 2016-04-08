@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python
 # -*- coding: utf-8 -*-
 
 """
@@ -54,28 +54,22 @@ def main():
 	assert(len(needy_nodes) == len(needy_nodes.multilock())) # make sure we lock ALL nodes
 
 	for node in needy_nodes:
-		
-		if ( path.exists(node.dir+"/rerun_me.trr") and path.exists(node.dir+"/rerun_me.pdb") and path.exists(node.dir+"/rerun_me.top") and path.exists(node.dir+"/rerun_me.tpr") ):
-			print("All four rerun files (rerun_me.*) already existing in " + node.dir + ".")
-			print("Be sure you want to keep them!")
-			continue
-			
-			
+	
 		# if "none", assume that sim is implicit or in vacuum. thus, trjconv not required. 
 		if options.pbc_removal != "none":
 
 			# desolvate trr
-			if not( path.exists(node.dir+"/rerun_me.trr")):
+			if not( path.exists(node.dir+"/rerun_me.trr") ):
+				print("You should check/remove/rename all of these files before generating new ones")
 				cmd = ["trjconv", "-f", node.trr_fn, "-o", node.dir+"/rerun_me.trr", "-s", node.tpr_fn, "-n", node.pool.ndx_fn, "-pbc", options.pbc_removal]			
 				print("Calling: "+(" ".join(cmd)))
 				p = Popen(cmd, stdin=PIPE)
 				p.communicate(input=("MOI\n"))
 				assert(p.wait() == 0)
 			else:
-				print("Rerun trajectory file (rerun_me.trr) already existing in " + node.dir + ".") 
-				print("Be sure you want to keep it!")
-				#sys.exit(0)
-				#continue
+				print("At least one of \"rerun_me.trr\", \"rerun_me.pdb\", and \"rerun_me.top\" does already exist in directory \""+node.name+"\".") 
+				print("You should check/remove/rename all of these files before generating new ones")
+				sys.exit(0)
 	
 			# desolvate pdb
 			if not( path.exists(node.dir+"/rerun_me.pdb") ):
@@ -105,9 +99,9 @@ def main():
 			if not( path.exists(node.dir+"/rerun_me.trr") ):
 				symlink(node.name+".trr", node.dir+"/rerun_me.trr")
 			else:
-				print("Rerun trajectory file (rerun_me.trr) already existing in " + node.dir + ".") 
-				print("Be sure you want to keep it!")
-				#continue
+				print("At least one of \"rerun_me.trr\", \"rerun_me.pdb\", and \"rerun_me.top\" does already exist in directory \""+node.name+"\".") 
+				print("You should check/remove/rename all of these files before generating new ones")
+				sys.exit(0)
 			if not( path.exists(node.dir+"/rerun_me.pdb") ):
 				symlink(node.name+"_conf.pdb", node.dir+"/rerun_me.pdb")
 			if not( path.exists(node.dir+"/rerun_me.top") ):
@@ -123,19 +117,16 @@ def main():
 		#zgf_grompp.call_grompp(node, mdp_file=options.grompp, final_state=grompp2state)
 		#TODO code borrowed from zgf_grompp
 		#TODO make the original method fit for grompping reruns
-
-		if not( path.exists(node.dir+"/rerun_me.trr") ):		
-			cmd = ["grompp"]
-			cmd += ["-f", "../../"+options.grompp]
-			cmd += ["-n", "../../"+node.pool.ndx_fn]
-			cmd += ["-c", "../../"+node.dir+"/rerun_me.pdb"]
-			cmd += ["-p", "../../"+node.dir+"/rerun_me.top"]
-			cmd += ["-o", "../../"+node.dir+"/rerun_me.tpr"]			
-			print("Calling: %s"%" ".join(cmd))
-			p = Popen(cmd, cwd=node.dir)
-			retcode = p.wait()
-			assert(retcode == 0) # grompp should never fail
-		
+		cmd = ["grompp"]
+		cmd += ["-f", "../../"+options.grompp]
+		cmd += ["-n", "../../"+node.pool.ndx_fn]
+		cmd += ["-c", "../../"+node.dir+"/rerun_me.pdb"]
+		cmd += ["-p", "../../"+node.dir+"/rerun_me.top"]
+		cmd += ["-o", "../../"+node.dir+"/rerun_me.tpr"]			
+		print("Calling: %s"%" ".join(cmd))
+		p = Popen(cmd, cwd=node.dir)
+		retcode = p.wait()
+		assert(retcode == 0) # grompp should never fail
 		node.state = grompp2state
 		node.save()
 	

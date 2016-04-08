@@ -41,10 +41,9 @@ def load_queues():
 
 
 options_desc = OptionsList([
-	Option("C", "commandhlrn", "choice", "parallel PBS executable HLRN3", choices=("aprun","mpiexec","none")),
 	Option("Q", "queue", "choice", "queue for scheduling", choices=["auto",]+sorted(load_queues())),
 	Option("N", "nodes", "int", "number of computing cluster nodes", default=2, min_value=1),
-	Option("P", "ppn", "int", "number of processors per node", default=24, min_value=1),
+	Option("P", "ppn", "int", "number of processors per node", default=8, min_value=1),
 	Option("W", "walltime", "float", "job-walltime in hours", default=1.0, min_value=0.1),
 	Option("M", "email", "str", "email-address for notifications"),
 	Option("D", "dryrun", "bool", "Only generates job-file, but does not submit it", default=False),
@@ -89,10 +88,10 @@ def main():
 	for m in os.environ['LOADEDMODULES'].split(":"):
 		joblines += ["module load "+m]
 	
-	# on some machines the local module has to be loaded ... depracted on HLRN3
-	#joblines += ['if ! python -c "import numpy" &>/dev/null; then']
-	#joblines += ['   module load local']
-	#joblines += ['fi']
+	# on some machines the local module has to be loaded 
+	joblines += ['if ! python -c "import numpy" &>/dev/null; then']
+	joblines += ['   module load local']
+	joblines += ['fi']
 	
 	
 	joblines += ["set -x"]
@@ -102,7 +101,6 @@ def main():
 	joblines += ["cd $PBS_O_WORKDIR"]
 	
 	zgfmdrun_call = "zgf_mdrun --np=%d"%(options.nodes*options.ppn / options.subdivide)
-	zgfmdrun_call += " --pbs=" + options.commandhlrn
 	# forward options to zgf_mdrun
 	for o in zgf_mdrun.options_desc:
 		if(o.long_name in FORWARDED_ZGF_MDRUN_OPTIONS):

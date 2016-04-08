@@ -218,13 +218,13 @@ class InternalArray(object):
 	
 	def getframe(self, frame_idx):
 		assert(isinstance(frame_idx, int))
-		return( self.getframes([frame_idx]) )
+		return( self.getframes((frame_idx,)) )
 
 	def getframes(self, frame_indices):
 		""" Expects a list of frame-indices. Returns an new InternalArray containing only those frames."""
 		assert(all([isinstance(i, int) for i in frame_indices]))
 		if(self.has_frameweights):
-			return(InternalArray(self.converter, self.array[frame_indices, :], self.frameweights[frame_indices]))
+			return(InternalArray(self.converter, self.array[frame_indices, :], self.frameweights[frame_indices,:]))
 		return(InternalArray(self.converter, self.array[frame_indices, :]))
 
 	def delframes(self,frame_indices):
