@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-What it does
+What it does 
 ============
 	B{This is the third step of ZIBgridfree.}
 

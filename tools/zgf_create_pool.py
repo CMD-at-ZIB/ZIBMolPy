@@ -105,7 +105,7 @@ def main():
 	assert(path.exists(options.grompp))
 	assert(path.exists(options.topology))
 		
-	#TODO: what if there is no index-file? (make_ndx)
+	#TODO: what if there is no index-file? (make_ndx) 
 	assert(path.exists(options.index))
 	assert('moi' in gromacs.read_index_file(options.index)), "group 'MOI' should be defined in index file"
  

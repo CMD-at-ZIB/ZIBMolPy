@@ -340,7 +340,7 @@ class Node(object):
 		
 	
 	#---------------------------------------------------------------------------	
-	# some conjugate state information
+	# some conjugate state information 
 	@property
 	def isa_partition(self):
 		"""Indicates that this node belongs to the partioning of the internal coordinate space."""
