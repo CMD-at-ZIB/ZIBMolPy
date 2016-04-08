@@ -13,7 +13,7 @@ import time
 from ZIBMolPy import utils
 from ZIBMolPy.phi import get_phi
 
-#needed to eval node0042_desc.txt!!! 
+#needed to eval node0042_desc.txt!!!
 from ZIBMolPy.internals import InternalArray
 
 
@@ -340,7 +340,7 @@ class Node(object):
 		
 	
 	#---------------------------------------------------------------------------	
-	# some conjugate state information
+	# some conjugate state information 
 	@property
 	def isa_partition(self):
 		"""Indicates that this node belongs to the partioning of the internal coordinate space."""
