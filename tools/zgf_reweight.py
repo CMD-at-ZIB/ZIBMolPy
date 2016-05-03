@@ -522,9 +522,16 @@ def reweight_classical(nodes, options):
 		
 		for i in xrange(nTrajs):
 			print i
+			rundir = "/classical/run"+str(i).zfill(4)
+			# create directory with leading zeros
+			os.mkdir(n.dir+rundir) 
+		
+			# copy tpr file to run dir
+			copy(n.dir+"/classical/run_temp.tpr", n.dir+rundir+"/run_temp.tpr") 
+
 	
-	
-	
+			
+		
 	
 	
 	
