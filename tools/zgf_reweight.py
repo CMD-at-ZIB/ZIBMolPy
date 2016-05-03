@@ -61,7 +61,7 @@ This option is mainly for debugging. It compares wether ZIBMolPy internally calc
 
 from ZIBMolPy.constants import AVOGADRO, BOLTZMANN
 from ZIBMolPy.restraint import DihedralRestraint, DistanceRestraint
-from ZIBMolPy.ui import Option, OptionsList
+from ZIBMolPy.ui import userinput, Option, OptionsList
 from ZIBMolPy.phi import get_phi, get_phi_potential
 from ZIBMolPy.pool import Pool
 import zgf_cleanup
@@ -85,7 +85,7 @@ options_desc = OptionsList([
 	Option("p", "np", "int", "Number of processors to be used for MPI", default=4, min_value=1),
 	Option("c", "ignore-convergence", "bool", "reweight despite not-converged", default=False),
 	Option("f", "ignore-failed", "bool", "reweight and ignore mdrun-failed nodes", default=False),
-	Option("m", "method", "choice", "reweighting method", choices=("entropy", "direct", "presampling")),
+	Option("m", "method", "choice", "reweighting method", choices=("entropy", "direct", "presampling", "classical")),
 	Option("z", "reminimize", "bool", "reminimize presampling frames", default=False),
 	Option("b", "e-bonded", "choice", "bonded energy type", choices=("run_standard_potential", "run_standard_bondedterms", "rerun_standard_potential", "rerun_standard_bondedterms", "none")),
 	Option("n", "e-nonbonded", "choice", "nonbonded energy type", choices=("none", "run_standard_nonbondedterms", "run_moi", "run_moi_sol_sr", "run_moi_sol_lr", "run_custom", "rerun_standard_nonbondedterms", "run_moi_sol_interact", "rerun_moi_sol_interact", "run_moi_sol_interact_withLR", "rerun_moi_sol_interact_withLR", "rerun_moi", "rerun_moi_sol_sr", "rerun_moi_sol_lr", "rerun_custom")),
@@ -136,6 +136,8 @@ def main():
 		reweight_entropy(active_nodes, options)
 	elif(options.method == "presampling"):
 		reweight_presampling(active_nodes, options)
+	elif(options.method == "classical"):
+		reweight_classical(active_nodes, options)	
 	else:
 		raise(Exception("Method unkown: "+options.method))
 	
@@ -305,7 +307,7 @@ def reweight_presampling(nodes, options):
 	beta_presamp = 1/(options.presamp_temp*BOLTZMANN*AVOGADRO)
 	
 	
-	
+	# Calculating energies of all presampling frames
 	cmd0 = ["grompp"]
 
 	cmd0 += ["-f", "../../"+root.pool.mdp_fn]
@@ -340,7 +342,7 @@ def reweight_presampling(nodes, options):
 	energies = load_energy(root, "run_standard", e_nb, custom_energy_terms)
 	
 	
-	
+	# Beginning minimizations starting from every presampling frame
 	mins_dir = root.dir + "/mins"
 	if not os.path.isdir(mins_dir):
 		os.mkdir(mins_dir)
@@ -476,6 +478,56 @@ def reweight_presampling(nodes, options):
 	for (n1, n2) in zip(nodes[1:], nodes[:-1]): # calculate and normalize weights
 		n1.tmp['weight'] = np.exp(-nodes[0].pool.thermo_beta*( n1.obs.A - n2.obs.A )) * n2.tmp['weight']
 
+
+
+#===============================================================================
+def reweight_classical(nodes, options):
+	print "Presampling analysis reweighting: see formula 18 in Fackeldey, Durmaz, Weber 2011"
+
+
+
+	custom_energy_terms = None
+	if(options.e_nonbonded in ("run_custom", "rerun_custom")):
+		assert(path.exists(options.custom_energy))
+		custom_energy_terms = [entry.strip() for entry in open(options.custom_energy).readlines() if entry != "\n"]
+	
+	## ask for number of 
+	msg = "How many unrestrained trajectories do you want to start per node?"
+	nTrajs = int(float(userinput(msg, "str")))
+	type(nTrajs)
+	root = nodes[0].pool.root
+	pool = Pool()
+	
+	for n in nodes:
+		#print n.pdb_fn
+		#print n.name
+		#print n.dir
+		#os.chdir("../../"+n.dir)
+		
+		os.mkdir(n.dir+"/classical")
+		
+		cmd0 = ["grompp"]
+		cmd0 += ["-f", "../../"+root.pool.mdp_fn]
+		cmd0 += ["-n", "../../"+root.pool.ndx_fn]
+		cmd0 += ["-c", "../../"+n.pdb_fn]		### change
+		cmd0 += ["-p", "../../"+root.pool.top_fn]
+		cmd0 += ["-o", "../../"+n.dir+"/classical/run_temp.tpr"]	### change		
+		print("Calling: %s"%" ".join(cmd0))
+		p = Popen(cmd0, cwd=n.dir)
+		retcode = p.wait()
+		assert(retcode == 0) # grompp should never fail
+		## TODO:why?!
+		##os.rename(n.dir+"/run_temp.tpr",n.tpr_fn)
+		
+		
+		for i in xrange(nTrajs):
+			print i
+	
+	
+	
+	
+	
+	
 
 #===============================================================================
 def load_energy(node, e_bonded_type, e_nonbonded_type, custom_e_terms=None):
