@@ -484,19 +484,23 @@ def reweight_presampling(nodes, options):
 def reweight_classical(nodes, options):
 	print "Presampling analysis reweighting: see formula 18 in Fackeldey, Durmaz, Weber 2011"
 
-
+	md_subdir  = "/classical"
+	run_subdir = "/run"
 
 	custom_energy_terms = None
 	if(options.e_nonbonded in ("run_custom", "rerun_custom")):
 		assert(path.exists(options.custom_energy))
 		custom_energy_terms = [entry.strip() for entry in open(options.custom_energy).readlines() if entry != "\n"]
 	
-	## ask for number of 
+	## ask for number of unrestrained MD trajectories starting from node 
 	msg = "How many unrestrained trajectories do you want to start per node?"
 	nTrajs = int(float(userinput(msg, "str")))
 	type(nTrajs)
 	root = nodes[0].pool.root
 	pool = Pool()
+	
+	## prepare hlrn job file from the scratch and add jobs
+	
 	
 	for n in nodes:
 		#print n.pdb_fn
@@ -504,14 +508,15 @@ def reweight_classical(nodes, options):
 		#print n.dir
 		#os.chdir("../../"+n.dir)
 		
-		os.mkdir(n.dir+"/classical")
+		if not os.path.isdir(n.dir+md_subdir):
+			os.mkdir(n.dir+md_subdir)
 		
 		cmd0 = ["grompp"]
 		cmd0 += ["-f", "../../"+root.pool.mdp_fn]
 		cmd0 += ["-n", "../../"+root.pool.ndx_fn]
 		cmd0 += ["-c", "../../"+n.pdb_fn]		### change
 		cmd0 += ["-p", "../../"+root.pool.top_fn]
-		cmd0 += ["-o", "../../"+n.dir+"/classical/run_temp.tpr"]	### change		
+		cmd0 += ["-o", "../../"+n.dir+md_subdir+"/run_temp.tpr"]	### change		
 		print("Calling: %s"%" ".join(cmd0))
 		p = Popen(cmd0, cwd=n.dir)
 		retcode = p.wait()
@@ -521,15 +526,15 @@ def reweight_classical(nodes, options):
 		
 		
 		for i in xrange(nTrajs):
-			print i
-			rundir = "/classical/run"+str(i).zfill(4)
-			# create directory with leading zeros
-			os.mkdir(n.dir+rundir) 
+			rundir = md_subdir+run_subdir+str(i).zfill(4)
+			## create directory with leading zeros
+			if not os.path.isdir(n.dir+rundir):
+				os.mkdir(n.dir+rundir) 
 		
-			# copy tpr file to run dir
-			copy(n.dir+"/classical/run_temp.tpr", n.dir+rundir+"/run_temp.tpr") 
+			## probably not required (TODO): copy tpr file to run dir
+			copy(n.dir+md_subdir+"/run_temp.tpr", n.dir+rundir+"/run_temp.tpr") 
 
-	
+			## run MD 
 			
 		
 	
